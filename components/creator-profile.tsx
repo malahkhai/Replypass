@@ -107,11 +107,13 @@ function Checkout({
       <p className="checkout-explanation">
         {offering.kind === "vip"
           ? "Your monthly pass to basic messaging and private posts. Paid requests are separate. This preview won’t start a subscription."
+          : offering.kind === "voice_note"
+            ? `You’re requesting a personal voice note. If ${creator.name.split(" ")[0]} doesn’t accept or deliver it, you won’t be charged.`
           : `You’re paying for a guaranteed reply. If ${creator.name.split(" ")[0]} doesn’t accept your request, you won’t be charged.`}
       </p>
       {offering.kind !== "vip" && (
         <p className="promise-note">
-          <Icon name="shield" size={16} /> {siteConfig.fanPromise}
+          <Icon name="shield" size={16} /> {offering.kind === "voice_note" ? "No delivery = no charge." : siteConfig.fanPromise}
         </p>
       )}
       <div className="checkout-total">
