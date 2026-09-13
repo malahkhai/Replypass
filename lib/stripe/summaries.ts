@@ -8,7 +8,7 @@ export async function paymentSummaries(
   let query = db
     .from("reply_payments")
     .select(
-      "id,interaction_id,fan_id,creator_id,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,expires_at,accepted_at,conversation_id,needs_reconciliation,manual_review,created_at,declined_at,expired_at",
+      "id,interaction_id,interaction_kind,fan_id,creator_id,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,expires_at,accepted_at,conversation_id,needs_reconciliation,manual_review,created_at,declined_at,expired_at",
     );
   if (side === "fan") query = query.eq("fan_id", userId);
   else {
@@ -39,6 +39,15 @@ export async function paymentSummaries(
         : ["00000000-0000-0000-0000-000000000000"],
     );
   const interactionIds = (data || []).map((p) => p.interaction_id);
+  const { data: entitlements } = await db
+    .from("media_entitlements")
+    .select("interaction_id,media_id,status")
+    .in(
+      "interaction_id",
+      interactionIds.length
+        ? interactionIds
+        : ["00000000-0000-0000-0000-000000000000"],
+    );
   const { data: ratings } = await db
     .from("ratings")
     .select("interaction_id,score")
@@ -70,5 +79,11 @@ export async function paymentSummaries(
     rating:
       ratings?.find((rating) => rating.interaction_id === p.interaction_id)
         ?.score || null,
+    mediaId:
+      entitlements?.find((item) => item.interaction_id === p.interaction_id)
+        ?.media_id || null,
+    mediaStatus:
+      entitlements?.find((item) => item.interaction_id === p.interaction_id)
+        ?.status || null,
   }));
 }

@@ -16,6 +16,7 @@ export interface ReplyPayment {
   creator_account_id: string;
   attempt_key: string;
   message: string;
+  interaction_kind: "message" | "voice_note";
   gross_cents: number;
   fee_cents: number;
   creator_cents: number;
@@ -30,6 +31,7 @@ export interface ReplyPayment {
   transfer_state: string;
   conversation_id: string | null;
   fulfillment_message_id: string | null;
+  fulfillment_media_id: string | null;
   expires_at: string | null;
   created_at: string;
   authorized_at: string | null;
@@ -37,6 +39,14 @@ export interface ReplyPayment {
   captured_at: string | null;
   needs_reconciliation: boolean;
   manual_review?: boolean;
+}
+
+function fulfilled(payment: ReplyPayment) {
+  return Boolean(
+    payment.interaction_kind === "voice_note"
+      ? payment.fulfillment_media_id
+      : payment.fulfillment_message_id,
+  );
 }
 export interface Intent {
   id: string;
@@ -130,7 +140,7 @@ export class PaymentEngine {
           throw Error("Authorization is not fully secured.");
         if (
           ["pending", "failed"].includes(p.payment_state) &&
-          !p.fulfillment_message_id
+          !fulfilled(p)
         )
           p = await this.store.transition(id, "authorize", null, {
             ttl: this.ttl,
@@ -142,7 +152,7 @@ export class PaymentEngine {
           Date.parse(p.expires_at) <= this.clock()
         )
           p = await this.store.transition(id, "expire");
-        if (p.operation === "capture" && p.fulfillment_message_id)
+        if (p.operation === "capture" && fulfilled(p))
           intent = await this.provider.capture(p);
         else if (["decline", "expire"].includes(p.operation))
           intent = await this.provider.cancel(p);
@@ -164,7 +174,7 @@ export class PaymentEngine {
           });
       } else if (
         intent.status === "requires_payment_method" &&
-        p.fulfillment_message_id
+        fulfilled(p)
       )
         p = await this.store.transition(id, "failed");
       else if (intent.status === "canceled")

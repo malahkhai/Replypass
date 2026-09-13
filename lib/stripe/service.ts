@@ -83,7 +83,10 @@ export function replyService() {
               replypass_transaction_id: p.id,
               creator_id: p.creator_id,
               fan_id: p.fan_id,
-              interaction_type: "guaranteed_reply",
+              interaction_type:
+                p.interaction_kind === "voice_note"
+                  ? "voice_note"
+                  : "guaranteed_reply",
             },
           },
           { idempotencyKey: `replypass:intent:${p.id}` },
@@ -197,19 +200,23 @@ export async function prepareCheckout(
   creatorId: string,
   attempt: string,
   message: string,
+  kind: "message" | "voice_note" = "message",
 ) {
   const service = replyService();
   if (!(await connectStatus(creatorId)).ready)
     throw Error(
       "This creator needs to finish payout setup before accepting paid requests.",
     );
-  const { data, error } = await service.db.rpc("prepare_reply", {
+  const { data, error } = await service.db.rpc(
+    kind === "voice_note" ? "prepare_voice_note" : "prepare_reply",
+    {
     fan: fanId,
     creator: creatorId,
     attempt,
     content: message,
     fee_basis: PLATFORM_FEE_BPS,
-  });
+    },
+  );
   if (error)
     throw Error(
       "This request could not be started. Check availability and try again.",

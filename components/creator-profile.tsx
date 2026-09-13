@@ -466,8 +466,12 @@ export function CreatorProfile({
         title={selected ? titles[selected.kind] : ""}
       >
         {selected &&
-          (paymentsEnabled && selected.kind === "message" ? (
-            <SecuredCheckout creator={creator} authenticated={authenticated} />
+          (paymentsEnabled && ["message", "voice_note"].includes(selected.kind) ? (
+            <SecuredCheckout
+              creator={creator}
+              authenticated={authenticated}
+              kind={selected.kind as "message" | "voice_note"}
+            />
           ) : (
             <Checkout
               authenticated={authenticated}

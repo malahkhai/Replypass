@@ -44,11 +44,11 @@ export default async function Page() {
           </div>
           <div>
             <strong>{repliedCount}</strong>
-            <span>Replied</span>
+            <span>Delivered</span>
           </div>
           <p>
             Your bank may show a temporary hold while a reply is pending. It is
-            only captured when the creator replies.
+            only captured when the creator replies or securely delivers your request.
           </p>
         </div>
       )}
@@ -66,7 +66,7 @@ export default async function Page() {
           <p>
             {viewer.demo
               ? "Sign in with Supabase to track real secured requests."
-              : "Requests will appear here after you ask a creator for a guaranteed reply."}
+              : "Requests will appear here after you ask a creator for a reply or something personal."}
           </p>
           <Link className="button button-primary" href="/">
             Back to ReplyPass <Icon name="arrow" size={17} />
@@ -79,7 +79,7 @@ export default async function Page() {
           <strong>Your payment stays protected.</strong>
           <p>
             ReplyPass uses Stripe to reserve the price. A creator’s reply is
-            what completes the charge.
+            or validated delivery is what completes the charge.
           </p>
         </div>
       </aside>

@@ -22,6 +22,7 @@ import type {
 import { creatorNav } from "./workspace-shell";
 import { CreatorEditor } from "./creator-editor";
 import { LogoutButton } from "./logout-button";
+import { VoiceRecorder } from "./voice-recorder";
 export function WorkspaceHeading({
   eyebrow,
   title,
@@ -156,8 +157,15 @@ export function RequestCard({
           </Button>
         </div>
       )}
-      {state === "accepted" && !data.demo && request.conversationId && <Link className="button" href={`/creator/inbox/${request.conversationId}`}>Reply to earn</Link>}
-      {state === "accepted" && data.demo && (
+      {state === "accepted" && request.kind === "voice_note" && (
+        <VoiceRecorder
+          requestId={request.id}
+          demo={data.demo}
+          onDemoDelivered={() => act("complete")}
+        />
+      )}
+      {state === "accepted" && request.kind === "message" && !data.demo && request.conversationId && <Link className="button" href={`/creator/inbox/${request.conversationId}`}>Reply to earn</Link>}
+      {state === "accepted" && data.demo && request.kind !== "voice_note" && (
         <Button
           variant="secondary"
           disabled={busy}
@@ -424,7 +432,7 @@ export function RequestsPage() {
       )}
       <p className="workspace-footnote">
         {PLATFORM_FEE_PERCENT}% platform fee · You keep {CREATOR_SHARE_PERCENT}
-        %. Accepting or completing a request does not capture a payment.
+        %. Accepting a request does not capture payment. A qualifying reply or validated delivery does.
       </p>
     </>
   );

@@ -28,12 +28,14 @@ type Quote = {
 export function SecuredCheckout({
   creator,
   authenticated,
+  kind = "message",
 }: {
   creator: PublicCreator;
   authenticated: boolean;
+  kind?: "message" | "voice_note";
 }) {
   const router = useRouter();
-  const { message, setMessage } = useRequestDraft(creator.handle, "message");
+  const { message, setMessage } = useRequestDraft(creator.handle, kind);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -41,7 +43,7 @@ export function SecuredCheckout({
     e.preventDefault();
     if (!authenticated) {
       router.push(
-        `/signup?next=${encodeURIComponent(`/${creator.handle}?interaction=message`)}`,
+        `/signup?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`,
       );
       return;
     }
@@ -58,7 +60,7 @@ export function SecuredCheckout({
       )
         .map((n) => n.toString(16).padStart(2, "0"))
         .join("");
-      const key = `replypass:attempt:${creator.id}`;
+      const key = `replypass:attempt:${creator.id}:${kind}`;
       let saved;
       try {
         saved = JSON.parse(sessionStorage.getItem(key) || "null");
@@ -71,12 +73,12 @@ export function SecuredCheckout({
       const r = await fetch("/api/payments/reply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ creatorId: creator.id, attemptKey, message }),
+          body: JSON.stringify({ creatorId: creator.id, attemptKey, message, kind }),
       });
       const data = await r.json();
       if (!r.ok) throw Error(data.error);
       setQuote(data);
-      track("checkout_started", "message");
+      track("checkout_started", kind);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Please try again.");
     } finally {
@@ -95,12 +97,12 @@ export function SecuredCheckout({
       {!quote ? (
         <form onSubmit={prepare} className="auth-form">
           <p>
-            You’re requesting a guaranteed reply. We’ll temporarily reserve the
-            price on your payment method. You’re only charged if{" "}
-            {creator.name.split(" ")[0]} replies.
+            {kind === "voice_note"
+              ? `You’re requesting a personal voice note. We’ll temporarily reserve the price. You’re only charged after ${creator.name.split(" ")[0]} securely delivers it.`
+              : `You’re requesting a guaranteed reply. We’ll temporarily reserve the price. You’re only charged if ${creator.name.split(" ")[0]} replies.`}
           </p>
           <label>
-            What do you want to say?
+            {kind === "voice_note" ? "What should the voice note be about?" : "What do you want to say?"}
             <textarea
               required
               maxLength={2000}
@@ -124,26 +126,26 @@ export function SecuredCheckout({
             },
           }}
         >
-          <Confirmation quote={quote} name={creator.name.split(" ")[0]} />
+          <Confirmation quote={quote} name={creator.name.split(" ")[0]} kind={kind} />
         </Elements>
       )}
       {error && (
         <p className="form-error" role="alert">
           {error}{" "}
           <Link
-            href={`/login?next=${encodeURIComponent(`/${creator.handle}?interaction=message`)}`}
+            href={`/login?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`}
           >
             Sign in
           </Link>
         </p>
       )}
       <p className="checkout-footnote">
-        No reply = no charge. Test cards only.
+        {kind === "voice_note" ? "No delivery = no charge." : "No reply = no charge."} Test cards only.
       </p>
     </div>
   );
 }
-function Confirmation({ quote, name }: { quote: Quote; name: string }) {
+function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind: "message" | "voice_note" }) {
   const stripe = useStripe(),
     elements = useElements();
   const [busy, setBusy] = useState(false),
@@ -204,10 +206,10 @@ function Confirmation({ quote, name }: { quote: Quote; name: string }) {
           temporarily reserved. You haven’t been charged.
         </p>
         <p>
-          {name} has until {new Date(expires).toLocaleString()} to reply. If
-          they don’t reply, the reservation will be released automatically.
+          {name} has until {new Date(expires).toLocaleString()} to {kind === "voice_note" ? "deliver your voice note" : "reply"}. If
+          they don’t, the reservation will be released automatically.
         </p>
-        <strong>No reply = no charge.</strong>
+        <strong>{kind === "voice_note" ? "No delivery = no charge." : "No reply = no charge."}</strong>
         <Link className="button" href="/account/requests">
           View my requests
         </Link>
@@ -220,7 +222,7 @@ function Confirmation({ quote, name }: { quote: Quote; name: string }) {
         <p>
           We’ll temporarily reserve{" "}
           <Price cents={quote.amountCents} currency={quote.currency} />. You’re
-          only charged if {name} replies.
+          only charged if {name} {kind === "voice_note" ? "delivers the voice note" : "replies"}.
         </p>
       </div>
       <div className="wallet-checkout">
