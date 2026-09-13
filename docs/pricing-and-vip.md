@@ -11,7 +11,7 @@ Creator prices are stored as integer minor units with a separate currency. Check
 
 ## VIP membership contract
 
-VIP is planned as a recurring creator membership. Its initial benefits are basic direct messaging, creator-only posts, a VIP indicator, and creator-controlled member access. Bespoke guaranteed replies, live chat, voice, photo, and video requests remain separately priced unless a future plan explicitly includes them.
+VIP is planned as a recurring creator membership. Its initial benefits are private creator posts and updates, a VIP indicator, member-only media, priority inbox status, and optional creator-configured request discounts. It does not promise unlimited direct messages or guaranteed replies. Guaranteed replies, voice notes, and photo requests remain separately priced unless a creator explicitly offers a defined member discount. Live chat and video are outside V1.
 
 Each Stripe recurring Price is immutable. Changing a creator's displayed VIP price creates a new Price version:
 

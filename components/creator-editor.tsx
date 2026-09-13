@@ -346,7 +346,7 @@ export function CreatorEditor({
             </span>
           </div>
           <div className="pricing-editor">
-            {catalog.map((item) => {
+            {catalog.filter((item) => item.kind !== "live_chat" && item.kind !== "video").map((item) => {
               const price = draft.pricing.find((p) => p.kind === item.kind)!;
               return (
                 <div className="price-editor-row" key={item.kind}>
@@ -429,7 +429,6 @@ export function CreatorEditor({
           {(
             [
               ["acceptingMessages", "Accepting messages"],
-              ["acceptingLive", "Accepting live chats"],
               ["acceptingMedia", "Accepting media requests"],
             ] as const
           ).map(([key, label]) => (

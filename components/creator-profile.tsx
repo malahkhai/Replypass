@@ -213,7 +213,10 @@ export function CreatorProfile({
     });
   }, [initial.demo, initial.handle]);
   const creator = demoImage ? { ...initial, image: demoImage } : initial;
-  const { offerings, vip } = creator;
+  const { vip } = creator;
+  const offerings = creator.offerings.filter(
+    (offering) => offering.kind !== "live_chat" && offering.kind !== "video",
+  );
   const firstName = creator.name.split(" ")[0];
   const titles = {
     message: `Message ${firstName}`,
@@ -225,7 +228,7 @@ export function CreatorProfile({
   };
   const [selected, setSelected] = useState<Offering | null>(
     () =>
-      [...initial.offerings, ...(initial.vip ? [initial.vip] : [])].find(
+      [...initial.offerings.filter((offering) => offering.kind !== "live_chat" && offering.kind !== "video"), ...(initial.vip ? [initial.vip] : [])].find(
         (o) => o.kind === initialInteraction,
       ) || null,
   );
@@ -391,7 +394,7 @@ export function CreatorProfile({
                   </div>
                   <h2>A little more us.</h2>
                   <p>
-                    Unlimited/basic messaging and private posts.
+                    Private posts, exclusive updates and VIP inbox status.
                     <br />
                     Your all-access pass to my everyday.
                   </p>

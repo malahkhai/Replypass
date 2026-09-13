@@ -193,12 +193,6 @@ export function MarketingPage({
               "TEST MODE",
             ],
             [
-              "◷",
-              "Live text chat",
-              "Time set aside for a real conversation.",
-              "COMING LATER",
-            ],
-            [
               "♫",
               "Voice notes",
               "A personal answer in their own voice.",
@@ -206,14 +200,14 @@ export function MarketingPage({
             ],
             [
               "▧",
-              "Photo & video requests",
+              "Photo requests",
               "A personalized moment from your creator.",
               "COMING LATER",
             ],
             [
               "♡",
               "VIP subscriptions",
-              "Basic messaging and private posts.",
+              "Private posts, exclusive updates and VIP inbox status.",
               "COMING LATER",
             ],
           ].map(([icon, title, body, status]) => (
@@ -349,7 +343,7 @@ export function MarketingPage({
             ],
             [
               "Are payments available now?",
-              "ReplyPass is currently being tested. Guaranteed Reply supports Stripe test mode when configured. Live chat, media requests and VIP subscriptions remain demo previews; no live payments are enabled.",
+              "ReplyPass is currently being tested. Guaranteed Reply supports Stripe test mode when configured. Voice notes, photo requests and VIP subscriptions are the next launch features; no live payments are enabled.",
             ],
             [
               "What kind of community is ReplyPass?",

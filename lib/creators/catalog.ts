@@ -57,11 +57,11 @@ export const blankCreator: CreatorDraft = {
   pricing: catalog.map((p) => ({
     kind: p.kind,
     cents: p.cents,
-    enabled: true,
+    enabled: p.kind !== "live_chat" && p.kind !== "video",
   })),
   currency: "eur",
   acceptingMessages: true,
-  acceptingLive: true,
+  acceptingLive: false,
   acceptingMedia: true,
   availability: "online",
   replyTime: "~10 minutes",
