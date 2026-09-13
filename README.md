@@ -168,4 +168,4 @@ Run `tests/marketing-browser.mjs` with the same external Playwright/Chrome envir
 
 ## Analytics and consent
 
-See [the GA4 page/event map and setup](docs/analytics.md). Basic Consent Mode blocks Google until acceptance. Set `NEXT_PUBLIC_GA_ENABLED=true` only after the documented GA4 stream setup; default is disabled. No message contents or identifying route parameters are tracked.
+See [the acquisition measurement plan](docs/analytics.md). The consent layer controls Google Analytics and Meta advertising separately; neither script loads before its category is accepted. Set `NEXT_PUBLIC_GA_ENABLED=true` and `NEXT_PUBLIC_META_ENABLED=true` only after configuring the corresponding production property. Meta also requires a numeric `NEXT_PUBLIC_META_PIXEL_ID`. No message contents or identifying route parameters are tracked. A real `Purchase` conversion remains server-confirmed and is not emitted from the browser.

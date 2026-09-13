@@ -12,8 +12,8 @@ export default function Page() {
       title="Privacy"
       topics={[
         "Data collected for accounts, messages and creator requests.",
-        "Optional Google Analytics loads only after you accept analytics cookies. It measures page groups and product interactions. Advertising storage and personalization remain disabled. Change or withdraw your choice using Cookie preferences in the footer. Your choice is remembered in this browser for up to 180 days.",
-        "Analytics events exclude message contents, names, email addresses, creator handles, private record IDs and URL queries. Google may process device and usage information when analytics is enabled.",
+        "Optional Google Analytics loads only after you accept analytics cookies. Optional Meta advertising measurement loads only after you separately accept advertising cookies. You can reject both, accept both, or manage each choice using Cookie preferences in the footer. Choices are remembered in this browser for up to 180 days.",
+        "Measurement events exclude message contents, names, email addresses, creator handles, private record IDs and payment references. Google receives sanitized page groups. When advertising is accepted, Meta may receive the current page URL and approved campaign parameters needed for attribution. Google or Meta may process device and usage information only when the corresponding optional category is enabled.",
         "Service providers, storage, retention and deletion practices to be confirmed.",
         "Privacy contacts and applicable user-request processes.",
       ]}

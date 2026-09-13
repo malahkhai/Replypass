@@ -1,5 +1,7 @@
 export const GA_ID = "G-C6DL1WLHDM";
 export const CONSENT_KEY = "replypass:analytics-consent:v1";
+export const MARKETING_CONSENT_KEY = "replypass:marketing-consent:v1";
+export const META_PIXEL_ID_PATTERN = /^\d{5,20}$/;
 export function analyticsHostAllowed(hostname: string) {
   return hostname === "getreplypass.com" || hostname === "www.getreplypass.com";
 }
@@ -20,4 +22,8 @@ export function readChoice(raw: string | null, now = Date.now()): boolean | null
     const value = JSON.parse(raw || "null");
     return typeof value?.accepted === "boolean" && typeof value.at === "number" && value.at <= now && now - value.at < 180 * 86400000 ? value.accepted : null;
   } catch { return null; }
+}
+
+export function validMetaPixelId(value: string | undefined) {
+  return META_PIXEL_ID_PATTERN.test(value ?? "");
 }
