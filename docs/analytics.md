@@ -54,7 +54,7 @@ Meta is release-gated and disabled by default. Create one ReplyPass Web dataset/
 | Secured quote created | `InitiateCheckout` | Checkout intent |
 | Successful captured payment | `Purchase` | **Not yet emitted**; server confirmation required |
 
-`SignupSubmitted` remains a custom diagnostic event because submitting signup is not proof that an email was verified. ReplyPass custom Meta parameters never include creator handles, fan names, email addresses, message text, request IDs, conversation IDs or payment references. Meta can receive the current page URL after advertising consent for campaign attribution. Browser-side `Purchase` is deliberately absent: the future Conversions API event must come from the idempotent Stripe webhook capture path, carry the server-authoritative amount/currency, respect the user's stored advertising consent and use an `event_id` for deduplication. Authorization, acceptance and a button click are not purchases.
+`SignupSubmitted` remains a custom diagnostic event because submitting signup is not proof that an email was verified. ReplyPass custom Meta parameters never include creator handles, fan names, message text, request IDs, conversation IDs or payment references. Meta can receive the current page URL after advertising consent for campaign attribution. `Purchase` comes only from the idempotent Stripe capture webhook, carries the server-authoritative amount/currency, checks the fan's latest stored advertising consent and uses a deterministic `event_id`. The server sends a SHA-256 normalized email hash and consented Meta browser identifiers for matching. Authorization, acceptance and a button click are not purchases.
 
 Meta account steps:
 
@@ -63,7 +63,7 @@ Meta account steps:
 3. Verify ownership of `getreplypass.com` in Meta Business settings using the DNS method supplied by Meta.
 4. In Events Manager Test events, open production in a fresh browser, accept Advertising in Cookie preferences and exercise the funnel. Use Meta Pixel Helper to confirm one Pixel and no requests before consent.
 5. Configure the web conversion events used for campaigns. Optimize creator campaigns for `CompleteRegistration`; optimize fan campaigns for `Purchase` only after the server-side event is implemented and verified.
-6. For Conversions API, generate an access token in Events Manager and store it server-only as `META_CONVERSIONS_API_TOKEN`. Never paste the token into chat, browser code or Git. Pixel ID is public and safe to provide.
+6. For Conversions API, generate an access token in Events Manager and store it server-only as `META_CONVERSIONS_API_TOKEN`. The implementation reports webhook-confirmed `Purchase` events and records durable delivery attempts in `marketing_conversion_events`.
 
 ## GA4 setup required
 

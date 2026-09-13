@@ -48,6 +48,17 @@ export function AnalyticsConsent() {
   }, [pathname, revision]);
   useEffect(() => { trackMetaPage(pathname); }, [pathname, revision]);
   useEffect(() => {
+    try {
+      const allowed = readChoice(localStorage.getItem(MARKETING_CONSENT_KEY)) === true;
+      void fetch("/api/analytics/consent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ allowed }),
+        keepalive: true,
+      });
+    } catch { /* Server-side conversion tracking remains disabled. */ }
+  }, [pathname, revision]);
+  useEffect(() => {
     const click = (event: MouseEvent) => {
       const link = (event.target as Element)?.closest?.('a[href="/creators"], a[href="/creator/apply"]');
       if (link) track("creator_cta_click");
@@ -76,7 +87,10 @@ export function AnalyticsConsent() {
       for (const name of ["_fbp", "_fbc"]) for (const domain of ["", `; domain=${location.hostname}`, `; domain=.${location.hostname}`]) document.cookie = `${name}=; Max-Age=0; path=/${domain}`;
     }
     if (reloadForWithdrawal) location.reload();
-    else setRevision(v => v + 1);
+    else {
+      setRevision(v => v + 1);
+      if (marketing) setTimeout(() => setRevision(v => v + 1), 1500);
+    }
   }
   return <>
     <div className="cookie-settings"><button type="button" onClick={() => { setCustomizing(true); setVisible(true); }}>Cookie preferences</button></div>

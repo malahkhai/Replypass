@@ -5,6 +5,7 @@ import { replyService } from "./service";
 import { connectStatus } from "./connect";
 import { paymentLog } from "./log";
 import { accountEvents, paymentEvents } from "./events";
+import { reportMetaPurchase } from "@/lib/analytics/meta-server";
 export { accountEvents, paymentEvents } from "./events";
 export async function processWebhook(raw: string, signature: string) {
   const { stripe, db, engine, store, config } = replyService();
@@ -204,6 +205,10 @@ export async function processWebhook(raw: string, signature: string) {
           });
       }
       await engine.reconcile(p.id);
+      if (event.type === "payment_intent.succeeded") {
+        p = await store.get(p.id);
+        await reportMetaPurchase(p);
+      }
       paymentLog(event.type, "succeeded", p.id);
     } else paymentLog(event.type, "unmatched");
   }
