@@ -911,6 +911,7 @@ export function ProfileEditorPage() {
           View public profile <Icon name="arrow" size={16} />
         </Link>
       </WorkspaceHeading>
+      <Link className="button button-secondary" href="/creator/vip">Configure VIP membership</Link>
       <CreatorEditor
         initial={data.creator}
         demo={data.demo}

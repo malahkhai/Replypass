@@ -346,7 +346,7 @@ export function CreatorEditor({
             </span>
           </div>
           <div className="pricing-editor">
-            {catalog.filter((item) => item.kind !== "live_chat" && item.kind !== "video").map((item) => {
+            {catalog.filter((item) => ["message", "voice_note", "photo"].includes(item.kind)).map((item) => {
               const price = draft.pricing.find((p) => p.kind === item.kind)!;
               return (
                 <div className="price-editor-row" key={item.kind}>
@@ -478,7 +478,7 @@ export function CreatorEditor({
           <p>{draft.bio}</p>
           <h3>Choose how we talk.</h3>
           {draft.pricing
-            .filter((p) => p.enabled)
+            .filter((p) => p.enabled && ["message", "voice_note", "photo"].includes(p.kind))
             .map((p) => (
               <div className="preview-offering" key={p.kind}>
                 <span>{catalog.find((c) => c.kind === p.kind)?.title}</span>

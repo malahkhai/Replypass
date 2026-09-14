@@ -2,6 +2,7 @@
 import { track } from "@/lib/analytics/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useRequestDraft } from "./request-draft";
 import { SecuredCheckout } from "./secured-checkout";
 import { creatorUrl, siteConfig } from "@/lib/site";
@@ -13,6 +14,8 @@ import { Icon, type IconName } from "./icon";
 import { BottomSheet } from "./bottom-sheet";
 import { SaveCreator } from "./fan-account";
 import { BottomNavigation } from "./navigation";
+import { VipJoin } from "./vip-join";
+import type { VipPlan } from "@/lib/vip/model";
 
 function Checkout({
   offering,
@@ -192,11 +195,15 @@ export function CreatorProfile({
   paymentsEnabled = false,
   authenticated = false,
   initialInteraction,
+  vipPlan,
+  activeVip = false,
 }: {
   creator: PublicCreator;
   paymentsEnabled?: boolean;
   authenticated?: boolean;
   initialInteraction?: string;
+  vipPlan?: VipPlan | null;
+  activeVip?: boolean;
 }) {
   const [demoImage, setDemoImage] = useState("");
   useEffect(() => {
@@ -394,20 +401,12 @@ export function CreatorProfile({
                     <Badge>
                       <Icon name="sparkles" size={13} /> THE INNER CIRCLE
                     </Badge>
-                    <Price cents={vip.cents} unit="/month" />
+                    <Price cents={vipPlan?.amountCents ?? vip.cents} currency={vipPlan?.currency} unit="/month" />
                   </div>
-                  <h2>A little more us.</h2>
-                  <p>
-                    Private posts, exclusive updates and VIP inbox status.
-                    <br />
-                    Your all-access pass to my everyday.
-                  </p>
-                  <Button disabled>
-                    VIP memberships · Coming soon
-                  </Button>
-                  <span className="vip-note">
-                    Monthly membership · Cancel anytime
-                  </span>
+                  <h2>{vipPlan?.name ?? `${firstName} VIP`}</h2>
+                  <p>{vipPlan?.description ?? "Private posts, exclusive updates and VIP inbox status."}</p>
+                  <ul className="vip-benefits">{(vipPlan?.benefits ?? ["Private posts","Exclusive photos","VIP updates","VIP badge"]).map(item=><li key={item}>✓ {item}</li>)}</ul>
+                  {activeVip ? <Link className="button" href={`/${creator.handle}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
                 </Card>
                 <section
                   className="private-section"
@@ -446,9 +445,7 @@ export function CreatorProfile({
                     ))}
                   </div>
                   <p className="demo-caption">
-                    {creator.demo
-                      ? "Fictional creator · Demo media and activity"
-                      : "Preview media · Payments are not yet enabled"}
+                    {creator.demo ? "Fictional creator · Demo media and activity" : activeVip ? "Your private VIP feed is ready" : "Preview only · Private posts stay protected"}
                   </p>
                 </section>
               </>
@@ -470,7 +467,9 @@ export function CreatorProfile({
         title={selected ? titles[selected.kind] : ""}
       >
         {selected &&
-          (paymentsEnabled && ["message", "voice_note", "photo"].includes(selected.kind) ? (
+          (selected.kind === "vip" && vipPlan?.enabled ? (
+            <div className="checkout-form"><p>{vipPlan.description}</p><ul className="vip-benefits">{vipPlan.benefits.map((benefit)=><li key={benefit}>✓ {benefit}</li>)}</ul><VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/></div>
+          ) : paymentsEnabled && ["message", "voice_note", "photo"].includes(selected.kind) ? (
             <SecuredCheckout
               creator={creator}
               authenticated={authenticated}

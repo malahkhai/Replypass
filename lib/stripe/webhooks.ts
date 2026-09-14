@@ -6,6 +6,7 @@ import { connectStatus } from "./connect";
 import { paymentLog } from "./log";
 import { accountEvents, paymentEvents } from "./events";
 import { reportMetaPurchase } from "@/lib/analytics/meta-server";
+import { processVipWebhook, vipWebhookEvents } from "@/lib/vip/webhooks";
 export { accountEvents, paymentEvents } from "./events";
 export async function processWebhook(raw: string, signature: string) {
   const { stripe, db, engine, store, config } = replyService();
@@ -71,6 +72,13 @@ export async function processWebhook(raw: string, signature: string) {
       paymentLog(event.type, "succeeded");
     } else paymentLog(event.type, "unmatched");
   } else {
+    if (vipWebhookEvents.has(event.type)) {
+      await processVipWebhook(event, db, stripe);
+      const { error } = await db.from("stripe_webhook_events").update({ processed_at: new Date().toISOString() }).eq("id", event.id);
+      if (error) throw Error("Event processing needs retry.");
+      paymentLog(event.type, "succeeded");
+      return;
+    }
     const obj = event.data.object;
     let intentId: string | undefined, paymentId: string | undefined;
     if (obj.object === "payment_intent") {

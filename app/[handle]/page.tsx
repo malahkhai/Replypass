@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { CreatorProfile } from "@/components/creator-profile";
 import { ProfileViewTracker } from "@/components/profile-view-tracker";
 import { findCreator } from "@/lib/creators/repository";
+import { getVipPlan, hasActiveVipAccess } from "@/lib/vip/server";
 export async function generateMetadata({
   params,
 }: {
@@ -42,14 +43,22 @@ export default async function Profile({
   if (!decoded.startsWith("@")) notFound();
   const creator = await findCreator(handle);
   if (!creator) notFound();
+  const viewer = await getViewer();
+  let vipPlan = null, activeVip = false;
+  if (!creator.demo) {
+    try { vipPlan = await getVipPlan(creator.id); activeVip = !!viewer && !viewer.demo && await hasActiveVipAccess(viewer.id, creator.id); } catch {}
+  }
+  const presentedCreator = creator.demo ? creator : { ...creator, vip: vipPlan?.enabled ? { kind: "vip" as const, title: "Join VIP", subtitle: vipPlan.description, cents: vipPlan.amountCents, unit: "/month", icon: "sparkles" } : null };
   return (
     <>
       {!creator.demo && <ProfileViewTracker creatorId={creator.id} />}
       <CreatorProfile
         key={`${handle}:${interaction || ""}`}
         initialInteraction={interaction}
-        creator={creator}
-        authenticated={!!(await getViewer())}
+        creator={presentedCreator}
+        authenticated={!!viewer}
+        vipPlan={vipPlan}
+        activeVip={activeVip}
         paymentsEnabled={!!stripeConfig() && !creator.demo}
       />
     </>

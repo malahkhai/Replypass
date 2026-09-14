@@ -13,6 +13,12 @@ export const paymentEvents = new Set([
   "transfer.created",
   "transfer.updated",
   "transfer.reversed",
+  "checkout.session.completed",
+  "customer.subscription.created",
+  "customer.subscription.updated",
+  "customer.subscription.deleted",
+  "invoice.paid",
+  "invoice.payment_failed",
 ]);
 
 export const accountEvents = new Set([

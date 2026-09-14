@@ -6,7 +6,7 @@ Creator proposition: **Get paid for your attention.** Fan promise: **No reply = 
 
 Guaranteed Reply, Personal Voice Note, and Personal Photo Request use one secured-payment engine. Voice and photo requests promise **No delivery = no charge** and expose private media only after validated delivery and successful capture. See [paid media architecture](docs/paid-media.md).
 
-Task 3 adds **test-mode secured Guaranteed Reply payments** with Stripe Connect. Funds are reserved first, acceptance never captures, and the first qualifying creator reply triggers capture and an 85% creator transfer. Other offerings remain demos. Live Stripe keys are rejected.
+ReplyPass supports test-mode secured Guaranteed Reply, Voice Note and Photo requests plus recurring VIP memberships with Stripe Connect. Transactional funds are captured on validated fulfillment; VIP access is granted only from Stripe-confirmed subscription state. Live Stripe keys are rejected.
 
 Start with the step-by-step [Supabase, Vercel and Stripe setup guide](docs/setup.md).
 
@@ -104,11 +104,11 @@ Accounts v2 recipient configuration, Express dashboard and hosted onboarding wer
 
 `reply_payments` separates payment states (`pending`, `authorized`, `captured`, `canceled`, `refunded`, `disputed`, `failed`) from request states (`pending`, `accepted`, `fulfilled`, `declined`, `expired`). Existing `fulfilled` is displayed as Completed; historical migrations are preserved. `transactions` stores charge/fee/transfer/refund ledger entries separately. `creator_stripe_accounts` and the webhook inbox are service-only under RLS. Snapshot amounts cannot be mutated even by routine server updates.
 
-Completed paid interactions can receive one fan rating. The database verifies the rating author against the captured interaction, and public creator pages display only the published aggregate. Creator price changes apply to new checkouts; existing request snapshots do not change. Planned VIP renewal behavior and immutable Stripe Price versioning are documented in [pricing-and-vip.md](docs/pricing-and-vip.md).
+Completed paid interactions can receive one fan rating. The database verifies the rating author against the captured interaction, and public creator pages display only the published aggregate. Creator price changes apply to new checkouts; existing request snapshots do not change. VIP recurring billing and immutable Stripe Price versioning are documented in [vip-memberships.md](docs/vip-memberships.md).
 
 `/api/stripe/webhook` verifies raw signatures and persists event IDs. It retrieves current Stripe state instead of trusting event arrival order or browser success. Database locks/constraints and deterministic Stripe operation keys prevent duplicate orders, conversations, captures and transfers. `/api/cron/payments` rotates batches of unresolved payments using a protected bearer secret. No scheduler is enabled by the default deployment configuration; configure an external five-minute scheduler (or Vercel Pro cron) before enabling Stripe test payments. Manual-review cases pause automation. Full event subscriptions and operator steps are in [setup.md](docs/setup.md); security boundaries are in [payment-readiness.md](docs/payment-readiness.md).
 
-Cards and supported card wallets only. No paid live chat, paid media, real VIP subscription, wallet, coins or bank-payment methods are implemented. Preview media remains demo content. This is a sandbox integration, not authorization to enable live payments.
+Cards and supported card wallets are used for transactional requests; Stripe-hosted Checkout and the customer portal handle VIP subscriptions. Paid live chat, video, tips, wallets and coins are not implemented. This remains a sandbox integration and is not authorization to enable live payments.
 
 ## Development and validation
 

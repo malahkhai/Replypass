@@ -210,6 +210,7 @@ export function FanAccount({
         )}
         {tab === "Subscriptions" && (
           <>
+            <Link className="button button-secondary" href="/account/subscriptions">Manage VIP memberships</Link>
             {data.subscribers
               .filter((s) => !data.demo || s.fanId === "jordan")
               .map((s) => (
@@ -227,8 +228,7 @@ export function FanAccount({
               <AccountEmpty text="Your active creator subscriptions will appear here." />
             )}
             <p className="workspace-footnote">
-              Subscriptions are shown for context. Billing changes are not
-              enabled in Task 2.
+              Stripe confirms membership access and renewal status.
             </p>
           </>
         )}
