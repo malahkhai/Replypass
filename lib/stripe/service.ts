@@ -84,9 +84,9 @@ export function replyService() {
               creator_id: p.creator_id,
               fan_id: p.fan_id,
               interaction_type:
-                p.interaction_kind === "voice_note"
-                  ? "voice_note"
-                  : "guaranteed_reply",
+                p.interaction_kind === "message"
+                  ? "guaranteed_reply"
+                  : p.interaction_kind,
             },
           },
           { idempotencyKey: `replypass:intent:${p.id}` },
@@ -200,7 +200,7 @@ export async function prepareCheckout(
   creatorId: string,
   attempt: string,
   message: string,
-  kind: "message" | "voice_note" = "message",
+  kind: "message" | "voice_note" | "photo" = "message",
 ) {
   const service = replyService();
   if (!(await connectStatus(creatorId)).ready)
@@ -208,14 +208,10 @@ export async function prepareCheckout(
       "This creator needs to finish payout setup before accepting paid requests.",
     );
   const { data, error } = await service.db.rpc(
-    kind === "voice_note" ? "prepare_voice_note" : "prepare_reply",
-    {
-    fan: fanId,
-    creator: creatorId,
-    attempt,
-    content: message,
-    fee_basis: PLATFORM_FEE_BPS,
-    },
+    kind === "message" ? "prepare_reply" : "prepare_media_request",
+    kind === "message"
+      ? { fan: fanId, creator: creatorId, attempt, content: message, fee_basis: PLATFORM_FEE_BPS }
+      : { fan: fanId, creator: creatorId, attempt, content: message, interaction_type: kind, fee_basis: PLATFORM_FEE_BPS },
   );
   if (error)
     throw Error(

@@ -31,10 +31,11 @@ export default async function Page() {
         <div className="fan-promise">
           <Icon name="shield" size={18} />
           <span>
-            <strong>No reply</strong>
+            <strong>No reply or delivery</strong>
             No charge
           </span>
         </div>
+        <Link className="button button-secondary" href="/account/deliveries">My deliveries <Icon name="arrow" size={16}/></Link>
       </section>
       {!!rows.length && (
         <div className="fan-request-summary" aria-label="Request summary">
@@ -78,8 +79,8 @@ export default async function Page() {
         <div>
           <strong>Your payment stays protected.</strong>
           <p>
-            ReplyPass uses Stripe to reserve the price. A creator’s reply is
-            or validated delivery is what completes the charge.
+            ReplyPass uses Stripe to reserve the price. A creator’s reply or
+            validated media delivery is what completes the charge.
           </p>
         </div>
       </aside>

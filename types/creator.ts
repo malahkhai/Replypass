@@ -58,7 +58,7 @@ export interface Viewer {
   demo: boolean;
 }
 export type RequestState =
-  "pending" | "accepted" | "completed" | "declined" | "expired";
+  "pending" | "accepted" | "fulfilling" | "delivered" | "completed" | "declined" | "expired";
 export interface Fan {
   id: string;
   name: string;
@@ -79,6 +79,8 @@ export interface CreatorRequest {
   status: RequestState;
   paymentStatus: string;
   expires_at: string;
+  acceptance_expires_at?: string | null;
+  fulfillment_expires_at?: string | null;
   accepted_at: string | null;
   declined_at: string | null;
   completed_at: string | null;

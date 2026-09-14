@@ -4,6 +4,8 @@
 
 Creator proposition: **Get paid for your attention.** Fan promise: **No reply = no charge.** ReplyPass is a brand-safe, mobile-first creator platform launching with Guaranteed Reply, personal voice notes, photo requests and VIP memberships. Live chat, video, tips and credits are deferred until after launch. See the authoritative [V1 roadmap](docs/v1-roadmap.md).
 
+Guaranteed Reply, Personal Voice Note, and Personal Photo Request use one secured-payment engine. Voice and photo requests promise **No delivery = no charge** and expose private media only after validated delivery and successful capture. See [paid media architecture](docs/paid-media.md).
+
 Task 3 adds **test-mode secured Guaranteed Reply payments** with Stripe Connect. Funds are reserved first, acceptance never captures, and the first qualifying creator reply triggers capture and an 85% creator transfer. Other offerings remain demos. Live Stripe keys are rejected.
 
 Start with the step-by-step [Supabase, Vercel and Stripe setup guide](docs/setup.md).

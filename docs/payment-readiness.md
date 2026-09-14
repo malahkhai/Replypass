@@ -33,4 +33,4 @@ Unit tests exercise provider mismatch/tampering, failed authorization, replayed 
 
 Mocks do not validate Stripe account country availability, hosted KYC, actual SCA/wallet behavior, issuer hold release or deployed webhook delivery. Follow `docs/setup.md` for the hosted sandbox acceptance run. Monitor rows requiring reconciliation and webhook/cron failures. Manual review is an operator workflow, not an automatic assertion of success. Transfers reflect the creator's Stripe balance; bank payout completion is not claimed.
 
-Before any later live launch, complete legal/trust policies, operational monitoring and recovery procedures, account/country approvals, abuse/rate controls and a separate production security review. No live payment mode or Task 4 features are enabled here.
+Before any live launch, complete legal/trust policies, operational monitoring and recovery procedures, account/country approvals, abuse/rate controls and a separate production security review. Task 4 Voice Note and Photo Request flows remain test-mode only until that launch review.

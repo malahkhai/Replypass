@@ -13,7 +13,7 @@ import {
   stripeConfigurationStatus,
 } from "../lib/stripe/config.ts";
 import { verifyEventSignature } from "../lib/stripe/signatures.ts";
-function fixture() {
+function fixture(interactionKind: "message" | "voice_note" | "photo" = "message") {
   let now = Date.now();
   const p = {
     id: "order",
@@ -24,6 +24,7 @@ function fixture() {
     creator_account_id: "acct_test",
     attempt_key: "attempt",
     message: "A meaningful question",
+    interaction_kind: interactionKind,
     gross_cents: 400,
     fee_cents: 60,
     creator_cents: 340,
@@ -38,6 +39,7 @@ function fixture() {
     transfer_state: "not_due",
     conversation_id: null,
     fulfillment_message_id: null,
+    fulfillment_media_id: null,
     expires_at: null,
     created_at: new Date(now).toISOString(),
     authorized_at: null,
@@ -102,7 +104,7 @@ function fixture() {
         if (p.payment_state === "authorized") p.operation = action;
       }
       if (action === "captured") {
-        assert.ok(p.fulfillment_message_id);
+        assert.ok(p.fulfillment_message_id || p.fulfillment_media_id);
         p.payment_state = "captured";
         p.stripe_charge_id = String(payload.charge);
         p.captured_at = new Date(now).toISOString();
@@ -188,7 +190,8 @@ function fixture() {
     },
     reply() {
       assert.ok(p.accepted_at);
-      p.fulfillment_message_id = "message";
+      if (p.interaction_kind === "message") p.fulfillment_message_id = "message";
+      else p.fulfillment_media_id = "media";
       p.operation = "capture";
     },
     advance() {
@@ -221,6 +224,18 @@ test("secured reply: authorize, accept without capture, first reply captures and
   assert.equal(f.p.transfer_state, "transferred");
   assert.equal(f.p.gross_cents, f.p.fee_cents + f.p.creator_cents);
 });
+for (const kind of ["voice_note", "photo"] as const)
+  test(`${kind}: validated delivery captures once and transfers the 85% snapshot`, async () => {
+    const f = fixture(kind);
+    f.authorize();
+    await f.engine.reconcile("order");
+    await f.engine.accept("order", "creator");
+    assert.ok(!f.operations.has("capture"));
+    f.reply();
+    await Promise.all([f.engine.reconcile("order"), f.engine.reconcile("order")]);
+    assert.equal(f.p.payment_state, "captured");
+    assert.equal(f.p.transfer_state, "transferred");
+  });
 test("insufficient funds or declined authorization never reaches creator", async () => {
   const f = fixture();
   await f.engine.reconcile("order");

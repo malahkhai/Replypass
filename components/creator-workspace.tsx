@@ -23,6 +23,7 @@ import { creatorNav } from "./workspace-shell";
 import { CreatorEditor } from "./creator-editor";
 import { LogoutButton } from "./logout-button";
 import { VoiceRecorder } from "./voice-recorder";
+import { PhotoDelivery } from "./photo-delivery";
 export function WorkspaceHeading({
   eyebrow,
   title,
@@ -99,6 +100,16 @@ export function RequestCard({
       setBusy(false);
     }
   }
+  async function safety(action: "report" | "block") {
+    setBusy(true); setError("");
+    try {
+      const response = await fetch(`/api/requests/${request.id}/safety`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+      const result = await response.json();
+      if (!response.ok) throw Error(result.error);
+      if (action === "block" && state === "pending") await respond(request.id, "decline");
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Please try again."); }
+    finally { setBusy(false); }
+  }
   return (
     <article className={`request-card ${compact ? "compact" : ""}`}>
       <div className="request-card-top">
@@ -117,11 +128,12 @@ export function RequestCard({
             ? "a live chat"
             : `a ${title.toLowerCase()}`}
       </h3>
+      {!compact && <Link className="request-detail-link" href={`/creator/requests/${request.id}`}>View request details <Icon name="arrow" size={14}/></Link>}
       <p className="request-body">{request.body}</p>
       {request.needsReconciliation && <p role="status">Your reply is saved. Payment reconciliation is in progress; earnings are not confirmed yet.</p>}
       <div className="request-money">
         <div>
-          <span>You earn if you reply</span>
+          <span>You earn when {request.kind === "message" ? "you reply" : "delivery completes"}</span>
           <strong>
             <Price cents={earning} currency={request.currency} decimals />
           </strong>
@@ -134,12 +146,12 @@ export function RequestCard({
           <Price cents={request.amountCents} currency={request.currency} decimals />
         </div>
       </div>
-      {["pending", "accepted"].includes(state) && (
+      {["pending", "accepted", "fulfilling", "delivered"].includes(state) && (
         <p className="expiry">
           <Icon name="bolt" size={14} />
           {now === null
             ? "Time remaining…"
-            : expiryLabel(request.expires_at, now)}
+            : expiryLabel((state === "pending" ? request.acceptance_expires_at : request.fulfillment_expires_at) || request.expires_at, now)}
         </p>
       )}
       {state === "pending" && (
@@ -164,8 +176,11 @@ export function RequestCard({
           onDemoDelivered={() => act("complete")}
         />
       )}
+      {state === "accepted" && request.kind === "photo" && (
+        <PhotoDelivery requestId={request.id} demo={data.demo} onDemoDelivered={() => act("complete")} />
+      )}
       {state === "accepted" && request.kind === "message" && !data.demo && request.conversationId && <Link className="button" href={`/creator/inbox/${request.conversationId}`}>Reply to earn</Link>}
-      {state === "accepted" && data.demo && request.kind !== "voice_note" && (
+      {state === "accepted" && data.demo && !["voice_note", "photo"].includes(request.kind) && (
         <Button
           variant="secondary"
           disabled={busy}
@@ -191,6 +206,7 @@ export function RequestCard({
           action taken.
         </p>
       )}
+      {!data.demo && <div className="request-safety-actions"><button type="button" disabled={busy} onClick={()=>safety("report")}>Report request</button><button type="button" disabled={busy} onClick={()=>safety("block")}>Block fan</button></div>}
       {error && (
         <p role="alert" className="form-error">
           {error}
@@ -198,6 +214,28 @@ export function RequestCard({
       )}
     </article>
   );
+}
+
+export function RequestDetailPage({ requestId }: { requestId: string }) {
+  const { data } = useWorkspace();
+  const request = data.requests.find((item) => item.id === requestId);
+  if (!request) return <Empty title="Request unavailable." body="It may have expired or no longer belong to this creator account." />;
+  const fan = data.fans.find((item) => item.id === request.fanId);
+  const earning = request.creatorCents ?? splitPayment(request.amountCents).creatorCents;
+  return <>
+    <WorkspaceHeading eyebrow="PAID REQUEST" title={request.kind === "voice_note" ? "Personal voice note." : request.kind === "photo" ? "Personal photo." : "Guaranteed reply."} description={`From ${fan?.name || "a fan"}`}>
+      <Link href="/creator/requests" className="button button-secondary">All requests</Link>
+    </WorkspaceHeading>
+    <section className="request-detail-panel">
+      <div><span>Fan instructions</span><strong>{request.body}</strong></div>
+      <div className="request-detail-money"><span>Amount secured <Price cents={request.amountCents} currency={request.currency} decimals/></span><span>You earn <Price cents={earning} currency={request.currency} decimals/></span></div>
+      <div><span>Request status</span><Badge>{request.status}</Badge></div>
+      <div><span>Payment-safe status</span><strong>{request.paymentStatus === "authorized" ? "Authorized · not charged" : request.paymentStatus}</strong></div>
+      <div><span>Acceptance deadline</span><strong>{request.acceptance_expires_at ? new Date(request.acceptance_expires_at).toLocaleString("en-GB") : "—"}</strong></div>
+      <div><span>Fulfillment deadline</span><strong>{request.fulfillment_expires_at ? new Date(request.fulfillment_expires_at).toLocaleString("en-GB") : "Starts after acceptance"}</strong></div>
+    </section>
+    <RequestCard request={request} compact/>
+  </>;
 }
 export function DashboardHome() {
   const { data } = useWorkspace();
@@ -369,6 +407,7 @@ function RevenueCard() {
 export function RequestsPage() {
   const { data } = useWorkspace();
   const [tab, setTab] = useState<RequestState>("pending");
+  const [kind, setKind] = useState<"all" | "message" | "voice_note" | "photo">("all");
   const [now, setNow] = useState<number | undefined>(undefined);
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
@@ -390,7 +429,7 @@ export function RequestsPage() {
         role="tablist"
         aria-label="Request status"
       >
-        {(["pending", "accepted", "completed", "expired"] as const).map((t) => (
+        {(["pending", "accepted", "delivered", "completed", "expired", "declined"] as const).map((t) => (
           <button
             key={t}
             role="tab"
@@ -402,20 +441,22 @@ export function RequestsPage() {
               {
                 requests.filter(
                   (r) =>
-                    r.status === t ||
-                    (t === "expired" && r.status === "declined"),
+                    r.status === t || (t === "accepted" && r.status === "fulfilling"),
                 ).length
               }
             </span>
           </button>
         ))}
       </div>
+      <div className="request-kind-filter" aria-label="Request type">
+        {([['all','All'],['message','Guaranteed Reply'],['voice_note','Voice Note'],['photo','Photo']] as const).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{label}</button>)}
+      </div>
       <div className="request-grid full" role="tabpanel">
         {requests
           .filter(
             (r) =>
-              r.status === tab ||
-              (tab === "expired" && r.status === "declined"),
+              (r.status === tab || (tab === "accepted" && r.status === "fulfilling")) &&
+              (kind === "all" || r.kind === kind),
           )
           .map((r) => (
             <RequestCard key={r.id} request={r} />
@@ -423,7 +464,7 @@ export function RequestsPage() {
       </div>
       {!requests.some(
         (r) =>
-          r.status === tab || (tab === "expired" && r.status === "declined"),
+          (r.status === tab || (tab === "accepted" && r.status === "fulfilling")) && (kind === "all" || r.kind === kind),
       ) && (
         <Empty
           title={`No ${tab} requests.`}
@@ -674,10 +715,10 @@ export function ConversationPage({ id }: { id: string }) {
               const file = e.target.files?.[0];
               if (!file) return;
               if (
-                file.size > 1024 * 1024 ||
+                file.size > 10 * 1024 * 1024 ||
                 !["image/png", "image/jpeg", "image/webp"].includes(file.type)
               ) {
-                setError("Choose a JPG, PNG or WebP under 1 MB.");
+                setError("Choose a JPG, PNG or WebP under 10 MB.");
                 return;
               }
               const reader = new FileReader();
@@ -764,6 +805,7 @@ export function SubscribersPage() {
 }
 export function EarningsPage() {
   const { data } = useWorkspace();
+  const completed = data.requests.filter((request) => request.status === "completed" && ["message", "voice_note", "photo"].includes(request.kind));
   return (
     <>
       <WorkspaceHeading
@@ -809,11 +851,16 @@ export function EarningsPage() {
           </p>
         </div>
       </div>
+      <section className="interaction-earnings"><h2>Earnings by interaction.</h2>{completed.map((request)=><div key={request.id}><span>{request.kind === "voice_note" ? "Voice Note" : request.kind === "photo" ? "Photo Request" : "Guaranteed Reply"}</span><span>Fan paid <Price cents={request.amountCents} currency={request.currency} decimals/></span><span>ReplyPass <Price cents={request.amountCents-(request.creatorCents ?? splitPayment(request.amountCents).creatorCents)} currency={request.currency} decimals/></span><strong>You earned <Price cents={request.creatorCents ?? splitPayment(request.amountCents).creatorCents} currency={request.currency} decimals/></strong></div>)}</section>
     </>
   );
 }
 export function AnalyticsPage() {
   const { data } = useWorkspace();
+  const paid = data.requests.filter((request)=>["message","voice_note","photo"].includes(request.kind));
+  const accepted = paid.filter((request)=>request.accepted_at).length;
+  const completed = paid.filter((request)=>request.status === "completed");
+  const aov = completed.length ? Math.round(completed.reduce((sum,request)=>sum+request.amountCents,0)/completed.length) : 0;
   return (
     <>
       <WorkspaceHeading
@@ -848,6 +895,7 @@ export function AnalyticsPage() {
         />
       </div>
       <RevenueCard />
+      <section className="analytics-interactions"><h2>Paid interactions.</h2><div className="metric-grid"><Metric label="Voice notes" value={paid.filter((request)=>request.kind==="voice_note").length} note="Requests" icon="mic"/><Metric label="Photos" value={paid.filter((request)=>request.kind==="photo").length} note="Requests" icon="camera"/><Metric label="Acceptance" value={paid.length ? `${Math.round(accepted/paid.length*100)}%` : "—"} note="Accepted requests" icon="check"/><Metric label="Fulfillment" value={accepted ? `${Math.round(completed.length/accepted*100)}%` : "—"} note="Completed requests" icon="shield"/></div><div className="analytics-aov"><span>Average order value</span><Price cents={aov} decimals/></div></section>
     </>
   );
 }

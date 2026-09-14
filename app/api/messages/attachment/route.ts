@@ -6,19 +6,19 @@ export async function POST(request: Request) {
   if (!sameOrigin(request)) return fail("Invalid origin.", 403);
   const viewer = await getViewer();
   if (!viewer || viewer.demo) return fail("Sign in required.", 401);
-  if (Number(request.headers.get("content-length")) > 3 * 1024 * 1024)
-    return fail("Choose an image under 1 MB.", 413);
+  if (Number(request.headers.get("content-length")) > 12 * 1024 * 1024)
+    return fail("Choose an image under 10 MB.", 413);
   const form = await request.formData();
   const file = form.get("image");
   const conversation = String(form.get("conversationId"));
   const content = String(form.get("body") || "Shared an image");
   if (
     !(file instanceof File) ||
-    file.size > 1024 * 1024 ||
+    file.size > 10 * 1024 * 1024 ||
     !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
     !/^[0-9a-f-]{36}$/.test(conversation)
   )
-    return fail("Choose a JPG, PNG or WebP under 1 MB.");
+    return fail("Choose a JPG, PNG or WebP under 10 MB.");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const valid =
     file.type === "image/jpeg"

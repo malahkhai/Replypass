@@ -9,7 +9,10 @@ export function requestState(
   request: CreatorRequest,
   now = Date.now(),
 ): RequestState {
-  return ["pending", "accepted"].includes(request.status) && Date.parse(request.expires_at) <= now
+  const deadline = request.status === "pending"
+    ? request.acceptance_expires_at || request.expires_at
+    : request.fulfillment_expires_at || request.expires_at;
+  return ["pending", "accepted", "fulfilling", "delivered"].includes(request.status) && Date.parse(deadline) <= now
     ? "expired"
     : request.status;
 }
@@ -34,6 +37,7 @@ export function transitionRequest(
           ? "declined"
           : "completed",
     accepted_at: action === "accept" ? stamp : request.accepted_at,
+    fulfillment_expires_at: action === "accept" ? new Date(now + 48 * 3600000).toISOString() : request.fulfillment_expires_at,
     declined_at: action === "decline" ? stamp : request.declined_at,
     completed_at: action === "complete" ? stamp : request.completed_at,
   };

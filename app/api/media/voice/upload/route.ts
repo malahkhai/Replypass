@@ -1,9 +1,10 @@
 import { getViewer } from "@/lib/auth/session";
-import { fail, readJson } from "@/lib/http";
+import { fail, readJson, sameOrigin } from "@/lib/http";
 import { normalizeVoiceMime, VOICE_MAX_BYTES, VOICE_MAX_DURATION_MS, VOICE_MIN_DURATION_MS, voiceExtension } from "@/lib/media/audio";
 import { ownedPayment, replyService } from "@/lib/stripe/service";
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) return fail("Invalid origin.", 403);
   const viewer = await getViewer();
   if (!viewer || viewer.demo || !["creator", "admin"].includes(viewer.role))
     return fail("Creator sign-in required.", 401);
@@ -22,7 +23,8 @@ export async function POST(request: Request) {
     const payment = await ownedPayment(data.id, viewer.id, "creator");
     if (payment.interaction_kind !== "voice_note" || payment.payment_state !== "authorized" || !payment.accepted_at || payment.fulfillment_media_id)
       return fail("This voice-note request is not ready for delivery.", 409);
-    if (!payment.expires_at || Date.parse(payment.expires_at) <= Date.now())
+    const deadline = payment.fulfillment_expires_at || payment.expires_at;
+    if (!deadline || Date.parse(deadline) <= Date.now())
       return fail("This voice-note request has expired.", 409);
     const path = `${payment.interaction_id}/${viewer.id}/${crypto.randomUUID()}.${voiceExtension(mime)}`;
     const { data: signed, error } = await service.db.storage.from("voice-deliveries").createSignedUploadUrl(path);

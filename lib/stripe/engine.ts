@@ -16,7 +16,7 @@ export interface ReplyPayment {
   creator_account_id: string;
   attempt_key: string;
   message: string;
-  interaction_kind: "message" | "voice_note";
+  interaction_kind: "message" | "voice_note" | "photo";
   gross_cents: number;
   fee_cents: number;
   creator_cents: number;
@@ -33,6 +33,8 @@ export interface ReplyPayment {
   fulfillment_message_id: string | null;
   fulfillment_media_id: string | null;
   expires_at: string | null;
+  acceptance_expires_at?: string | null;
+  fulfillment_expires_at?: string | null;
   created_at: string;
   authorized_at: string | null;
   accepted_at: string | null;
@@ -43,7 +45,7 @@ export interface ReplyPayment {
 
 function fulfilled(payment: ReplyPayment) {
   return Boolean(
-    payment.interaction_kind === "voice_note"
+    ["voice_note", "photo"].includes(payment.interaction_kind)
       ? payment.fulfillment_media_id
       : payment.fulfillment_message_id,
   );

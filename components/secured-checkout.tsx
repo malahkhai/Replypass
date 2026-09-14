@@ -32,7 +32,7 @@ export function SecuredCheckout({
 }: {
   creator: PublicCreator;
   authenticated: boolean;
-  kind?: "message" | "voice_note";
+  kind?: "message" | "voice_note" | "photo";
 }) {
   const router = useRouter();
   const { message, setMessage } = useRequestDraft(creator.handle, kind);
@@ -98,17 +98,20 @@ export function SecuredCheckout({
         <form onSubmit={prepare} className="auth-form">
           <p>
             {kind === "voice_note"
-              ? `You’re requesting a personal voice note. We’ll temporarily reserve the price. You’re only charged after ${creator.name.split(" ")[0]} securely delivers it.`
-              : `You’re requesting a guaranteed reply. We’ll temporarily reserve the price. You’re only charged if ${creator.name.split(" ")[0]} replies.`}
+              ? `Tell ${creator.name.split(" ")[0]} what you'd like them to talk about. Your payment method is only charged when your voice note is delivered.`
+              : kind === "photo"
+                ? `Describe the photo you'd like. Your payment method is only charged after ${creator.name.split(" ")[0]} delivers it.`
+                : `You’re requesting a guaranteed reply. We’ll temporarily reserve the price. You’re only charged if ${creator.name.split(" ")[0]} replies.`}
           </p>
           <label>
-            {kind === "voice_note" ? "What should the voice note be about?" : "What do you want to say?"}
+            {kind === "voice_note" ? `What would you like ${creator.name.split(" ")[0]} to say or talk about?` : kind === "photo" ? "What kind of photo would you like?" : "What do you want to say?"}
             <textarea
               required
               maxLength={2000}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
+              placeholder={kind === "photo" ? "A photo from your trip to Tokyo…" : undefined}
             />
           </label>
           <Button disabled={busy}>
@@ -140,12 +143,12 @@ export function SecuredCheckout({
         </p>
       )}
       <p className="checkout-footnote">
-        {kind === "voice_note" ? "No delivery = no charge." : "No reply = no charge."} Test cards only.
+        {kind === "message" ? "No reply = no charge." : "No delivery = no charge."} Requests must follow ReplyPass Community Guidelines. Creators can decline requests they’re uncomfortable with.
       </p>
     </div>
   );
 }
-function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind: "message" | "voice_note" }) {
+function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind: "message" | "voice_note" | "photo" }) {
   const stripe = useStripe(),
     elements = useElements();
   const [busy, setBusy] = useState(false),
@@ -206,10 +209,10 @@ function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind:
           temporarily reserved. You haven’t been charged.
         </p>
         <p>
-          {name} has until {new Date(expires).toLocaleString()} to {kind === "voice_note" ? "deliver your voice note" : "reply"}. If
+          {name} has until {new Date(expires).toLocaleString()} to {kind === "message" ? "accept and reply" : "accept your request"}. If
           they don’t, the reservation will be released automatically.
         </p>
-        <strong>{kind === "voice_note" ? "No delivery = no charge." : "No reply = no charge."}</strong>
+        <strong>{kind === "message" ? "No reply = no charge." : "No delivery = no charge."}</strong>
         <Link className="button" href="/account/requests">
           View my requests
         </Link>
@@ -222,7 +225,7 @@ function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind:
         <p>
           We’ll temporarily reserve{" "}
           <Price cents={quote.amountCents} currency={quote.currency} />. You’re
-          only charged if {name} {kind === "voice_note" ? "delivers the voice note" : "replies"}.
+          only charged if {name} {kind === "voice_note" ? "delivers the voice note" : kind === "photo" ? "delivers the photo" : "replies"}.
         </p>
       </div>
       <div className="wallet-checkout">
@@ -278,7 +281,7 @@ function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind:
           "Check reservation"
         ) : (
           <>
-            Request reply —{" "}
+            {kind === "voice_note" ? "Request voice note" : kind === "photo" ? "Request photo" : "Request reply"} —{" "}
             <Price cents={quote.amountCents} currency={quote.currency} />
           </>
         )}

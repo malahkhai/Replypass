@@ -4,7 +4,7 @@ import { prepareCheckout } from "@/lib/stripe/service";
 export async function POST(request: Request) {
   const viewer = await getViewer();
   if (!viewer || viewer.demo)
-    return fail("Sign in to request a secured reply.", 401);
+    return fail("Sign in to start a secured request.", 401);
   try {
     const { creatorId, attemptKey, message, kind = "message" } = await readJson(request);
     if (
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       typeof message !== "string" ||
       !message.trim() ||
       message.length > 2000 ||
-      !["message", "voice_note"].includes(kind)
+      !["message", "voice_note", "photo"].includes(kind)
     )
       return fail("Check your message and try again.");
     const result = await prepareCheckout(
@@ -21,12 +21,12 @@ export async function POST(request: Request) {
       creatorId,
       attemptKey,
       message,
-      kind,
+      kind as "message" | "voice_note" | "photo",
     );
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return fail(
-      "Unable to reserve this reply. Check creator availability or try again shortly.",
+      "Unable to reserve this request. Check creator availability or try again shortly.",
       409,
     );
   }

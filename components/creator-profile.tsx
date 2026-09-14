@@ -109,11 +109,13 @@ function Checkout({
           ? "Your monthly pass to basic messaging and private posts. Paid requests are separate. This preview won’t start a subscription."
           : offering.kind === "voice_note"
             ? `You’re requesting a personal voice note. If ${creator.name.split(" ")[0]} doesn’t accept or deliver it, you won’t be charged.`
+            : offering.kind === "photo"
+              ? `You’re requesting a personal photo. If ${creator.name.split(" ")[0]} doesn’t accept or deliver it, you won’t be charged.`
           : `You’re paying for a guaranteed reply. If ${creator.name.split(" ")[0]} doesn’t accept your request, you won’t be charged.`}
       </p>
       {offering.kind !== "vip" && (
         <p className="promise-note">
-          <Icon name="shield" size={16} /> {offering.kind === "voice_note" ? "No delivery = no charge." : siteConfig.fanPromise}
+          <Icon name="shield" size={16} /> {offering.kind === "message" ? siteConfig.fanPromise : "No delivery = no charge."}
         </p>
       )}
       <div className="checkout-total">
@@ -400,8 +402,8 @@ export function CreatorProfile({
                     <br />
                     Your all-access pass to my everyday.
                   </p>
-                  <Button onClick={() => { track("interaction_select", "vip"); setSelected(vip); }}>
-                    Become VIP <Icon name="arrow" size={18} />
+                  <Button disabled>
+                    VIP memberships · Coming soon
                   </Button>
                   <span className="vip-note">
                     Monthly membership · Cancel anytime
@@ -468,11 +470,11 @@ export function CreatorProfile({
         title={selected ? titles[selected.kind] : ""}
       >
         {selected &&
-          (paymentsEnabled && ["message", "voice_note"].includes(selected.kind) ? (
+          (paymentsEnabled && ["message", "voice_note", "photo"].includes(selected.kind) ? (
             <SecuredCheckout
               creator={creator}
               authenticated={authenticated}
-              kind={selected.kind as "message" | "voice_note"}
+              kind={selected.kind as "message" | "voice_note" | "photo"}
             />
           ) : (
             <Checkout

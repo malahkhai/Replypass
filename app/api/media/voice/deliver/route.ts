@@ -1,5 +1,5 @@
 import { getViewer } from "@/lib/auth/session";
-import { fail, readJson } from "@/lib/http";
+import { fail, readJson, sameOrigin } from "@/lib/http";
 import { normalizeVoiceMime, validVoiceSignature, VOICE_MAX_BYTES, VOICE_MAX_DURATION_MS, VOICE_MIN_DURATION_MS } from "@/lib/media/audio";
 import { ownedPayment, replyService } from "@/lib/stripe/service";
 
@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) return fail("Invalid origin.", 403);
   const viewer = await getViewer();
   if (!viewer || viewer.demo || !["creator", "admin"].includes(viewer.role))
     return fail("Creator sign-in required.", 401);
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
       throw Error("Uploaded voice note could not be verified");
     const head = new Uint8Array((await file.slice(0, 32).arrayBuffer()));
     if (!validVoiceSignature(head, mime)) throw Error("Voice note format mismatch");
-    const { data, error } = await service.db.rpc("deliver_voice_note", {
+    const { data, error } = await service.db.rpc("deliver_paid_media", {
       payment: payment.id,
       actor: viewer.id,
       object_path: path,
@@ -43,8 +44,12 @@ export async function POST(request: Request) {
     return Response.json({ delivered: true, reconciliation });
   } catch {
     if (uploadedPath) {
-      try { await replyService().db.storage.from("voice-deliveries").remove([uploadedPath]); } catch { /* Reconciliation cleans orphaned objects. */ }
+      try {
+        const service = replyService();
+        const { data } = await service.db.from("media").select("id").eq("storage_path", uploadedPath).maybeSingle();
+        if (!data) await service.db.storage.from("voice-deliveries").remove([uploadedPath]);
+      } catch { /* Reconciliation cleans orphaned objects. */ }
     }
-    return fail("Unable to deliver this voice note. Your recording was not charged.", 409);
+    return fail("We couldn't finalize this delivery yet. Your recording is safe if it was committed; payment will be reconciled.", 409);
   }
 }

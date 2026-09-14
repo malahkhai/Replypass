@@ -12,6 +12,8 @@ export default function Page() {
       title="Community guidelines"
       topics={[
         "Respectful, brand-safe interactions and creator boundaries.",
+        "Requests involving nudity, pornography, explicit sexual content, sexual services, illegal content, harassment, threats, minors or paid physical meetups are prohibited.",
+        "Creators may decline requests they are uncomfortable with, report the request, and block the sender.",
         "Handling harassment, impersonation and unauthorized media.",
         "Reporting, moderation and review processes to be finalized.",
       ]}

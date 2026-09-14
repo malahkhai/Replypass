@@ -8,7 +8,7 @@ export async function paymentSummaries(
   let query = db
     .from("reply_payments")
     .select(
-      "id,interaction_id,interaction_kind,fan_id,creator_id,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,expires_at,accepted_at,conversation_id,needs_reconciliation,manual_review,created_at,declined_at,expired_at",
+      "id,interaction_id,interaction_kind,fan_id,creator_id,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,expires_at,acceptance_expires_at,fulfillment_expires_at,accepted_at,conversation_id,needs_reconciliation,manual_review,created_at,declined_at,expired_at",
     );
   if (side === "fan") query = query.eq("fan_id", userId);
   else {

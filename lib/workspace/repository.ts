@@ -113,6 +113,8 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
         secured.find((x) => x.interaction_id === p.id)?.needs_reconciliation ||
         false,
       expires_at: r.expires_at,
+      acceptance_expires_at: r.acceptance_expires_at,
+      fulfillment_expires_at: r.fulfillment_expires_at,
       accepted_at: r.accepted_at,
       declined_at: r.declined_at,
       completed_at: r.completed_at,
