@@ -95,10 +95,10 @@ export function AnalyticsConsent() {
   return <>
     <div className="cookie-settings"><button type="button" onClick={() => { setCustomizing(true); setVisible(true); }}>Cookie preferences</button></div>
     {visible && <section className="consent-banner" aria-label="Cookie preferences">
-      <div><strong>A little choice about cookies.</strong><p>Essential storage keeps ReplyPass working. With your permission, analytics helps us improve the product{metaPixelConfigured() ? " and Meta advertising helps us measure campaigns" : ""}. You can change your choices anytime. <Link href="/privacy">Privacy details</Link></p></div>
+      <div><strong>A little choice about cookies.</strong><p>Essential storage keeps ReplyPass working. With your permission, Google Analytics helps us improve the product{metaPixelConfigured() ? " and Meta Pixel and Conversions API help us measure advertising campaigns" : ""}. Accept all enables both optional categories. You can change your choices anytime. <Link href="/privacy">Privacy details</Link></p></div>
       {customizing && <div className="consent-options">
-        <label><span><strong>Analytics</strong><small>Google Analytics product measurement</small></span><input type="checkbox" checked={analyticsChoice} onChange={event => setAnalyticsChoice(event.target.checked)} /></label>
-        {metaPixelConfigured() && <label><span><strong>Advertising</strong><small>Meta Pixel campaign and conversion measurement</small></span><input type="checkbox" checked={marketingChoice} onChange={event => setMarketingChoice(event.target.checked)} /></label>}
+        <label><span><strong>Google Analytics</strong><small>Product usage and performance measurement</small></span><input type="checkbox" checked={analyticsChoice} onChange={event => setAnalyticsChoice(event.target.checked)} /></label>
+        {metaPixelConfigured() && <label><span><strong>Meta Pixel &amp; Conversions API</strong><small>Advertising attribution and conversion measurement</small></span><input type="checkbox" checked={marketingChoice} onChange={event => setMarketingChoice(event.target.checked)} /></label>}
       </div>}
       {customizing ? <div className="consent-actions"><button type="button" onClick={() => choose(false, false)}>Reject optional</button><button type="button" onClick={() => choose(analyticsChoice, marketingChoice)}>Save choices</button></div> : <>
         <div className="consent-actions"><button type="button" onClick={() => choose(false, false)}>Reject optional</button><button type="button" onClick={() => choose(true, metaPixelConfigured())}>Accept all</button></div>
