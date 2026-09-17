@@ -104,6 +104,7 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
       .select("*")
       .eq("handle", username)
       .eq("onboarding_complete", true)
+      .eq("status", "approved")
       .maybeSingle();
     if (error) throw error;
     // Keep the fictional showcase available on a healthy, newly configured database.

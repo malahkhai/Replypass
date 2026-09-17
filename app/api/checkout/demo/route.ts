@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { findCreator } from "@/lib/creators/repository";
 import { demoQuote } from "@/lib/payments/demo";
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production")
+    return NextResponse.json({ error: "Demo checkout is disabled." }, { status: 404 });
   // Stateless: no Stripe calls, financial records or charges.
   // Next may normalize request.url to localhost; Host preserves the browser-facing host.
   const requestUrl = new URL(request.url);

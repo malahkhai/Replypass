@@ -1,0 +1,1 @@
+import Link from "next/link";import{AdminHeading}from"@/components/admin-ui";export default function Page(){return <><AdminHeading eyebrow="REQUEST OPERATIONS" title="Requests" description="Inspect paid request state through the payment administration view."/><Link className="button" href="/admin/payments">Open paid requests</Link></>}

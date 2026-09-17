@@ -56,6 +56,7 @@ export interface Viewer {
   role: UserRole;
   displayName: string;
   demo: boolean;
+  accountStatus?: "active" | "suspended" | "deletion_requested" | "anonymized";
 }
 export type RequestState =
   "pending" | "accepted" | "fulfilling" | "delivered" | "completed" | "declined" | "expired";

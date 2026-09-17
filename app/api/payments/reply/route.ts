@@ -1,10 +1,13 @@
 import { getViewer } from "@/lib/auth/session";
 import { readJson, fail } from "@/lib/http";
 import { prepareCheckout } from "@/lib/stripe/service";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 export async function POST(request: Request) {
   const viewer = await getViewer();
   if (!viewer || viewer.demo)
     return fail("Sign in to start a secured request.", 401);
+  const limited = await enforceRateLimit(request, "payment", viewer.id);
+  if (limited) return limited;
   try {
     const { creatorId, attemptKey, message, kind = "message" } = await readJson(request);
     if (

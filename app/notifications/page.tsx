@@ -1,0 +1,5 @@
+import { requireRole } from "@/lib/auth/session";
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+export const metadata={title:"Notifications",robots:{index:false,follow:false}};
+export default async function Notifications(){const viewer=await requireRole(["fan","creator","admin"]);const db=viewer.demo?null:await createClient();const{data}=db?await db.from("notifications").select("id,kind,title,body,deep_link,read_at,created_at").eq("recipient_id",viewer.id).order("created_at",{ascending:false}).limit(50):{data:[]};return <main id="main" className="notifications-page"><span className="eyebrow">YOUR UPDATES</span><h1>Notifications</h1><p>Important moments from your ReplyPass activity.</p>{(data||[]).map(n=><article className={`notification-item ${n.read_at?"read":"unread"}`} key={n.id}><div><strong>{n.title}</strong><p>{n.body}</p><time>{new Date(n.created_at).toLocaleString("en-GB")}</time></div>{n.deep_link&&<Link href={n.deep_link}>Open →</Link>}</article>)}{!data?.length&&<div className="workspace-empty"><h2>Nothing new.</h2><p>Updates will appear here when something needs your attention.</p></div>}</main>}

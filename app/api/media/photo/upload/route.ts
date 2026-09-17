@@ -2,11 +2,14 @@ import { getViewer } from "@/lib/auth/session";
 import { fail, readJson, sameOrigin } from "@/lib/http";
 import { normalizePhotoMime, PHOTO_MAX_BYTES, photoExtension } from "@/lib/media/image";
 import { ownedPayment, replyService } from "@/lib/stripe/service";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 
 export async function POST(request: Request) {
   if (!sameOrigin(request)) return fail("Invalid origin.", 403);
   const viewer = await getViewer();
   if (!viewer || viewer.demo || !["creator", "admin"].includes(viewer.role)) return fail("Creator sign-in required.", 401);
+  const limited = await enforceRateLimit(request, "media", viewer.id);
+  if (limited) return limited;
   try {
     const { requestId, mime: rawMime, bytes } = await readJson(request);
     const mime = typeof rawMime === "string" ? normalizePhotoMime(rawMime) : null;

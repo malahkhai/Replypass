@@ -20,7 +20,7 @@ export async function createVipCheckout(fanId:string,creatorId:string){
   const [planResult,creatorResult,profileResult,fanResult,existingResult]=await Promise.all([
     db.from("creator_membership_plans").select("*").eq("creator_id",creatorId).eq("enabled",true).single(),
     db.from("creator_stripe_accounts").select("stripe_account_id,ready").eq("creator_id",creatorId).single(),
-    db.from("creator_profiles").select("profile_id,handle").eq("id",creatorId).single(),
+    db.from("creator_profiles").select("profile_id,handle,status,profiles(account_status)").eq("id",creatorId).single(),
     db.auth.admin.getUserById(fanId),
     db.from("subscriptions").select("*").eq("fan_id",fanId).eq("creator_id",creatorId).in("status",["incomplete","trialing","active","past_due","unpaid","paused"]).maybeSingle(),
   ]);
@@ -28,6 +28,8 @@ export async function createVipCheckout(fanId:string,creatorId:string){
   if(planResult.error||!plan||!plan.enabled) throw Error("VIP is not available.");
   if(creatorResult.error||!account?.ready||!account.stripe_account_id) throw Error("Creator payouts are not ready.");
   if(profileResult.error||!creator) throw Error("Creator is unavailable.");
+  const creatorAccount=creator.profiles as unknown as {account_status?:string}|null;
+  if(creator.status!=="approved"||creatorAccount?.account_status!=="active") throw Error("Creator is unavailable.");
   if(creator.profile_id===fanId) throw Error("You cannot join your own membership.");
   const {data:blocks,error:blockError}=await db.from("blocks").select("id").or(`and(blocker_id.eq.${fanId},blocked_id.eq.${creator.profile_id}),and(blocked_id.eq.${fanId},blocker_id.eq.${creator.profile_id})`).limit(1);
   if(blockError) throw Error("Membership eligibility could not be verified.");

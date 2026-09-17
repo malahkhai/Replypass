@@ -1,0 +1,2 @@
+import Link from"next/link";import{AdminHeading}from"@/components/admin-ui";
+export default function Page(){return <><AdminHeading eyebrow="OPERATIONS" title="System" description="Health, financial reconciliation, and background jobs."/><div className="admin-link-grid"><Link href="/admin/system/reconciliation"><strong>Payment reconciliation</strong><span>Compare local and Stripe states →</span></Link><Link href="/api/health"><strong>Health check</strong><span>Open the safe operational endpoint →</span></Link></div></>}

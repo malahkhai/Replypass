@@ -171,3 +171,13 @@ Run `tests/marketing-browser.mjs` with the same external Playwright/Chrome envir
 ## Analytics and consent
 
 See [the acquisition measurement plan](docs/analytics.md). The consent layer controls Google Analytics and Meta advertising separately; neither script loads before its category is accepted. Set `NEXT_PUBLIC_GA_ENABLED=true` and `NEXT_PUBLIC_META_ENABLED=true` only after configuring the corresponding production property. Meta also requires a numeric `NEXT_PUBLIC_META_PIXEL_ID`. No message contents or identifying route parameters are tracked. A real `Purchase` conversion remains server-confirmed and is not emitted from the browser.
+
+## Launch hardening — Task 6
+
+Task 6 adds the internal operations layer without expanding the frozen V1 product. Server-protected admin routes cover users, creators, payments, subscriptions, payouts, reports, disputes and reconciliation. Suspensions stop new paid activity, creator approval is separate from Stripe payout eligibility, and refunds, transfer retries, dispute records and moderation decisions are auditable.
+
+The new launch migration is `supabase/migrations/202609150001_launch_hardening.sql`. Apply it after the Task 5 VIP migration. It adds account states, creator review timestamps, audit records, refund/dispute/reconciliation records, notification preferences, legal acceptance records, email delivery idempotency, and operational run history. Operational tables are service-role only under RLS.
+
+Sensitive endpoints use same-origin checks, input limits and the shared Redis-compatible rate-limit adapter (`RATE_LIMIT_REST_URL` and `RATE_LIMIT_REST_TOKEN`). Development uses a bounded in-memory fallback; production configuration must provide a shared store. Transactional email is provider-agnostic (`EMAIL_PROVIDER`, `EMAIL_API_URL`, `EMAIL_FROM`, `EMAIL_API_KEY`) and never pretends delivery succeeded when the provider is absent. See [the security model](docs/SECURITY.md), [the operations runbook](docs/OPERATIONS.md), and [the launch checklist](docs/LAUNCH_CHECKLIST.md).
+
+`/api/health` exposes only `ok` or `degraded`. Demo auth and demo checkout are disabled in production. Stripe stays in test mode until Task 7; Vercel production, Supabase SMTP/RLS, external cron, email DNS, error monitoring, legal review, and live Stripe approval remain manual launch requirements.

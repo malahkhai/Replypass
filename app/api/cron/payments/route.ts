@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   )
     return new Response("Unauthorized", { status: 401 });
   const { db, engine } = replyService();
+  const { data: run } = await db.from("operational_runs").insert({ job: "payments", status: "running" }).select("id").single();
   const { data, error } = await db
     .from("reply_payments")
     .select("id,created_at,expires_at,payment_state,operation")
@@ -22,7 +23,10 @@ export async function GET(request: Request) {
     .eq("manual_review", false)
     .order("updated_at")
     .limit(50);
-  if (error) return new Response("Retry required", { status: 503 });
+  if (error) {
+    if (run) await db.from("operational_runs").update({ status: "failed", error_code: "payment_query_failed", completed_at: new Date().toISOString() }).eq("id", run.id);
+    return new Response("Retry required", { status: 503 });
+  }
   let processed = 0,
     attention = 0;
   const started = Date.now();
@@ -49,6 +53,7 @@ export async function GET(request: Request) {
         .eq("id", p.id);
     }
   }
+  if (run) await db.from("operational_runs").update({ status: attention ? "failed" : "succeeded", processed, attention, completed_at: new Date().toISOString(), error_code: attention ? "payment_items_need_attention" : null }).eq("id", run.id);
   return Response.json(
     { processed, attention },
     { headers: { "Cache-Control": "no-store" } },

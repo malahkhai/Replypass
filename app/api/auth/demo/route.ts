@@ -4,7 +4,7 @@ import { getSupabaseConfig } from "@/lib/supabase/config";
 import { demoCookieOptions } from "@/lib/auth/demo";
 import { readJson, fail } from "@/lib/http";
 export async function POST(request: Request) {
-  if (getSupabaseConfig()) return fail("Demo sessions are disabled.", 404);
+  if (process.env.NODE_ENV === "production" || getSupabaseConfig()) return fail("Demo sessions are disabled.", 404);
   try {
     const { role } = await readJson(request);
     if (!["fan", "creator"].includes(role)) return fail("Invalid demo role.");

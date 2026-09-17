@@ -1,0 +1,1 @@
+import Link from "next/link";import{AdminHeading}from"@/components/admin-ui";export default function Page(){return <><AdminHeading eyebrow="MODERATION" title="Content" description="Reported messages, deliveries, and VIP posts are reviewed from the reports queue."/><Link className="button" href="/admin/reports">Open reports</Link></>}

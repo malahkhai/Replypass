@@ -5,6 +5,8 @@ import { getViewer } from "@/lib/auth/session";
 import { demoCookieOptions } from "@/lib/auth/demo";
 import { validateCreator } from "@/lib/creators/validation";
 import { readJson, fail } from "@/lib/http";
+import { serviceDatabase } from "@/lib/stripe/server";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 export async function POST(request: Request) {
   try {
     const draft = await readJson(request);
@@ -27,6 +29,8 @@ export async function POST(request: Request) {
     }
     const viewer = await getViewer();
     if (!viewer) return fail("Sign in before launching your page.", 401);
+    const limited = await enforceRateLimit(request, "requestAction", viewer.id);
+    if (limited) return limited;
     const { error } = await supabase.rpc("save_creator_profile", { draft });
     if (error)
       return fail(
@@ -35,6 +39,13 @@ export async function POST(request: Request) {
           : "Your profile could not be saved. Check the fields and try again.",
         409,
       );
+    const db = serviceDatabase();
+    await db.from("creator_profiles").update({
+      status: "submitted",
+      submitted_at: new Date().toISOString(),
+      community_terms_accepted_at: new Date().toISOString(),
+      community_terms_version: "2026-09-launch-draft",
+    }).eq("profile_id", viewer.id).in("status", ["pending", "draft", "rejected"]);
     return NextResponse.json({ ok: true });
   } catch {
     return fail("Unable to save. Please try again.");

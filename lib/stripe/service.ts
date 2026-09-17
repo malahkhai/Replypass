@@ -203,6 +203,13 @@ export async function prepareCheckout(
   kind: "message" | "voice_note" | "photo" = "message",
 ) {
   const service = replyService();
+  const [{ data: fan }, { data: creator }] = await Promise.all([
+    service.db.from("profiles").select("account_status").eq("id", fanId).single(),
+    service.db.from("creator_profiles").select("status,profile_id,profiles(account_status)").eq("id", creatorId).single(),
+  ]);
+  const creatorAccount = creator?.profiles as unknown as { account_status?: string } | null;
+  if (fan?.account_status !== "active" || creator?.status !== "approved" || creatorAccount?.account_status !== "active")
+    throw Error("Paid requests are unavailable for this account.");
   if (!(await connectStatus(creatorId)).ready)
     throw Error(
       "This creator needs to finish payout setup before accepting paid requests.",

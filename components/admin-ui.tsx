@@ -1,0 +1,4 @@
+export function AdminHeading({eyebrow,title,description}:{eyebrow:string;title:string;description:string}){return <div className="admin-heading"><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>}
+export function AdminEmpty({children}:{children:React.ReactNode}){return <div className="admin-empty"><strong>Nothing needs attention.</strong><p>{children}</p></div>}
+export function AdminTable({head,children}:{head:string[];children:React.ReactNode}){return <div className="admin-table-wrap"><table className="admin-table"><thead><tr>{head.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{children}</tbody></table></div>}
+export function Status({children,tone="neutral"}:{children:React.ReactNode;tone?:"neutral"|"good"|"warn"|"bad"}){return <span className={`admin-status ${tone}`}>{children}</span>}

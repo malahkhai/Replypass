@@ -14,19 +14,25 @@ export async function getViewer(): Promise<Viewer | null> {
   if (error || !user) return null;
   const { data, error: profileError } = await supabase
     .from("profiles")
-    .select("id,role,display_name")
+    .select("id,role,display_name,account_status")
     .eq("id", user.id)
     .single();
   if (profileError || !data)
     throw new Error(
       "Your profile could not be loaded. Check the database migrations and try again.",
     );
+  if (data.account_status !== "active") return null;
   return {
     id: user.id,
     role: data.role as UserRole,
     displayName: data.display_name,
     demo: false,
+    accountStatus: data.account_status,
   };
+}
+
+export async function requireAdmin(next = "/admin") {
+  return requireRole(["admin"], next);
 }
 export async function requireRole(
   roles: readonly UserRole[],

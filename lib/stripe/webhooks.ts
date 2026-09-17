@@ -141,6 +141,18 @@ export async function processWebhook(raw: string, signature: string) {
       }
       if (obj.object === "dispute") {
         const dispute = await stripe.disputes.retrieve(obj.id);
+        const disputePayment = p;
+        await db.from("stripe_disputes").upsert({
+          stripe_dispute_id: dispute.id,
+          reply_payment_id: disputePayment.id,
+          amount_cents: dispute.amount,
+          currency: dispute.currency,
+          reason: dispute.reason || null,
+          status: dispute.status,
+          evidence_due_at: dispute.evidence_details?.due_by ? new Date(dispute.evidence_details.due_by * 1000).toISOString() : null,
+          provider_created_at: new Date(dispute.created * 1000).toISOString(),
+        }, { onConflict: "stripe_dispute_id" });
+        await db.from("transactions").upsert({ interaction_id: disputePayment.interaction_id, kind: "dispute", amount_cents: dispute.amount, currency: dispute.currency, stripe_event_id: event.id, stripe_object_id: dispute.id }, { onConflict: "stripe_event_id,stripe_object_id,kind", ignoreDuplicates: true });
         // Won disputes still require an explicit reconciliation decision; never silently re-transfer.
         if (dispute.status !== "won")
           p = await store.transition(p.id, "disputed");
