@@ -9,8 +9,9 @@ test('fan authentication keeps the creator and interaction without accepting ext
   assert.equal(safeNext(next),'/account');assert.equal(signupAllowed(next),false);
  }
 });
-test('generic fan signup is unavailable while creator onboarding remains reachable',()=>{
- for(const next of [undefined,null,'','/account','/creator/dashboard'])assert.equal(signupAllowed(next),false);
+test('fan signup works directly while unsafe destinations stay blocked',()=>{
+ for(const next of [undefined,null,'','/account'])assert.equal(signupAllowed(next),true);
+ assert.equal(signupAllowed('/creator/dashboard'),false);
  assert.ok(signupAllowed('/creator/apply'));assert.equal(safeNext('/creator/apply'),'/creator/apply');
  assert.equal(safeNext('/reset-password'),'/reset-password');
 });
