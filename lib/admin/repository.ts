@@ -47,7 +47,7 @@ export async function adminUsers(search=""){
 
 export async function adminCreators(){
   const db=serviceDatabase();
-  const {data,error}=await db.from("creator_profiles").select("id,profile_id,handle,status,verified,onboarding_complete,created_at,profiles(display_name,account_status),creator_stripe_accounts(ready,transfers_enabled,payouts_enabled),creator_pricing(kind,active),subscriptions(id,status),paid_interactions(id,status)").order("created_at",{ascending:false}).limit(100);
+  const {data,error}=await db.from("creator_profiles").select("id,profile_id,handle,status,verified,onboarding_complete,created_at,profiles!creator_profiles_profile_id_fkey(display_name,account_status),creator_stripe_accounts(ready,transfers_enabled,payouts_enabled),creator_pricing(kind,active),subscriptions(id,status),paid_interactions(id,status)").order("created_at",{ascending:false}).limit(100);
   if(error) throw Error("Creators unavailable.");
   return data||[];
 }

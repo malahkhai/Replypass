@@ -29,6 +29,17 @@ test("launch migration keeps operational records service-role only", () => {
   assert.match(sql, /account_status in \('active','suspended','deletion_requested','anonymized'\)/);
 });
 
+test("admin creator listing uses the owner profile relationship explicitly", () => {
+  const repository = readFileSync(
+    new URL("../lib/admin/repository.ts", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    repository,
+    /profiles!creator_profiles_profile_id_fkey\(display_name,account_status\)/,
+  );
+});
+
 test("Vercel Upstash variables satisfy readiness without mixing credential pairs", () => {
   const env: NodeJS.ProcessEnv = { NODE_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "x", NEXT_PUBLIC_SUPABASE_ANON_KEY: "x", SUPABASE_SERVICE_ROLE_KEY: "x", STRIPE_SECRET_KEY: "x", STRIPE_WEBHOOK_SECRET: "x", NEXT_PUBLIC_APP_URL: "https://getreplypass.com", CRON_SECRET: "x", KV_REST_API_URL: "https://example.upstash.io", KV_REST_API_TOKEN: "test-token" };
   assert.equal(productionReadiness(env).ok, true);
