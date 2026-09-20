@@ -3,7 +3,13 @@ export type ProductionReadiness = { ok: boolean; missing: string[] };
 export function productionReadiness(env: NodeJS.ProcessEnv = process.env): ProductionReadiness {
   if (env.NODE_ENV !== "production") return { ok: true, missing: [] };
   const required = ["NEXT_PUBLIC_SUPABASE_URL","NEXT_PUBLIC_SUPABASE_ANON_KEY","SUPABASE_SERVICE_ROLE_KEY","STRIPE_SECRET_KEY","STRIPE_WEBHOOK_SECRET","NEXT_PUBLIC_APP_URL","CRON_SECRET","RATE_LIMIT_REST_URL","RATE_LIMIT_REST_TOKEN"];
-  const missing = required.filter((key) => !env[key]);
+  const customRateLimit = env.RATE_LIMIT_REST_URL || env.RATE_LIMIT_REST_TOKEN;
+  const configured = customRateLimit ? env : {
+    ...env,
+    RATE_LIMIT_REST_URL: env.KV_REST_API_URL,
+    RATE_LIMIT_REST_TOKEN: env.KV_REST_API_TOKEN,
+  };
+  const missing = required.filter((key) => !configured[key]);
   return { ok: missing.length === 0, missing };
 }
 

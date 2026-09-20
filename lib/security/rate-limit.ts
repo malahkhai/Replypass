@@ -21,8 +21,10 @@ export function rateLimitKey(request: Request, scope: string, actor?: string) {
 }
 
 async function remoteLimit(key: string, rule: Limit) {
-  const url = process.env.RATE_LIMIT_REST_URL;
-  const token = process.env.RATE_LIMIT_REST_TOKEN;
+  // Vercel's Upstash integration provisions these KV_* names automatically.
+  const custom = process.env.RATE_LIMIT_REST_URL || process.env.RATE_LIMIT_REST_TOKEN;
+  const url = custom ? process.env.RATE_LIMIT_REST_URL : process.env.KV_REST_API_URL;
+  const token = custom ? process.env.RATE_LIMIT_REST_TOKEN : process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   const response = await fetch(`${url.replace(/\/$/, "")}/pipeline`, {
     method: "POST",

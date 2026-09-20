@@ -29,6 +29,13 @@ test("launch migration keeps operational records service-role only", () => {
   assert.match(sql, /account_status in \('active','suspended','deletion_requested','anonymized'\)/);
 });
 
+test("Vercel Upstash variables satisfy readiness without mixing credential pairs", () => {
+  const env: NodeJS.ProcessEnv = { NODE_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "x", NEXT_PUBLIC_SUPABASE_ANON_KEY: "x", SUPABASE_SERVICE_ROLE_KEY: "x", STRIPE_SECRET_KEY: "x", STRIPE_WEBHOOK_SECRET: "x", NEXT_PUBLIC_APP_URL: "https://getreplypass.com", CRON_SECRET: "x", KV_REST_API_URL: "https://example.upstash.io", KV_REST_API_TOKEN: "test-token" };
+  assert.equal(productionReadiness(env).ok, true);
+  assert.ok(productionReadiness({ ...env, RATE_LIMIT_REST_URL: "https://custom.example" }).missing.includes("RATE_LIMIT_REST_TOKEN"));
+  assert.ok(productionReadiness({ ...env, KV_REST_API_TOKEN: undefined }).missing.includes("RATE_LIMIT_REST_TOKEN"));
+});
+
 test("production demo endpoints are explicitly disabled", () => {
   assert.match(readFileSync(new URL("../app/api/checkout/demo/route.ts", import.meta.url), "utf8"), /NODE_ENV === "production"/);
   assert.match(readFileSync(new URL("../app/api/auth/demo/route.ts", import.meta.url), "utf8"), /NODE_ENV === "production"/);
