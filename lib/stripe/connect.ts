@@ -157,18 +157,43 @@ export async function onboardConnect(userId: string, origin: string) {
       throw Error("Payout setup is pending reconciliation. Retry this setup.");
   }
   const base = authOrigin(origin);
-  const link = await atStage("create_account_link", () =>
-    stripe.v2.core.accountLinks.create({
-      account: accountId,
-      use_case: {
-        type: "account_onboarding",
-        account_onboarding: {
-          configurations: ["recipient"],
-          refresh_url: `${base}/creator/payouts?refresh=1`,
-          return_url: `${base}/creator/payouts?returned=1`,
+  const link = await atStage("create_account_link", async () => {
+    const refreshUrl = `${base}/creator/payouts?refresh=1`;
+    const returnUrl = `${base}/creator/payouts?returned=1`;
+    try {
+      return await stripe.v2.core.accountLinks.create({
+        account: accountId,
+        use_case: {
+          type: "account_onboarding",
+          account_onboarding: {
+            configurations: ["recipient"],
+            refresh_url: refreshUrl,
+            return_url: returnUrl,
+          },
         },
-      },
-    }),
-  );
+      });
+    } catch (error) {
+      // Some newly activated live Connect platforms can create Accounts v2
+      // accounts before their key is allowed to create v2 onboarding links.
+      // Stripe's v1 Account Links endpoint supports the same hosted onboarding
+      // flow for these connected account IDs.
+      if (
+        !error ||
+        typeof error !== "object" ||
+        (error as { code?: string }).code !== "forbidden"
+      )
+        throw error;
+      return stripe.accountLinks.create({
+        account: accountId,
+        type: "account_onboarding",
+        refresh_url: refreshUrl,
+        return_url: returnUrl,
+        collection_options: {
+          fields: "eventually_due",
+          future_requirements: "include",
+        },
+      });
+    }
+  });
   return link.url;
 }
