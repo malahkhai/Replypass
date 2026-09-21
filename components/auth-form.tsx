@@ -70,6 +70,16 @@ export function AuthForm({
               },
             });
       if (result.error) throw result.error;
+      if (
+        mode === "signup" &&
+        result.data.user &&
+        result.data.user.identities?.length === 0
+      ) {
+        setError(
+          "This email may already have a ReplyPass account. Log in instead, or reset your password if you can’t remember it.",
+        );
+        return;
+      }
       track(mode === "login" ? "login" : "signup_submitted", next === "/creator/apply" ? "creator" : "fan");
       if (result.data.session) {
         router.push(`/auth/continue?next=${encodeURIComponent(next)}`);
