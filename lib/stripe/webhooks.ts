@@ -22,8 +22,8 @@ export async function processWebhook(raw: string, signature: string) {
     data: Stripe.Event["data"];
     related_object?: { id: string };
   };
-  if (event.livemode === true || !event.id || !event.type)
-    throw Error("Only test events are accepted.");
+  if (event.livemode !== config.livemode || !event.id || !event.type)
+    throw Error("Stripe event mode does not match this deployment.");
   if (!paymentEvents.has(event.type) && !accountEvents.has(event.type)) {
     paymentLog(event.type, "ignored");
     return;
@@ -118,7 +118,7 @@ export async function processWebhook(raw: string, signature: string) {
       if (intentId) {
         const pi = await stripe.paymentIntents.retrieve(intentId);
         if (
-          pi.livemode ||
+          pi.livemode !== config.livemode ||
           pi.metadata.replypass_transaction_id !== p.id ||
           pi.amount !== p.gross_cents ||
           pi.currency !== p.currency

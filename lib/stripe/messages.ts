@@ -2,6 +2,7 @@ import "server-only";
 import { replyService } from "./service";
 import { serviceDatabase } from "./server";
 import { stripeConfig } from "./config";
+import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
 export async function sendSecuredMessage(
   sender: string,
   conversation: string,
@@ -48,7 +49,9 @@ export async function sendSecuredMessage(
   let reconciliation = false;
   if (data.payment_id && engine) {
     try {
-      await engine.reconcile(data.payment_id);
+      const completed = await engine.reconcile(data.payment_id);
+      if (completed.payment_state === "captured")
+        await notifyPaymentLifecycle(completed, "completed");
     } catch {
       reconciliation = true;
     }

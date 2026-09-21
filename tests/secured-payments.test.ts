@@ -348,14 +348,30 @@ test("wrong creator and expired acceptance fail; mismatched provider money never
     assert.equal(g.requests, 0);
   }
 });
-test("Stripe configuration is absent or test-only; partial/live configuration never enables demo fallback", () => {
+test("Stripe configuration is absent or mode-consistent; partial and mixed configuration fail closed", () => {
   assert.equal(stripeConfig({}), null);
   for (const env of [
     { STRIPE_SECRET_KEY: "sk_live_bad" },
     { NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_incomplete" },
     { STRIPE_WEBHOOK_SECRET: "whsec_only" },
+    {
+      STRIPE_SECRET_KEY: "sk_live_secret",
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_public",
+      STRIPE_WEBHOOK_SECRET: "whsec_mixed",
+    },
   ])
     assert.throws(() => stripeConfig(env));
+  const live = stripeConfig({
+    STRIPE_MODE: "live",
+    STRIPE_SECRET_KEY: "sk_live_secret",
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_live_public",
+    STRIPE_WEBHOOK_SECRET: "whsec_live",
+    NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: "public",
+    SUPABASE_SERVICE_ROLE_KEY: "private",
+  });
+  assert.equal(live?.mode, "live");
+  assert.equal(live?.livemode, true);
 });
 test("operator diagnostics disclose shapes but never Stripe values", () => {
   const secret = "sk_test_do_not_disclose";
@@ -372,9 +388,9 @@ test("operator diagnostics disclose shapes but never Stripe values", () => {
   assert.equal(result.ready, true);
   assert.equal(JSON.stringify(result).includes(secret), false);
   assert.equal(
-    stripeConfigurationStatus({ STRIPE_SECRET_KEY: "sk_live_rejected" })
+    stripeConfigurationStatus({ STRIPE_SECRET_KEY: "sk_live_configured" })
       .secretKey,
-    "live-rejected",
+    "live",
   );
 });
 test("raw Stripe signatures reject forged, modified and stale events", () => {

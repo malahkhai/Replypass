@@ -89,16 +89,19 @@ export class PaymentEngine {
   readonly provider: Provider;
   readonly ttl: number;
   readonly clock: () => number;
+  readonly livemode: boolean;
   constructor(
     store: PaymentStore,
     provider: Provider,
     ttl = 86400,
     clock = Date.now,
+    livemode = false,
   ) {
     this.store = store;
     this.provider = provider;
     this.ttl = ttl;
     this.clock = clock;
+    this.livemode = livemode;
   }
   async ensureIntent(p: ReplyPayment) {
     const recovered = !p.stripe_payment_intent_id
@@ -122,7 +125,7 @@ export class PaymentEngine {
   }
   validate(p: ReplyPayment, i: Intent) {
     if (
-      i.livemode ||
+      i.livemode !== this.livemode ||
       !i.manual ||
       i.paymentId !== p.id ||
       i.amount !== p.gross_cents ||

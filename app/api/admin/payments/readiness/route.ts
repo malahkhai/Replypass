@@ -1,6 +1,7 @@
 import { getViewer } from "@/lib/auth/session";
 import { stripeConfigurationStatus } from "@/lib/stripe/config";
 import { serviceDatabase } from "@/lib/stripe/server";
+import { productionReadiness } from "@/lib/config/production";
 
 export async function GET() {
   const viewer = await getViewer();
@@ -32,8 +33,9 @@ export async function GET() {
   return Response.json(
     {
       configuration,
+      production: productionReadiness(),
       schema,
-      migrationsRequired: ["202609090005", "202609090006"],
+      expectedLatestMigration: "202609150001_launch_hardening",
     },
     { headers: { "Cache-Control": "no-store" } },
   );

@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { replyService } from "@/lib/stripe/service";
+import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
 export const maxDuration = 60;
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
           (!p.expires_at ? 23 * 3600000 : 0) <=
           Date.now()
       )
-        await engine.expire(p.id);
+        await engine.expire(p.id).then((expired) => notifyPaymentLifecycle(expired, "expired"));
       else await engine.reconcile(p.id);
       processed++;
     } catch {

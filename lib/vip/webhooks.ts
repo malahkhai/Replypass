@@ -1,6 +1,7 @@
 import "server-only";
 import type Stripe from "stripe";
 import { vipSplit } from "./model";
+import { notifyVipLifecycle } from "@/lib/notifications/vip-lifecycle";
 
 function ref(value:unknown){return typeof value==="string"?value:(value&&typeof value==="object"&&"id" in value?String((value as {id:unknown}).id):null);}
 function subscriptionRef(invoice:Record<string,unknown>){
@@ -22,11 +23,22 @@ export async function processVipWebhook(event:{id:string;type:string;data:Stripe
     await db.from("subscriptions").update({stripe_subscription_id:subscriptionId,stripe_customer_id:customerId,updated_at:new Date().toISOString()}).eq("id",id);
     const sub=await stripe.subscriptions.retrieve(subscriptionId);
     await syncSubscription(sub as unknown as Record<string,unknown>,db);
+    await notifyVipLifecycle(id,"started");
+    await notifyVipLifecycle(id,"creator_started");
     return;
   }
-  if(event.type.startsWith("customer.subscription.")){await syncSubscription(object,db);return;}
+  if(event.type.startsWith("customer.subscription.")){
+    await syncSubscription(object,db);
+    const id=String((object.metadata as Record<string,string>|null)?.replypass_membership_id||"");
+    if(id&&(event.type==="customer.subscription.deleted"||object.cancel_at_period_end===true))
+      await notifyVipLifecycle(id,"canceled",String(object.id));
+    return;
+  }
   if(event.type==="invoice.payment_failed"){
-    const sid=subscriptionRef(object); if(sid) await db.from("subscriptions").update({status:"past_due",updated_at:new Date().toISOString()}).eq("stripe_subscription_id",sid); return;
+    const sid=subscriptionRef(object); if(sid) {
+      const {data:membership}=await db.from("subscriptions").update({status:"past_due",updated_at:new Date().toISOString()}).eq("stripe_subscription_id",sid).select("id").maybeSingle();
+      if(membership) await notifyVipLifecycle(membership.id,"payment_issue",String(object.id));
+    } return;
   }
   if(event.type==="invoice.paid"){
     const sid=subscriptionRef(object); if(!sid)return;
@@ -42,6 +54,7 @@ export async function processVipWebhook(event:{id:string;type:string;data:Stripe
       const {error:transactionError}=await db.from("transactions").upsert({subscription_id:membership.id,kind,amount_cents:amount,currency:String(object.currency),stripe_event_id:event.id,stripe_object_id:invoiceId},{onConflict:"stripe_event_id,stripe_object_id,kind",ignoreDuplicates:true});
       if(transactionError) throw Error("VIP transaction ledger unavailable.");
     }
+    await notifyVipLifecycle(membership.id,"creator_payment",invoiceId);
   }
 }
 async function syncSubscription(subscription:Record<string,unknown>,db:ReturnType<typeof import("@/lib/stripe/server").serviceDatabase>){

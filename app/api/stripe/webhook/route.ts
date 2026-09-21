@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return new Response("Webhook not processed", {
       status:
-        error instanceof Error && /signature|test events/.test(error.message)
+        error instanceof Error && /signature|event mode/.test(error.message)
           ? 400
           : 503,
     });

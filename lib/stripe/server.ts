@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { stripeConfig } from "./config";
 export function paymentBackend() {
   const config = stripeConfig();
-  if (!config) throw Error("Stripe test payments are not configured.");
+  if (!config) throw Error("Stripe payments are not configured.");
   return {
     config,
     stripe: new Stripe(config.secret, { maxNetworkRetries: 2, timeout: 20000 }),

@@ -1,6 +1,7 @@
 import { getViewer } from "@/lib/auth/session";
 import { fail, readJson } from "@/lib/http";
 import { ownedPayment, replyService } from "@/lib/stripe/service";
+import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -13,6 +14,7 @@ export async function POST(
     await ownedPayment(id, viewer.id, "fan");
     const { engine, db } = replyService();
     const p = await engine.reconcile(id);
+    if (p.payment_state === "authorized") await notifyPaymentLifecycle(p, "authorized");
     const { data: active } = await db
       .from("interaction_requests")
       .select("id")

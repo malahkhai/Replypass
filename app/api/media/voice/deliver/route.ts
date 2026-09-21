@@ -2,6 +2,7 @@ import { getViewer } from "@/lib/auth/session";
 import { fail, readJson, sameOrigin } from "@/lib/http";
 import { normalizeVoiceMime, validVoiceSignature, VOICE_MAX_BYTES, VOICE_MAX_DURATION_MS, VOICE_MIN_DURATION_MS } from "@/lib/media/audio";
 import { ownedPayment, replyService } from "@/lib/stripe/service";
+import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -40,7 +41,11 @@ export async function POST(request: Request) {
     });
     if (error || !data?.media_id) throw Error("Delivery could not be committed");
     let reconciliation = false;
-    try { await service.engine.reconcile(payment.id); } catch { reconciliation = true; }
+    try {
+      const completed = await service.engine.reconcile(payment.id);
+      if (completed.payment_state === "captured")
+        await notifyPaymentLifecycle(completed, "completed");
+    } catch { reconciliation = true; }
     return Response.json({ delivered: true, reconciliation });
   } catch {
     if (uploadedPath) {

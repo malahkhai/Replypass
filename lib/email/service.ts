@@ -2,11 +2,12 @@ import "server-only";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { captureException, logEvent } from "@/lib/observability/log";
 
-export type EmailTemplate = "request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
+export type EmailTemplate = "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
 type EmailInput = { recipientId: string; to: string; template: EmailTemplate; eventKey: string; link: string };
 
 const copy: Record<EmailTemplate,{subject:string;body:string}> = {
   request_received:{subject:"Your request is secured",body:"Your request has reached the creator."},
+  creator_request_received:{subject:"You have a new paid request",body:"A new secured request is waiting in ReplyPass."},
   request_accepted:{subject:"Your request was accepted",body:"Your creator has accepted your request."},
   request_declined:{subject:"Your request was declined",body:"Your payment authorization is being released."},
   request_expired:{subject:"Your request expired",body:"The request was not completed, so you were not charged."},

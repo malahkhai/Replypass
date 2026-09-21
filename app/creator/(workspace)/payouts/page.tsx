@@ -9,7 +9,8 @@ export const metadata = { title: "Payouts" };
 
 export default async function Page() {
   const viewer = await requireRole(["creator", "admin"]);
-  const enabled = !!stripeConfig();
+  const stripe = stripeConfig();
+  const enabled = !!stripe;
   let status = {
     connected: false,
     ready: false,
@@ -51,7 +52,7 @@ export default async function Page() {
           </p>
         </div>
         <span className="payout-mode-badge">
-          <i /> Stripe test mode
+          <i /> Stripe {stripe?.mode || "demo"} mode
         </span>
       </header>
 
@@ -127,7 +128,7 @@ export default async function Page() {
             )
           ) : (
             <p className="demo-notice payout-demo-notice">
-              Demo mode is active. Add Stripe test credentials and Supabase to
+              Demo mode is active. Add Stripe credentials and Supabase to
               try payout onboarding.
             </p>
           )}
