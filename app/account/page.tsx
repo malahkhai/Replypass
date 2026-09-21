@@ -12,7 +12,9 @@ export default async function Account() {
   if (supabase) {
     const { data: rows, error } = await supabase
       .from("saved_creators")
-      .select("creator_id,creator_profiles(handle,profiles(display_name))")
+      .select(
+        "creator_id,creator_profiles(handle,profiles!creator_profiles_profile_id_fkey(display_name))",
+      )
       .eq("fan_id", viewer.id);
     if (error) throw Error("Could not load saved creators.");
     saved = (rows || []).map((row) => {
