@@ -1,20 +1,23 @@
-import { DraftPolicy } from "@/components/draft-policy";
+import { LegalPage } from "@/components/legal-page";
 import { pageMetadata } from "@/lib/metadata";
 export const metadata = pageMetadata(
   "Creator terms",
   "/creator-terms",
-  "Draft creator terms outline for ReplyPass. Pending review before production launch.",
+  "Terms for creators offering paid interactions and VIP memberships on ReplyPass.",
   true,
 );
 export default function Page() {
   return (
-    <DraftPolicy
-      title="Creator terms"
-      topics={[
-        "Creator eligibility, availability and fulfillment responsibilities.",
-        "Proposed platform fees, earnings, refunds and payout arrangements.",
-        "Content permissions, account restrictions and marketplace responsibilities.",
-      ]}
-    />
+    <LegalPage title="Creator terms" summary="These terms supplement the Terms of Service for creators. By applying or publishing an offer, you agree to them and to Stripe’s terms for connected accounts."
+      sections={[
+        {title:"1. Eligibility and onboarding",bullets:["You must be at least 18, use your real identity, have legal capacity to provide the offered services, and supply accurate tax and business information.","Creator access is subject to ReplyPass approval and successful Stripe-hosted onboarding. Stripe may request identity, business, ownership or bank information and may pause capabilities.","You must keep your profile, trader/professional status, prices and availability accurate. Approval is not an endorsement."]},
+        {title:"2. Your offers",paragraphs:["At launch you may offer Guaranteed Reply, Voice Note, Photo Request and VIP. You control enabled products and prices within platform limits. New prices apply to new purchases. Existing authorized requests retain their price snapshot, and existing VIP subscriptions retain their agreed price unless the fan accepts a change.","Describe VIP benefits accurately. VIP does not imply unlimited messaging. Do not promise anything unlawful, unsafe, misleading, impossible, or outside ReplyPass’s supported fulfillment flow."]},
+        {title:"3. Acceptance and delivery",bullets:["Review each request before its acceptance deadline; accept only if you can deliver safely and on time.","A Guaranteed Reply is complete when you send the first qualifying, substantive reply.","Voice and Photo requests complete only after valid private media is delivered and the fan entitlement is created.","Do not attempt to mark work complete without delivering the promised interaction. Do not ask a fan to pay off-platform.","Decline and report requests that breach the Community Guidelines. No delivery means no charge."]},
+        {title:"4. Earnings, fees and payouts",paragraphs:["For the current standard arrangement, ReplyPass records 85% of the captured gross amount as the creator share and 15% as the platform fee. Stripe processing, refunds, disputes, reversals, taxes, reserves, negative balances or corrections may affect amounts available for payout.","Earnings are credited only after capture. Stripe controls bank payout schedules and may delay or pause payouts for verification or risk reasons. New creators may be placed on a weekly or longer lawful payout schedule. Displayed earnings are not a guarantee of bank settlement."]},
+        {title:"5. Refunds, disputes and negative balances",paragraphs:["You authorize ReplyPass and Stripe to refund a fan and reverse or recover the associated creator share when a transaction is refunded, disputed, unauthorized, duplicated, unlawful or materially unfulfilled. You must reasonably assist investigations and provide evidence. We may withhold future payouts or offset amounts where law and Stripe rules permit."]},
+        {title:"6. Content rights and privacy",paragraphs:["You own your original content and grant ReplyPass the licence described in the Terms to deliver, secure, moderate and display it. You confirm you have all rights and releases needed for people, music, brands and locations appearing in it.","Treat fan messages and personal data as confidential. Use them only to fulfill the ReplyPass interaction. Do not export, sell, publish, shame, contact off-platform, or use fan information for unrelated marketing without a lawful basis."]},
+        {title:"7. Safety, professional obligations and taxes",paragraphs:["You are an independent creator, not an employee, agent or partner of ReplyPass. You are responsible for registrations, consumer disclosures, tax, social contributions, invoices and laws applicable to your activity. You must identify professional/trader status accurately when required.","Never provide nudity, pornography, sexual services, exploitative or non-consensual material, content involving minors, illegal goods, paid physical meetups, harassment, threats, or instructions facilitating harm."]},
+        {title:"8. Enforcement and departure",paragraphs:["We may pause offers or payouts, remove content, impose limits, suspend or terminate access, and preserve evidence for safety, fraud, legal or contractual reasons. Where appropriate we will provide reasons and a way to request review. Ending creator access does not erase outstanding delivery, refund, dispute, tax or recordkeeping obligations."]},
+      ]} />
   );
 }

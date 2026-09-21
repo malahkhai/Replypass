@@ -1,22 +1,24 @@
-import { DraftPolicy } from "@/components/draft-policy";
+import { LegalPage } from "@/components/legal-page";
 import { pageMetadata } from "@/lib/metadata";
 export const metadata = pageMetadata(
   "Privacy",
   "/privacy",
-  "Draft privacy outline for ReplyPass. Pending review before production launch.",
+  "How ReplyPass collects, uses and protects personal data.",
   true,
 );
 export default function Page() {
   return (
-    <DraftPolicy
-      title="Privacy"
-      topics={[
-        "Data collected for accounts, messages and creator requests.",
-        "Optional Google Analytics loads only after you accept Google Analytics measurement. Optional Meta Pixel and Conversions API measurement runs only after you accept Meta advertising measurement. Accept all enables both categories; you can also reject both or manage each choice using Cookie preferences in the footer. Choices are remembered in this browser for up to 180 days.",
-        "Measurement events exclude message contents, names, creator handles, private record IDs and payment references. Google receives sanitized page groups. When advertising is accepted, Meta may receive the current page URL, approved campaign parameters, browser identifiers and a one-way encrypted version of your email address for conversion matching. Google or Meta may process device and usage information only when the corresponding optional category is enabled.",
-        "Service providers, storage, retention and deletion practices to be confirmed.",
-        "Privacy contacts and applicable user-request processes.",
-      ]}
-    />
+    <LegalPage title="Privacy policy" summary="ReplyPass is the controller for personal data used to operate the platform. This policy explains what we process, why, and the choices available to you."
+      sections={[
+        {title:"1. Data we collect",bullets:["Account data: email address, display name, role, authentication records and settings.","Creator data: profile, social links, pricing, availability, approval status and Stripe connected-account status.","Service data: requests, messages, ratings, reports, blocks, subscription status and notification preferences.","Private media: voice notes, photos and VIP media stored in private storage and served through expiring signed links.","Payment data: amounts, currency, status and Stripe object references. ReplyPass does not store full card or bank credentials.","Technical and security data: IP-derived security signals, device/browser data, timestamps, logs, consent choices and rate-limit records.","Optional measurement data described below, only when the relevant consent is enabled."]},
+        {title:"2. Why we use it",bullets:["Contract: create accounts, route requests, provide messaging and media access, administer VIP, process payments and send service notices.","Legitimate interests: secure the service, prevent abuse and fraud, support users, reconcile payments, improve reliability and enforce rules.","Legal obligations: accounting, tax, identity/payment compliance, disputes, lawful requests and record preservation.","Consent: Google Analytics measurement and Meta advertising/conversion measurement. Consent can be withdrawn through Cookie preferences."]},
+        {title:"3. Analytics, advertising and cookies",paragraphs:["Essential storage keeps authentication, security and requested features working. Google Analytics is absent until analytics consent. Meta Pixel and consent-aware Conversions API measurement are absent until advertising consent. The choices are separate, can be rejected, and are remembered in that browser for up to 180 days.","Measurement excludes message text, media, creator handles, internal payment references and arbitrary form contents. With advertising consent, Meta may receive approved event data, page URL, campaign parameters, browser identifiers and a one-way hashed email for matching. Google receives sanitized page groups and approved funnel events. Google and Meta act under their own privacy terms for data they receive."]},
+        {title:"4. Who receives data",bullets:["Supabase for authentication, database and private storage.","Stripe for payments, fraud controls, subscriptions, identity/KYC and creator payouts.","Vercel for hosting and delivery.","Resend for transactional email.","Upstash for shared rate limiting.","Google Analytics and Meta only under the relevant optional consent.","An error-monitoring provider after configuration, limited to sanitized operational metadata.","Professional advisers, authorities or counterparties when lawfully required."]},
+        {title:"5. International transfers",paragraphs:["Providers may process data outside your country. Where required, ReplyPass relies on an adequacy decision, approved contractual safeguards, or another lawful transfer mechanism. Provider locations and safeguards must be checked when contracts are finalized."]},
+        {title:"6. Retention",paragraphs:["We keep account and service data while the account is active and for a limited period afterward. Private request media is retained only as long as needed to provide the purchase, handle disputes and meet safety or legal needs. Financial, tax, refund and dispute records may be retained for the legally required period. Security logs are kept for a shorter risk-based period. Consent records are retained to demonstrate the choice made.","A final retention schedule with exact periods will be approved before commercial launch. Data may be preserved longer for an active dispute, safety report or legal hold."]},
+        {title:"7. Your rights",paragraphs:["Depending on applicable law, you may request access, correction, deletion, restriction, portability, or objection; withdraw consent without affecting earlier lawful processing; and complain to the CNIL or your local supervisory authority. We may need to verify identity and may retain data where a legal exception applies."],bullets:["Manage optional tracking through Cookie preferences.","Manage account settings and request deletion from the account area.","Send privacy requests to info@getreplypass.com."]},
+        {title:"8. Security and children",paragraphs:["ReplyPass uses access controls, private storage, expiring media links, encrypted transport, webhook verification, rate limits and restricted administrative access. No system is completely secure; report suspected compromise promptly.","ReplyPass is for adults aged 18 or older. We do not knowingly offer accounts to children. Contact us if you believe a child supplied personal data."]},
+        {title:"9. Controller details and changes",paragraphs:["The service is operated from France under the ReplyPass name. The operator’s registered legal name, postal address, registration number and, where applicable, VAT number and data-protection representative must be inserted before commercial launch.","We will publish material policy changes and give additional notice where required."]},
+      ]} />
   );
 }
