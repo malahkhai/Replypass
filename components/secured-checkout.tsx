@@ -15,9 +15,11 @@ import {
 import { Button, Price, Badge } from "./ui";
 import { Icon } from "./icon";
 import type { PublicCreator } from "@/types/creator";
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise =
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith("pk_test_")
-    ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+  publishableKey?.startsWith("pk_test_") ||
+  publishableKey?.startsWith("pk_live_")
+    ? loadStripe(publishableKey)
     : null;
 type Quote = {
   id: string;
