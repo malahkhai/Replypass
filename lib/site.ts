@@ -28,7 +28,7 @@ export const siteConfig = {
   url: normalizeAppUrl(process.env.NEXT_PUBLIC_APP_URL || `https://${domain}`),
   title: "ReplyPass — Get closer to the people you follow",
   description:
-    "Message, chat and connect directly with your favorite creators. No reply, no charge.",
+    "Get a guaranteed reply or become a VIP with your favorite creators. No reply, no charge for message requests.",
   tagline: "A little closer to the people you follow.",
   creatorProposition: "Get paid for your attention.",
   fanPromise: "No reply = no charge.",

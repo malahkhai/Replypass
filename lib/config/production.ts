@@ -21,6 +21,7 @@ const required = [
   "RATE_LIMIT_REST_TOKEN",
   "EMAIL_PROVIDER",
   "EMAIL_API_KEY",
+  "EMAIL_API_URL",
   "EMAIL_FROM",
 ] as const;
 

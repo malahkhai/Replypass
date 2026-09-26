@@ -57,8 +57,8 @@ test("creator publishing validates real image signatures and notifies subscriber
   assert.match(posts, /notifications/);
   assert.ok(posts.includes("active") && posts.includes("trialing"));
 });
-test("public launch catalog hides live chat video and tips", () => {
+test("public launch catalog offers only messages alongside VIP", () => {
   const profile = read("components/creator-profile.tsx");
-  assert.match(profile, /offering\.kind !== "live_chat" && offering\.kind !== "video"/);
+  assert.match(profile, /offering\.kind === "message"/);
   assert.doesNotMatch(profile, /kind === "tips"/);
 });

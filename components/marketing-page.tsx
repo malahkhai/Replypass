@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
 import {
@@ -70,18 +69,10 @@ export function MarketingPage({
           </p>
         </div>
         <div className="marketing-showcase">
-          <div className="showcase-photo">
-            <Image
-              src="/images/stella.jpg"
-              alt="Stella May, a fictional creator used to demonstrate ReplyPass"
-              fill
-              sizes="(max-width: 760px) 90vw, 460px"
-              priority
-            />
-            <span className="showcase-label">FICTIONAL CREATOR · DEMO</span>
-            <div className="showcase-name">
-              Stella May<span>@stella</span>
-            </div>
+          <div className="showcase-photo launch-showcase">
+            <span className="showcase-label">YOUR PEOPLE. ONE PERSONAL LINK.</span>
+            <div className="launch-showcase-symbol" aria-hidden="true">↗</div>
+            <div className="showcase-name">Beyond the comments<span>A message. A reply. A closer connection.</span></div>
           </div>
           <div className="showcase-message">
             <span className="eyebrow">A QUESTION WORTH ASKING</span>
@@ -91,8 +82,8 @@ export function MarketingPage({
               <strong>No reply = no charge.</strong>
             </div>
           </div>
-          <Link className="showcase-link" href="/@stella">
-            Explore Stella’s demo page <span aria-hidden="true">↗</span>
+          <Link className="showcase-link" href="/signup">
+            Join ReplyPass <span aria-hidden="true">↗</span>
           </Link>
         </div>
       </section>
@@ -166,7 +157,7 @@ export function MarketingPage({
             canceled. Your bank may take time to remove the hold.
           </p>
           <span className="marketing-status">
-            Currently in test mode · No live payments
+            Secure payments through Stripe
           </span>
         </div>
       </section>
@@ -179,9 +170,8 @@ export function MarketingPage({
             fits the moment.
           </h2>
           <p>
-            Creators choose what they offer. Guaranteed Reply is being tested
-            first; the other formats below are previews, with paid access coming
-            later.
+            Send a Guaranteed Reply request or join a creator’s VIP membership.
+            Each creator chooses their price and the benefits they offer.
           </p>
         </div>
         <div className="marketing-offers">
@@ -190,25 +180,13 @@ export function MarketingPage({
               "↗",
               "Guaranteed reply",
               "A question with room for a personal answer.",
-              "TEST MODE",
-            ],
-            [
-              "♫",
-              "Voice notes",
-              "A personal answer in their own voice.",
-              "COMING LATER",
-            ],
-            [
-              "▧",
-              "Photo requests",
-              "A personalized moment from your creator.",
-              "COMING LATER",
+              "PAY PER REQUEST",
             ],
             [
               "♡",
               "VIP subscriptions",
               "Private posts, exclusive updates and VIP inbox status.",
-              "COMING LATER",
+              "MONTHLY MEMBERSHIP",
             ],
           ].map(([icon, title, body, status]) => (
             <article key={title}>
@@ -307,7 +285,7 @@ export function MarketingPage({
               </dd>
             </div>
           </dl>
-          <small>Illustration only. Live payments are not enabled.</small>
+          <small>Example based on a €4 completed request.</small>
         </div>
       </section>
       <section className="marketing-faq">
@@ -323,7 +301,7 @@ export function MarketingPage({
           {[
             [
               "Can I sign up as a fan here?",
-              "Fan signup starts on a creator’s page. Find their ReplyPass link in their bio or content, choose how you’d like to connect, and create an account there. If you already have an account, use Log in.",
+              "Yes. Join ReplyPass directly or create your account through a creator’s link. One account keeps your messages, requests and VIP memberships together.",
             ],
             [
               "Do I need an account for every creator?",
@@ -343,11 +321,11 @@ export function MarketingPage({
             ],
             [
               "Are payments available now?",
-              "ReplyPass is currently being tested. Guaranteed Reply supports Stripe test mode when configured. Voice notes, photo requests and VIP subscriptions are the next launch features; no live payments are enabled.",
+              "Yes. Eligible creators offer Guaranteed Replies and monthly VIP memberships through Stripe. A Guaranteed Reply is charged after a qualifying reply; VIP is billed when you subscribe and at each renewal until canceled.",
             ],
             [
               "What kind of community is ReplyPass?",
-              "ReplyPass is designed for respectful, brand-safe interactions across sport, music, fashion, business and everyday creativity. It isn’t an adult-content platform. Read our draft community guidelines for the current policy direction.",
+              "ReplyPass is designed for respectful, brand-safe interactions across sport, music, fashion, business and everyday creativity. It isn’t an adult-content platform. Read our Community Guidelines for the rules that keep ReplyPass safe.",
             ],
           ].map(([q, a]) => (
             <details key={q}>

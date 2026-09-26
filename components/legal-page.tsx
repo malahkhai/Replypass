@@ -7,7 +7,7 @@ export function LegalPage({ title, summary, sections }: { title: string; summary
     <main id="main" className="draft-policy legal-policy">
       <p className="eyebrow">{siteConfig.name} · Trust & community</p>
       <h1>{title}</h1>
-      <p className="legal-updated">Last updated: 21 September 2026</p>
+      <p className="legal-updated">Last updated: 26 September 2026</p>
       <p className="legal-summary">{summary}</p>
       {sections.map((section) => (
         <section key={section.title}>

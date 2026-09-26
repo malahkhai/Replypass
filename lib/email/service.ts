@@ -2,10 +2,11 @@ import "server-only";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { captureException, logEvent } from "@/lib/observability/log";
 
-export type EmailTemplate = "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
+export type EmailTemplate = "operational_test"| "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
 type EmailInput = { recipientId: string; to: string; template: EmailTemplate; eventKey: string; link: string };
 
 const copy: Record<EmailTemplate,{subject:string;body:string}> = {
+  operational_test:{subject:"ReplyPass production email test",body:"This is the test notification you requested. No payment or subscription was created."},
   request_received:{subject:"Your request is secured",body:"Your request has reached the creator."},
   creator_request_received:{subject:"You have a new paid request",body:"A new secured request is waiting in ReplyPass."},
   request_accepted:{subject:"Your request was accepted",body:"Your creator has accepted your request."},
@@ -39,7 +40,7 @@ export async function sendTransactionalEmail(input: EmailInput) {
   }
   try {
     const message=copy[input.template];
-    const response=await fetch(endpoint,{method:"POST",headers:{authorization:`Bearer ${key}`,"content-type":"application/json"},body:JSON.stringify({from,to:input.to,subject:message.subject,text:`${message.body}\n\n${input.link}`})});
+    const response=await fetch(endpoint,{method:"POST",headers:{authorization:`Bearer ${key}`,"content-type":"application/json","Idempotency-Key":input.eventKey},body:JSON.stringify({from,to:input.to,subject:message.subject,text:`${message.body}\n\n${input.link}`}),signal:AbortSignal.timeout(10000)});
     if(!response.ok) throw Error(`provider_${response.status}`);
     const result=await response.json() as {id?:string};
     await db.from("email_delivery_events").upsert({recipient_id:input.recipientId,event_key:input.eventKey,template:input.template,status:"sent",provider_message_id:result.id||null,attempts:1},{onConflict:"event_key"});

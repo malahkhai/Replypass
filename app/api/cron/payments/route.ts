@@ -57,6 +57,6 @@ export async function GET(request: Request) {
   if (run) await db.from("operational_runs").update({ status: attention ? "failed" : "succeeded", processed, attention, completed_at: new Date().toISOString(), error_code: attention ? "payment_items_need_attention" : null }).eq("id", run.id);
   return Response.json(
     { processed, attention },
-    { headers: { "Cache-Control": "no-store" } },
+    { status: attention ? 503 : 200, headers: { "Cache-Control": "no-store" } },
   );
 }

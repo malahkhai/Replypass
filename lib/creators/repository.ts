@@ -107,8 +107,8 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
       .eq("status", "approved")
       .maybeSingle();
     if (error) throw error;
-    // Keep the fictional showcase available on a healthy, newly configured database.
-    if (!row) return username === "stella" ? demoStella : null;
+    // Production only returns real approved creators.
+    if (!row) return null;
     const [
       { data: profile, error: pError },
       { data: prices, error: priceError },
@@ -141,6 +141,6 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
       ratingCount: Number(ratingSummary?.[0]?.rating_count || 0),
     };
   } catch {
-    return username === "stella" ? demoStella : null;
+    return null;
   }
 }

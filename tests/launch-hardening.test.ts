@@ -38,6 +38,7 @@ function productionEnv(): NodeJS.ProcessEnv {
     RATE_LIMIT_REST_TOKEN: "token",
     EMAIL_PROVIDER: "resend",
     EMAIL_API_KEY: "secret",
+    EMAIL_API_URL: "https://api.resend.com/emails",
     EMAIL_FROM: "ReplyPass <notifications@getreplypass.com>",
   };
 }
@@ -102,4 +103,10 @@ test("error reporting sends only sanitized exception metadata", () => {
 test("production demo endpoints are explicitly disabled", () => {
   assert.match(readFileSync(new URL("../app/api/checkout/demo/route.ts", import.meta.url), "utf8"), /NODE_ENV === "production"/);
   assert.match(readFileSync(new URL("../app/api/auth/demo/route.ts", import.meta.url), "utf8"), /NODE_ENV === "production"/);
+});
+
+test("email endpoint is required for production delivery", () => {
+  const env = productionEnv();
+  delete env.EMAIL_API_URL;
+  assert.ok(productionReadiness(env).missing.includes("EMAIL_API_URL"));
 });

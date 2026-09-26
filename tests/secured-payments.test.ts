@@ -132,6 +132,8 @@ function fixture(interactionKind: "message" | "voice_note" | "photo" = "message"
       return { ...p };
     },
   };
+  let reverseFails = false;
+  let refunds = 0;
   const provider: Provider = {
     async create() {
       operations.add("create");
@@ -164,10 +166,12 @@ function fixture(interactionKind: "message" | "voice_note" | "photo" = "message"
       return "tr_test";
     },
     async refund() {
+      refunds++;
       operations.add("refund");
       return { id: "re_test", status: "succeeded" };
     },
     async reverse() {
+      if (reverseFails) throw Error("Reversal temporarily unavailable");
       operations.add("reverse");
       return "trr_test";
     },
@@ -178,6 +182,8 @@ function fixture(interactionKind: "message" | "voice_note" | "photo" = "message"
     i,
     engine,
     operations,
+    setReversalFailure(value: boolean) { reverseFails = value; },
+    get refunds() { return refunds; },
     get requests() {
       return requests;
     },
@@ -413,4 +419,19 @@ test("raw Stripe signatures reject forged, modified and stale events", () => {
     timestamp: 1,
   });
   assert.throws(() => verifyEventSignature(body, stale, [secret]));
+});
+
+test("failed transfer reversal retries without refunding the fan twice", async () => {
+  const f = fixture(); f.authorize();
+  await f.engine.reconcile("order");
+  await f.engine.accept("order", "creator"); f.reply();
+  await f.engine.reconcile("order");
+  f.setReversalFailure(true);
+  await assert.rejects(f.engine.refund("order", "admin"));
+  assert.equal(f.p.payment_state, "refunded");
+  assert.equal(f.p.needs_reconciliation, true);
+  f.setReversalFailure(false);
+  await f.engine.reconcile("order");
+  assert.equal(f.p.transfer_state, "reversed");
+  assert.equal(f.refunds, 1);
 });

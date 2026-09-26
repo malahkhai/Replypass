@@ -204,6 +204,7 @@ export async function prepareCheckout(
   message: string,
   kind: "message" | "voice_note" | "photo" = "message",
 ) {
+  if (kind !== "message") throw Error("This request type is not available.");
   const service = replyService();
   const [{ data: fan }, { data: creator }] = await Promise.all([
     service.db.from("profiles").select("account_status").eq("id", fanId).single(),

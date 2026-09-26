@@ -43,7 +43,7 @@ export function CreatorEditor({
 }) {
   const [draft, setDraft] = useState<CreatorDraft>({
     ...initial,
-    pricing:initial.pricing.map(p=>["message", "voice_note", "photo"].includes(p.kind)&&!demo&&!initial.payoutReady?{...p,enabled:false}:p),
+    pricing:initial.pricing.map(p=>p.kind === "message"&&!demo&&!initial.payoutReady?{...p,enabled:false}:p),
     image: initial.image.startsWith("data:")
       ? "/images/avatar.svg"
       : initial.image,
@@ -346,7 +346,7 @@ export function CreatorEditor({
             </span>
           </div>
           <div className="pricing-editor">
-            {catalog.filter((item) => ["message", "voice_note", "photo"].includes(item.kind)).map((item) => {
+            {catalog.filter((item) => item.kind === "message").map((item) => {
               const price = draft.pricing.find((p) => p.kind === item.kind)!;
               return (
                 <div className="price-editor-row" key={item.kind}>
@@ -384,7 +384,7 @@ export function CreatorEditor({
                   <label className="toggle">
                     <input
                       type="checkbox"
-                      disabled={["message", "voice_note", "photo"].includes(item.kind) && !demo && !initial.payoutReady}
+                      disabled={item.kind === "message" && !demo && !initial.payoutReady}
                       aria-label={`Enable ${item.title}`}
                       checked={price.enabled}
                       onChange={(e) =>
@@ -478,7 +478,7 @@ export function CreatorEditor({
           <p>{draft.bio}</p>
           <h3>Choose how we talk.</h3>
           {draft.pricing
-            .filter((p) => p.enabled && ["message", "voice_note", "photo"].includes(p.kind))
+            .filter((p) => p.enabled && p.kind === "message")
             .map((p) => (
               <div className="preview-offering" key={p.kind}>
                 <span>{catalog.find((c) => c.kind === p.kind)?.title}</span>

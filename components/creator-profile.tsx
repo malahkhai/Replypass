@@ -226,7 +226,7 @@ export function CreatorProfile({
   const creator = demoImage ? { ...initial, image: demoImage } : initial;
   const { vip } = creator;
   const offerings = creator.offerings.filter(
-    (offering) => offering.kind !== "live_chat" && offering.kind !== "video",
+    (offering) => offering.kind === "message",
   );
   const firstName = creator.name.split(" ")[0];
   const titles = {
@@ -239,7 +239,7 @@ export function CreatorProfile({
   };
   const [selected, setSelected] = useState<Offering | null>(
     () =>
-      [...initial.offerings.filter((offering) => offering.kind !== "live_chat" && offering.kind !== "video"), ...(initial.vip ? [initial.vip] : [])].find(
+      [...initial.offerings.filter((offering) => offering.kind === "message"), ...(initial.vip ? [initial.vip] : [])].find(
         (o) => o.kind === initialInteraction,
       ) || null,
   );
