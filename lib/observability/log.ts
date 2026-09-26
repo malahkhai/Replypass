@@ -1,4 +1,5 @@
 import "server-only";
+import { after } from "next/server";
 import { randomUUID } from "node:crypto";
 import { reportException } from "./provider";
 
@@ -20,5 +21,5 @@ export function logEvent(level: "info" | "warn" | "error", context: LogContext) 
 export function captureException(error: unknown, context: LogContext) {
   const code = error instanceof Error ? error.name : "UnknownError";
   logEvent("error", { ...context, error_code: code });
-  void reportException(error, context);
+  after(async () => { await reportException(error, context); });
 }

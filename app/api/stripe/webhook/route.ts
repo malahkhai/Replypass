@@ -1,4 +1,5 @@
 import { processWebhook } from "@/lib/stripe/webhooks";
+import { captureException } from "@/lib/observability/log";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 export async function POST(request: Request) {
@@ -11,11 +12,10 @@ export async function POST(request: Request) {
     await processWebhook(body, signature);
     return Response.json({ received: true });
   } catch (error) {
+    const invalidEvent = error instanceof Error && /signature|event mode/.test(error.message);
+    if (!invalidEvent) captureException(error, { event: "stripe_webhook", route: "/api/stripe/webhook", status: "failed" });
     return new Response("Webhook not processed", {
-      status:
-        error instanceof Error && /signature|event mode/.test(error.message)
-          ? 400
-          : 503,
+      status: invalidEvent ? 400 : 503,
     });
   }
 }

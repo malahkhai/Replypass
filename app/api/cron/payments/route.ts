@@ -1,6 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { replyService } from "@/lib/stripe/service";
 import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
+import { captureException } from "@/lib/observability/log";
 export const maxDuration = 60;
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -25,6 +26,7 @@ export async function GET(request: Request) {
     .order("updated_at")
     .limit(50);
   if (error) {
+    captureException(error, { event: "payment_reconciliation", job: "payments", error_code: "payment_query_failed", status: "failed" });
     if (run) await db.from("operational_runs").update({ status: "failed", error_code: "payment_query_failed", completed_at: new Date().toISOString() }).eq("id", run.id);
     return new Response("Retry required", { status: 503 });
   }
@@ -44,7 +46,8 @@ export async function GET(request: Request) {
         await engine.expire(p.id).then((expired) => notifyPaymentLifecycle(expired, "expired"));
       else await engine.reconcile(p.id);
       processed++;
-    } catch {
+    } catch (error) {
+      captureException(error, { event: "payment_reconciliation", job: "payments", transaction_id: p.id, status: "failed" });
       attention++;
     } finally {
       // Rotate healthy holds as well as failed operations so a batch cannot starve later rows.
