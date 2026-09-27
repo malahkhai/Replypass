@@ -21,7 +21,7 @@ function statusLabel(row: Rows[number]) {
   return row.payment_state.replaceAll("_", " ");
 }
 
-export function SecuredEarnings({ rows }: { rows: Rows }) {
+export function SecuredEarnings({ rows, mode }: { rows: Rows; mode: "test" | "live" }) {
   const visible = rows.filter((row) => !row.manual_review);
   const currencies = Array.from(new Set(visible.map((row) => row.currency)));
   const groups = currencies.length ? currencies : ["eur"];
@@ -38,7 +38,7 @@ export function SecuredEarnings({ rows }: { rows: Rows }) {
           </p>
         </div>
         <span className="payout-mode-badge">
-          <i /> Stripe test mode
+          <i /> {mode === "test" ? "Stripe test mode" : "Live payments"}
         </span>
       </header>
 
