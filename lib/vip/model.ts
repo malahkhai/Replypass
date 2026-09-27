@@ -6,6 +6,6 @@ export function vipSplit(grossCents: number, feeBps = VIP_FEE_BPS) {
   return { grossCents, feeCents, creatorCents: grossCents - feeCents, feeBps };
 }
 export function vipAccessEligible(status: string, periodEnd?: string | null, now = Date.now()) {
-  return VIP_ELIGIBLE_STATUSES.includes(status as (typeof VIP_ELIGIBLE_STATUSES)[number]) && (!periodEnd || Date.parse(periodEnd) > now);
+  return VIP_ELIGIBLE_STATUSES.includes(status as (typeof VIP_ELIGIBLE_STATUSES)[number]) && !!periodEnd && Date.parse(periodEnd) > now;
 }
 export type VipPlan = { id:string; creatorId:string; name:string; description:string; benefits:string[]; amountCents:number; currency:string; enabled:boolean };

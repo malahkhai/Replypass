@@ -20,6 +20,8 @@ test("VIP access is centralized and excludes failed or ended memberships", () =>
   assert.equal(vipAccessEligible("trialing", future), true);
   assert.equal(vipAccessEligible("past_due", future), false);
   assert.equal(vipAccessEligible("active", past), false);
+  assert.equal(vipAccessEligible("active", null), false);
+  assert.equal(vipAccessEligible("trialing", "invalid-date"), false);
 });
 test("browser cannot supply price currency fee or destination", () => {
   const route = read("app/api/vip/checkout/route.ts");
