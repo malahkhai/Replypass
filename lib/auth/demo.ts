@@ -14,6 +14,7 @@ export const demoCookieOptions = {
   maxAge: 60 * 60 * 24 * 7,
 };
 export async function demoViewer(): Promise<Viewer | null> {
+  if (process.env.NODE_ENV === "production") return null;
   if (getSupabaseConfig()) return null;
   const raw = (await cookies()).get("replypass_demo_session")?.value;
   if (raw !== "fan" && raw !== "creator") return null;

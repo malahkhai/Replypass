@@ -1,6 +1,10 @@
 import "server-only";
 import { stripeConfig } from "@/lib/stripe/config";
-const paymentMode = () => stripeConfig()?.mode || "live";
+const paymentMode = () => {
+  const mode = stripeConfig()?.mode;
+  if (!mode) throw Error("Financial reporting unavailable without Stripe configuration.");
+  return mode;
+};
 import { serviceDatabase } from "@/lib/stripe/server";
 
 export type AdminMetric = { label:string; value:string; attention?:boolean };
@@ -8,24 +12,30 @@ const money=(cents:number,currency="eur")=>new Intl.NumberFormat("en-GB",{style:
 
 export async function adminOverview(){
   const db=serviceDatabase();
-  const [profiles,creators,subscriptions,payments,reports,disputes,reconciliation]=await Promise.all([
+  const mode=paymentMode();
+  const [profiles,creators,subscriptions,payments,vipPayments,reports,disputes,reconciliation]=await Promise.all([
     db.from("profiles").select("id",{count:"exact",head:true}),
     db.from("creator_profiles").select("id",{count:"exact",head:true}).eq("status","approved"),
-    db.from("subscriptions").select("id",{count:"exact",head:true}).in("status",["active","trialing"]),
-    db.from("reply_payments").select("gross_cents,fee_cents,creator_cents,payment_state,transfer_state").in("payment_state",["captured","refunded","disputed"]).eq("stripe_mode",paymentMode()),
+    db.from("subscriptions").select("id,amount_cents,currency").eq("stripe_mode",mode).in("status",["active","trialing"]).gt("current_period_end",new Date().toISOString()),
+    db.from("reply_payments").select("gross_cents,fee_cents,creator_cents,payment_state,transfer_state").in("payment_state",["captured","refunded","disputed"]).eq("stripe_mode",mode),
+    db.from("subscription_payments").select("gross_cents,fee_cents,creator_cents,status,subscriptions!inner(stripe_mode)").eq("subscriptions.stripe_mode",mode),
     db.from("reports").select("id",{count:"exact",head:true}).in("status",["open","reviewing","escalated"]),
     db.from("stripe_disputes").select("id",{count:"exact",head:true}).not("status","in",'(won,lost,warning_closed)'),
     db.from("reconciliation_issues").select("id",{count:"exact",head:true}).in("status",["open","manual_review"]),
   ]);
+  if(payments.error||vipPayments.error||subscriptions.error)throw Error("Financial totals unavailable.");
   const rows=payments.data||[];
-  const gross=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.gross_cents:0),0);
-  const fees=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.fee_cents:0),0);
-  const earnings=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.creator_cents:0),0);
-  const refunds=rows.reduce((n,p)=>n+(p.payment_state==="refunded"?p.gross_cents:0),0);
+  const vipRows=vipPayments.data||[];
+  const gross=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.gross_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.gross_cents:0),0);
+  const fees=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.fee_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.fee_cents:0),0);
+  const earnings=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.creator_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.creator_cents:0),0);
+  const refunds=rows.reduce((n,p)=>n+(p.payment_state==="refunded"?p.gross_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="refunded"?p.gross_cents:0),0);
   const transferFailures=rows.filter(p=>p.transfer_state==="failed").length;
   return {metrics:[
     {label:"Total users",value:String(profiles.count||0)}, {label:"Active creators",value:String(creators.count||0)},
-    {label:"Active VIP subscriptions",value:String(subscriptions.count||0)}, {label:"Paid requests",value:String(rows.length)},
+    {label:"Active VIP subscriptions",value:String(subscriptions.data?.length||0)}, {label:"Paid requests",value:String(rows.length)},
+    {label:"VIP monthly gross",value:money((subscriptions.data||[]).filter(s=>s.currency==="eur").reduce((n,s)=>n+s.amount_cents,0))},
+    {label:"VIP payments",value:String(vipRows.filter(p=>p.status==="paid").length)},
     {label:"Gross payment volume",value:money(gross)}, {label:"ReplyPass revenue",value:money(fees)},
     {label:"Creator earnings",value:money(earnings)}, {label:"Refunds",value:money(refunds)},
     {label:"Open reports",value:String(reports.count||0),attention:!!reports.count},
@@ -60,7 +70,7 @@ export async function adminPayments(mode: "test" | "live" | "unknown" = paymentM
   if(error) throw Error("Payments unavailable."); return data||[];
 }
 
-export async function adminSubscriptions(){const db=serviceDatabase();const{data,error}=await db.from("subscriptions").select("id,fan_id,creator_id,membership_name,amount_cents,currency,status,stripe_subscription_id,current_period_start,current_period_end,cancel_at_period_end,created_at").order("created_at",{ascending:false}).limit(100);if(error)throw Error("Subscriptions unavailable.");return data||[];}
+export async function adminSubscriptions(){const db=serviceDatabase();const{data,error}=await db.from("subscriptions").select("id,fan_id,creator_id,membership_name,amount_cents,currency,status,stripe_mode,stripe_subscription_id,current_period_start,current_period_end,cancel_at_period_end,created_at").order("created_at",{ascending:false}).limit(100);if(error)throw Error("Subscriptions unavailable.");return data||[];}
 export async function adminReports(){const db=serviceDatabase();const{data,error}=await db.from("reports").select("id,reporter_id,reported_profile_id,message_id,request_id,vip_post_id,paid_media_delivery_id,reason,status,moderator_note,created_at,reviewed_at").order("created_at",{ascending:false}).limit(100);if(error)throw Error("Reports unavailable.");return data||[];}
 export async function adminDisputes(){const db=serviceDatabase();const{data,error}=await db.from("stripe_disputes").select("*").order("provider_created_at",{ascending:false}).limit(100);if(error)throw Error("Disputes unavailable.");return data||[];}
 export async function adminReconciliation(){const db=serviceDatabase();const{data,error}=await db.from("reconciliation_issues").select("*").order("last_checked_at",{ascending:false}).limit(100);if(error)throw Error("Reconciliation unavailable.");return data||[];}

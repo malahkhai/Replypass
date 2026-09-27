@@ -1,25 +1,11 @@
-# ReplyPass security model
+# ReplyPass V1 security boundaries
 
-## Secrets and authority
+V1 sells **Guaranteed Reply** and **VIP** only. Public profiles and onboarding show current offers; the paid-request API also rejects postponed products. Existing historical media remains accessible only to the entitled parties.
 
-Supabase service-role and Stripe secret keys are server-only environment variables. They are never read by client components or prefixed with `NEXT_PUBLIC_`. The frontend can display a quote, but the server loads the current creator price, currency, platform fee, Stripe destination, and payment state before creating or capturing anything.
+The browser never supplies the authoritative amount, fee, currency or creator destination. The server reads approved creator state, active pricing and eligible Stripe Connect capabilities. PaymentIntent IDs, Stripe webhooks and live/test mode are verified before financial state changes. Webhook signatures are checked on the raw body and replayed event IDs are idempotent.
 
-## Payments
+Fan/creator/admin roles come from trusted profiles. Admin routes require a server-side admin role. Creator ownership and fan conversation access are checked before reads or mutations. Private VIP posts and signed media URLs require an active/trialing membership with a future paid-through date; null/expired periods never grant access. The matching database function is in migration `202609270002_vip_access_requires_period.sql`.
 
-Stripe webhooks are signature-verified and stored in `stripe_webhook_events` before processing. Replayed events stop at the processed inbox row. Payment, transfer, refund, reversal, dispute, and subscription records use provider IDs plus idempotency keys. A captured request is only transferred after validated delivery or a qualifying reply.
+Financial tables use service-only writes and immutable amount snapshots. Refund, capture, transfer and reversal operations use durable IDs or idempotency keys. Shared rate limiting, same-origin checks and strict input lengths protect critical mutations. Production demo checkout is disabled and production public lookups do not fall back to fictional creators.
 
-## Access control
-
-Admin pages call `requireAdmin` on the server. The role comes from the protected `profiles` table and is never accepted from signup metadata. Suspension, approval, refund, transfer retry, and moderation actions are recorded in `admin_audit_log`. Every paid request, conversation, subscription, media URL, and VIP post is checked for the authenticated party or active membership.
-
-## Media
-
-Paid deliveries and VIP media are stored in private Supabase buckets. Upload MIME types and size limits are checked on the server. Signed URLs are short-lived and generated only after ownership, entitlement, and status checks.
-
-## Abuse controls
-
-Mutations use same-origin checks, deterministic input limits, block enforcement, suspension checks, duplicate request guards, and a shared Redis-compatible rate-limit adapter. The local in-memory fallback is for development only.
-
-## Known limitations
-
-Provider-specific error monitoring and email sending require production configuration. Stripe live mode, production payout schedule, legal review, and external scheduler configuration are intentionally deferred to Task 7. No raw card data or private message content is stored by ReplyPass.
+Monitoring sends sanitized error metadata only; no card data, secrets, message text or private media URLs. A received Sentry test event proves ingestion, while actionable alerts and real incident handling still need dashboard verification. A passing test suite does not prove live-money settlement.

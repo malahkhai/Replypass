@@ -399,7 +399,7 @@ function RevenueCard() {
       <p>
         {data.demo
           ? "Fictional earnings. No real money moved."
-          : "Settled interactions only. No new payments are processed."}
+          : "Completed interactions only. New payments appear after a qualifying reply."}
       </p>
     </div>
   );
@@ -449,7 +449,7 @@ export function RequestsPage() {
         ))}
       </div>
       <div className="request-kind-filter" aria-label="Request type">
-        {([['all','All'],['message','Guaranteed Reply'],['voice_note','Voice Note'],['photo','Photo']] as const).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{label}</button>)}
+        {([['all','All'],['message','Guaranteed Reply'],...(requests.some(r=>r.kind==='voice_note')?[['voice_note','Voice Note history'] as const]:[]),...(requests.some(r=>r.kind==='photo')?[['photo','Photo history'] as const]:[])] as const).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{label}</button>)}
       </div>
       <div className="request-grid full" role="tabpanel">
         {requests
@@ -895,7 +895,7 @@ export function AnalyticsPage() {
         />
       </div>
       <RevenueCard />
-      <section className="analytics-interactions"><h2>Paid interactions.</h2><div className="metric-grid"><Metric label="Voice notes" value={paid.filter((request)=>request.kind==="voice_note").length} note="Requests" icon="mic"/><Metric label="Photos" value={paid.filter((request)=>request.kind==="photo").length} note="Requests" icon="camera"/><Metric label="Acceptance" value={paid.length ? `${Math.round(accepted/paid.length*100)}%` : "—"} note="Accepted requests" icon="check"/><Metric label="Fulfillment" value={accepted ? `${Math.round(completed.length/accepted*100)}%` : "—"} note="Completed requests" icon="shield"/></div><div className="analytics-aov"><span>Average order value</span><Price cents={aov} decimals/></div></section>
+      <section className="analytics-interactions"><h2>Paid interactions.</h2><div className="metric-grid"><Metric label="Acceptance" value={paid.length ? `${Math.round(accepted/paid.length*100)}%` : "—"} note="Accepted requests" icon="check"/><Metric label="Fulfillment" value={accepted ? `${Math.round(completed.length/accepted*100)}%` : "—"} note="Completed requests" icon="shield"/></div><div className="analytics-aov"><span>Average order value</span><Price cents={aov} decimals/></div></section>
     </>
   );
 }
@@ -942,9 +942,9 @@ export function SettingsPage() {
         <div className="setting-row">
           <div>
             <strong>Payments</strong>
-            <p>Guaranteed replies can use Stripe test mode. Other services remain demo-only.</p>
+            <p>{data.demo ? "Preview account. No payment moves." : "Guaranteed Reply and VIP payments use your connected Stripe account."}</p>
           </div>
-          <Badge>NOT CONNECTED</Badge>
+          {!data.demo && <Link href="/creator/payouts">Check payout setup →</Link>}
         </div>
         <Link className="setting-row" href="/creator/profile">
           <div>

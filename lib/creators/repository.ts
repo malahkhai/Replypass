@@ -80,6 +80,7 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
   if (!validUsername(username)) return null;
   const supabase = await createClient();
   if (!supabase) {
+    if (process.env.NODE_ENV === "production") return null;
     const own = await demoCreator();
     return username === own.username
       ? username === "stella"

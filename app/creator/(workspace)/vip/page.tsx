@@ -3,6 +3,8 @@ import { VipSettings } from "@/components/vip-settings";
 import { requireRole } from "@/lib/auth/session";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { getVipPlan } from "@/lib/vip/server";
+import { vipAccessEligible } from "@/lib/vip/model";
+import { stripeConfig } from "@/lib/stripe/config";
 
 export const metadata = { title: "VIP" };
 
@@ -18,14 +20,16 @@ export default async function Page() {
   const viewer = await requireRole(["creator", "admin"], "/creator/vip");
   if (viewer.demo) return <><VipHeader/><div className="vip-page-note">Demo mode previews VIP without creating billing.</div><VipSection number="01" title="Your membership" description="Choose what members receive and set the monthly price."><VipSettings initial={null}/></VipSection><VipSection number="02" title="Private posts" description="Share updates and photos with active VIP members."><VipComposer enabled={false}/></VipSection></>;
   const db = serviceDatabase();
+  const mode = stripeConfig()?.mode;
+  if (!mode) throw Error("VIP billing unavailable.");
   const { data: creator } = await db.from("creator_profiles").select("id").eq("profile_id", viewer.id).single();
   const plan = creator ? await getVipPlan(creator.id) : null;
   const [{ data: members }, { data: payments }, { data: posts }] = creator ? await Promise.all([
-    db.from("subscriptions").select("status,created_at,current_period_end,creator_cents").eq("creator_id", creator.id),
-    db.from("subscription_payments").select("creator_cents,paid_at,subscriptions!inner(creator_id)").eq("subscriptions.creator_id", creator.id).eq("status", "paid").gte("paid_at", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
+    db.from("subscriptions").select("status,created_at,current_period_end,creator_cents").eq("creator_id", creator.id).eq("stripe_mode", mode),
+    db.from("subscription_payments").select("creator_cents,paid_at,subscriptions!inner(creator_id)").eq("subscriptions.creator_id", creator.id).eq("subscriptions.stripe_mode", mode).eq("status", "paid").gte("paid_at", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()),
     db.from("vip_posts").select("id,body,published_at,vip_post_media(id)").eq("creator_id", creator.id).order("published_at", { ascending: false }).limit(20),
   ]) : [{ data: [] }, { data: [] }, { data: [] }];
-  const active = (members || []).filter((x) => ["active", "trialing"].includes(x.status));
+  const active = (members || []).filter((x) => vipAccessEligible(x.status, x.current_period_end));
   const month = new Date().toISOString().slice(0, 7);
   const newThisMonth = active.filter((x) => x.created_at.startsWith(month)).length;
   const recurringRevenue = active.reduce((sum, item) => sum + Number(item.creator_cents || 0), 0);

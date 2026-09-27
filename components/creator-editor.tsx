@@ -11,6 +11,7 @@ import { validateCreator, centsFromInput } from "@/lib/creators/validation";
 import { splitPayment, PLATFORM_FEE_PERCENT } from "@/lib/payments/fees";
 import { Button, Price } from "./ui";
 import { Icon } from "./icon";
+import { paidRequestAvailable } from "@/lib/launch/scope";
 const countries = [
   ["FR", "France"],
   ["GB", "United Kingdom"],
@@ -346,7 +347,7 @@ export function CreatorEditor({
             </span>
           </div>
           <div className="pricing-editor">
-            {catalog.filter((item) => item.kind === "message").map((item) => {
+            {catalog.filter((item) => paidRequestAvailable(item.kind)).map((item) => {
               const price = draft.pricing.find((p) => p.kind === item.kind)!;
               return (
                 <div className="price-editor-row" key={item.kind}>

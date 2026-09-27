@@ -4,6 +4,7 @@ import { paymentBackend } from "./server";
 import { connectStatus } from "./connect";
 import { PaymentEngine, type Intent, type ReplyPayment } from "./engine";
 import { PLATFORM_FEE_BPS } from "@/lib/payments/fees";
+import { paidRequestAvailable } from "@/lib/launch/scope";
 import { paymentLog } from "./log";
 function snapshot(pi: Stripe.PaymentIntent): Intent {
   const charge = typeof pi.latest_charge === "object" ? pi.latest_charge : null;
@@ -206,7 +207,7 @@ export async function prepareCheckout(
   message: string,
   kind: "message" | "voice_note" | "photo" = "message",
 ) {
-  if (kind !== "message") throw Error("This request type is not available.");
+  if (!paidRequestAvailable(kind)) throw Error("This request type is not available.");
   const service = replyService();
   const [{ data: fan }, { data: creator }] = await Promise.all([
     service.db.from("profiles").select("account_status").eq("id", fanId).single(),

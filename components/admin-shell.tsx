@@ -8,7 +8,7 @@ const links=[
   ["Overview","/admin"],["Users","/admin/users"],["Creators","/admin/creators"],
   ["Payments","/admin/payments"],["Subscriptions","/admin/subscriptions"],["Payouts","/admin/payouts"],
   ["Requests","/admin/requests"],["Reports","/admin/reports"],["Disputes","/admin/disputes"],
-  ["Content","/admin/content"],["System","/admin/system"],
+  ["Content","/admin/content"],["System","/admin/system"],["Launch readiness","/admin/launch-readiness"],
 ] as const;
 export function AdminShell({children}:{children:React.ReactNode}){
  const path=usePathname();

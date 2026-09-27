@@ -1,8 +1,10 @@
 import { getViewer } from "@/lib/auth/session";
-import { readJson, fail } from "@/lib/http";
+import { readJson, fail, sameOrigin } from "@/lib/http";
 import { prepareCheckout } from "@/lib/stripe/service";
 import { enforceRateLimit } from "@/lib/security/rate-limit";
+import { paidRequestAvailable } from "@/lib/launch/scope";
 export async function POST(request: Request) {
+  if (!sameOrigin(request)) return fail("Invalid origin.", 403);
   const viewer = await getViewer();
   if (!viewer || viewer.demo)
     return fail("Sign in to start a secured request.", 401);
@@ -16,7 +18,7 @@ export async function POST(request: Request) {
       typeof message !== "string" ||
       !message.trim() ||
       message.length > 2000 ||
-      !["message", "voice_note", "photo"].includes(kind)
+      !paidRequestAvailable(kind)
     )
       return fail("Check your message and try again.");
     const result = await prepareCheckout(

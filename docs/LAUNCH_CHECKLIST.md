@@ -1,35 +1,18 @@
-# ReplyPass launch checklist
+# ReplyPass V1 launch checklist
 
-Task 6 hardening is committed in the repository. This checklist separates automated checks from the work that must be completed in the production accounts before Task 7.
+**Scope:** Guaranteed Reply and VIP Membership only. Voice notes, paid photos, video requests, live chat, tips, credits and wallets are postponed. Historical data and code remain for audit; new paid media checkouts are rejected server-side.
 
-## Automated / complete
+## Code/configuration checks
 
-- Admin routes require a server-side `admin` profile role; browser users cannot self-promote.
-- User and creator suspension state is stored and enforced before paid activity.
-- Creator approval is separate from Stripe Connect payout eligibility.
-- Refund, dispute, transfer, and reconciliation records have durable IDs and audit entries.
-- Stripe webhook signatures and replay inbox checks are enabled.
-- Private media uses ownership checks and short-lived signed URLs.
-- Notification creation supports deterministic event keys.
-- Email delivery is provider-agnostic and fails visibly in production when unconfigured.
-- Sensitive mutations use same-origin checks and server-side rate limiting hooks.
-- Demo auth and demo checkout are disabled in production.
-- `/api/health`, security headers, no-index private routes, and account deletion request flow exist.
-- Lint, TypeScript, unit tests, and production build pass for the committed revision.
+- Creator offer and VIP checkout read authoritative server-side prices; reply checkout snapshots the gross, 15% fee and 85% creator share.
+- Creator acceptance does not capture. A qualifying reply triggers capture and transfer; decline and expiry cancel the authorization. Refunds are idempotent and reverse the creator transfer when applicable.
+- VIP uses Stripe-hosted monthly Checkout with a 15% application fee and creator destination. Webhooks control access; period-end cancellation retains access only through the paid-through date. This is code readiness, not proof of a real charge or payout.
+- Production demo checkout is disabled; live/test Reply payments are separated by immutable `stripe_mode`. Unknown historical mode is not counted as live. Historical test records remain inspectable.
+- Admin → Launch readiness distinguishes configured services from real-world verification. `/api/health` is a configuration check, not a payment-flow test.
+- Email, cron, monitoring and analytics configuration require both code checks and provider/dashboard verification. Analytics and advertising remain consent-gated.
 
-## Manual / required before launch
+## Unverified real-world steps
 
-- Vercel: set production Supabase URL/anon key/service role, Stripe test or live keys, webhook secret, `CRON_SECRET`, shared rate-limit REST credentials, and email provider credentials.
-- Domain: verify `getreplypass.com` and the `www` redirect, then test canonical URLs and creator shares.
-- Supabase: apply every migration, verify RLS, configure production SMTP, and add the production auth redirect URLs.
-- Stripe: obtain live approval, configure live Connect onboarding, live webhook events, customer portal, payout schedule, and dispute notifications. Do not switch to live until Task 7.
-- Email/DNS: configure SPF and DKIM; publish a DMARC policy after monitoring delivery.
-- Scheduler: configure an external scheduler for `/api/cron/payments` with `Authorization: Bearer $CRON_SECRET`; Vercel Hobby does not provide the required five-minute schedule.
-- GA4/Meta: verify consent behavior, production data streams, conversion events, and Meta Conversions API token storage.
-- Error monitoring: connect the provider adapter and confirm secrets are server-only.
-- Legal: have Terms, Privacy, Community Guidelines, and Creator Terms reviewed by counsel and replace draft language.
-- QA: complete mobile, accessibility, browser, payment, payout, refund, dispute, account deletion, and private-media smoke tests.
+Use [Final owner launch steps](FINAL_OWNER_LAUNCH_STEPS.md) for the short ordered checklist and evidence fields. In particular, no real VIP subscription has been purchased at the owner's request. A passing test suite does not prove a live bank payout, refund, renewal or mobile wallet.
 
-## Scope freeze
-
-V1 contains Guaranteed Reply, Voice Note Request, Photo Request, and VIP Membership. Live Chat, Video Requests, Tips, Wallet, Coins, credits, referrals, discovery, AI, and native apps remain out of scope.
+Legal and operator facts requiring professional review are in [Legal required info](LEGAL_REQUIRED_INFO.md). Keep the launch controlled until those facts and the live financial cases are resolved.

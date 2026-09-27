@@ -16,6 +16,7 @@ import { SaveCreator } from "./fan-account";
 import { BottomNavigation } from "./navigation";
 import { VipJoin } from "./vip-join";
 import type { VipPlan } from "@/lib/vip/model";
+import { paidRequestAvailable } from "@/lib/launch/scope";
 
 function Checkout({
   offering,
@@ -226,7 +227,7 @@ export function CreatorProfile({
   const creator = demoImage ? { ...initial, image: demoImage } : initial;
   const { vip } = creator;
   const offerings = creator.offerings.filter(
-    (offering) => offering.kind === "message",
+    (offering) => paidRequestAvailable(offering.kind),
   );
   const firstName = creator.name.split(" ")[0];
   const titles = {
@@ -418,7 +419,7 @@ export function CreatorProfile({
                     </h3>
                     <Badge>VIP ONLY</Badge>
                   </div>
-                  <div className="preview-grid">
+                  {creator.demo && <div className="preview-grid">
                     {[
                       "Life lately",
                       "Behind the scenes",
@@ -443,9 +444,9 @@ export function CreatorProfile({
                         <span className="preview-label">{title}</span>
                       </button>
                     ))}
-                  </div>
+                  </div>}
                   <p className="demo-caption">
-                    {creator.demo ? "Fictional creator · Demo media and activity" : activeVip ? "Your private VIP feed is ready" : "Preview only · Private posts stay protected"}
+                    {creator.demo ? "Fictional creator · Demo media and activity" : activeVip ? "Your private VIP feed is ready" : "Private posts are visible after joining VIP."}
                   </p>
                 </section>
               </>
