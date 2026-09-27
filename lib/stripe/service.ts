@@ -33,6 +33,7 @@ export function replyService() {
         .from("reply_payments")
         .select("*")
         .eq("id", id)
+        .eq("stripe_mode", config.mode)
         .single();
       if (error || !data) throw Error("Request unavailable.");
       return data;
@@ -43,6 +44,7 @@ export function replyService() {
       actor: string | null = null,
       payload: Record<string, unknown> = {},
     ) {
+      await store.get(id); // Reject cross-mode and unclassified records before any transition.
       const { data, error } = await db.rpc("reply_transition", {
         payment: id,
         action,
@@ -227,7 +229,12 @@ export async function prepareCheckout(
     throw Error(
       "This request could not be started. Check availability and try again.",
     );
-  const p = data as ReplyPayment;
+  let p = data as ReplyPayment;
+  if (p.stripe_mode === "unknown" && !p.stripe_payment_intent_id) {
+    const { error: modeError } = await service.db.from("reply_payments").update({ stripe_mode: service.config.mode }).eq("id", p.id).eq("stripe_mode", "unknown").is("stripe_payment_intent_id", null);
+    if (modeError) throw Error("Unable to classify payment mode.");
+  }
+  p = await service.store.get(p.id);
   if (["canceled", "refunded", "disputed", "failed"].includes(p.payment_state))
     throw Error("This attempt is closed. Start a new request.");
   const pi = await service.engine.ensureIntent(p);

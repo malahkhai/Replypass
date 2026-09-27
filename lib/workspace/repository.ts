@@ -28,7 +28,7 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       .from("paid_interactions")
       .select(
         "id,fan_id,creator_id,kind,amount_cents,currency,status,created_at,captured_at,completed_at,fee_cents,creator_cents,conversation_id",
-      ),
+      ).eq("stripe_mode", stripeConfig()?.mode || "live"),
     supabase
       .from("subscriptions")
       .select("id,fan_id,creator_id,amount_cents,status,current_period_end"),

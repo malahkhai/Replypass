@@ -9,6 +9,7 @@ export type PaymentState =
   | "failed";
 export interface ReplyPayment {
   id: string;
+  stripe_mode?: "test" | "live" | "unknown";
   interaction_id: string;
   request_id: string;
   fan_id: string;
@@ -104,6 +105,8 @@ export class PaymentEngine {
     this.livemode = livemode;
   }
   async ensureIntent(p: ReplyPayment) {
+    if (p.stripe_mode !== undefined && p.stripe_mode !== (this.livemode ? "live" : "test"))
+      throw Error("Payment mode does not match this environment.");
     const recovered = !p.stripe_payment_intent_id
       ? await this.provider.recover?.(p)
       : null;

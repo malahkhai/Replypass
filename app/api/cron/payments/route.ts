@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     !timingSafeEqual(Buffer.from(received), Buffer.from(expected))
   )
     return new Response("Unauthorized", { status: 401 });
-  const { db, engine } = replyService();
+  const { db, engine, config } = replyService();
   const { data: run } = await db.from("operational_runs").insert({ job: "payments", status: "running" }).select("id").single();
   const { data, error } = await db
     .from("reply_payments")
@@ -22,6 +22,7 @@ export async function GET(request: Request) {
     .or(
       "payment_state.in.(pending,authorized,failed),needs_reconciliation.eq.true",
     )
+    .eq("stripe_mode", config.mode)
     .eq("manual_review", false)
     .order("updated_at")
     .limit(50);

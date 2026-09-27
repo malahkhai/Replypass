@@ -435,3 +435,12 @@ test("failed transfer reversal retries without refunding the fan twice", async (
   assert.equal(f.p.transfer_state, "reversed");
   assert.equal(f.refunds, 1);
 });
+
+for (const mode of ["live", "unknown"] as const) {
+  test(`rejects ${mode} records before test-mode provider access`, async () => {
+    const f = fixture();
+    f.p.stripe_mode = mode;
+    await assert.rejects(f.engine.ensureIntent(f.p), /Payment mode/);
+    assert.equal(f.operations.size, 0);
+  });
+}

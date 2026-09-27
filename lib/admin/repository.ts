@@ -1,4 +1,6 @@
 import "server-only";
+import { stripeConfig } from "@/lib/stripe/config";
+const paymentMode = () => stripeConfig()?.mode || "live";
 import { serviceDatabase } from "@/lib/stripe/server";
 
 export type AdminMetric = { label:string; value:string; attention?:boolean };
@@ -10,7 +12,7 @@ export async function adminOverview(){
     db.from("profiles").select("id",{count:"exact",head:true}),
     db.from("creator_profiles").select("id",{count:"exact",head:true}).eq("status","approved"),
     db.from("subscriptions").select("id",{count:"exact",head:true}).in("status",["active","trialing"]),
-    db.from("reply_payments").select("gross_cents,fee_cents,creator_cents,payment_state,transfer_state").in("payment_state",["captured","refunded","disputed"]),
+    db.from("reply_payments").select("gross_cents,fee_cents,creator_cents,payment_state,transfer_state").in("payment_state",["captured","refunded","disputed"]).eq("stripe_mode",paymentMode()),
     db.from("reports").select("id",{count:"exact",head:true}).in("status",["open","reviewing","escalated"]),
     db.from("stripe_disputes").select("id",{count:"exact",head:true}).not("status","in",'(won,lost,warning_closed)'),
     db.from("reconciliation_issues").select("id",{count:"exact",head:true}).in("status",["open","manual_review"]),
@@ -52,9 +54,9 @@ export async function adminCreators(){
   return data||[];
 }
 
-export async function adminPayments(){
+export async function adminPayments(mode: "test" | "live" | "unknown" = paymentMode()){
   const db=serviceDatabase();
-  const {data,error}=await db.from("reply_payments").select("id,interaction_kind,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,stripe_payment_intent_id,stripe_charge_id,stripe_transfer_id,created_at,fan_id,creator_id,needs_reconciliation,manual_review").order("created_at",{ascending:false}).limit(100);
+  const {data,error}=await db.from("reply_payments").select("id,interaction_kind,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,stripe_payment_intent_id,stripe_charge_id,stripe_transfer_id,created_at,fan_id,creator_id,needs_reconciliation,manual_review,stripe_mode").eq("stripe_mode",mode).order("created_at",{ascending:false}).limit(100);
   if(error) throw Error("Payments unavailable."); return data||[];
 }
 

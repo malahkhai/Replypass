@@ -15,6 +15,7 @@ export async function sendSecuredMessage(
     .from("reply_payments")
     .select("*")
     .eq("conversation_id", conversation)
+    .eq("stripe_mode", stripeConfig()?.mode || "live")
     .maybeSingle();
   if (payment && !engine)
     throw Error("Payment backend is required for this conversation.");
