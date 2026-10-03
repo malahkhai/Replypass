@@ -194,18 +194,24 @@ export function FanRequestCard({ request }: { request: FanRequestSummary }) {
         </>
       )}
       <footer className="fan-request-actions">
-        <div className="fan-request-deadline">
-          {active && (request.accepted_at ? request.fulfillment_expires_at : request.acceptance_expires_at || request.expires_at) ? (
-            <><Icon name="bolt" size={16} /><RequestCountdown expiresAt={(request.accepted_at ? request.fulfillment_expires_at : request.acceptance_expires_at || request.expires_at)!} /></>
-          ) : (
-            <><Icon name="shield" size={16} /><span>{request.interaction_kind === "message" ? "No reply = no charge" : "No delivery = no charge"}</span></>
+        <div className="fan-request-actions-info">
+          <div className="fan-request-deadline">
+            {active && (request.accepted_at ? request.fulfillment_expires_at : request.acceptance_expires_at || request.expires_at) ? (
+              <><Icon name="bolt" size={16} /><RequestCountdown expiresAt={(request.accepted_at ? request.fulfillment_expires_at : request.acceptance_expires_at || request.expires_at)!} /></>
+            ) : (
+              <><Icon name="shield" size={16} /><span>{request.interaction_kind === "message" ? "No reply = no charge" : "No delivery = no charge"}</span></>
+            )}
+          </div>
+          {request.payment_state === "captured" && (
+            <button className="request-report" type="button" disabled={reported} onClick={report}>
+              {reported ? "Report received" : "Report this request or delivery"}
+            </button>
           )}
         </div>
         <Link className="fan-request-button" href={request.conversation_id ? "/account" : creatorHref}>
           {request.conversation_id ? "Open messages" : "View creator"}<Icon name="arrow" size={16} />
         </Link>
       </footer>
-      {request.payment_state === "captured" && <button className="request-report" type="button" disabled={reported} onClick={report}>{reported ? "Report received" : "Report this request or delivery"}</button>}
     </article>
   );
 }

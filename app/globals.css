@@ -3180,10 +3180,27 @@ body:has(.workspace-shell) > .site-header {
   padding: 15px 20px;
   border-top: 1px solid var(--line);
 }
+.fan-request-actions-info { display: grid; justify-items: start; gap: 4px; min-width: 0; }
 .fan-request-deadline { display: flex; align-items: center; gap: 9px; color: #687653; font-size: 11px; font-weight: 650; }
 .fan-request-deadline > div { display: grid; gap: 2px; }
 .fan-request-deadline small { color: var(--muted); font-size: 9px; font-weight: 400; }
+.fan-request-actions .request-report {
+  margin-left: 25px;
+  padding: 7px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: none;
+}
+.fan-request-actions .request-report:hover { color: var(--ink); text-decoration: underline; }
+.fan-request-actions .request-report:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.fan-request-actions .request-report:disabled { color: #687653; cursor: default; }
 .fan-request-button { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 9px; padding: 0 15px; border-radius: 12px; background: var(--ink); color: white; font-size: 11px; font-weight: 700; }
+@media (max-width: 480px) {
+  .fan-request-actions { align-items: stretch; flex-direction: column; gap: 10px; }
+  .fan-request-button { width: 100%; }
+}
 .fan-requests-empty { display: grid; justify-items: center; min-height: 330px; padding: 58px 25px; border: 1px solid var(--line); border-radius: 24px; background: white; text-align: center; }
 .fan-requests-empty-icon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 22px; border-radius: 50%; background: #f0f2e9; color: #647451; }
 .fan-requests-empty h2 { max-width: 410px; font-size: 27px; letter-spacing: -1.1px; }
@@ -3200,6 +3217,7 @@ body:has(.workspace-shell) > .site-header {
 .checkout-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .checkout-divider::before,
 .checkout-divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+.checkout-payment-fields { margin-bottom: 18px; }
 .account-tabs {
   display: flex;
   gap: 6px;

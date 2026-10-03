@@ -278,12 +278,14 @@ function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind:
           <span>or pay by card</span>
         </div>
       )}
-      <PaymentElement
-        options={{
-          layout: "tabs",
-          wallets: { applePay: "never", googlePay: "never" },
-        }}
-      />
+      <div className="checkout-payment-fields">
+        <PaymentElement
+          options={{
+            layout: "tabs",
+            wallets: { applePay: "never", googlePay: "never" },
+          }}
+        />
+      </div>
       <Button disabled={!stripe || busy}>
         {busy ? (
           "Checking reservation…"
