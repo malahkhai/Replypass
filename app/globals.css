@@ -3217,6 +3217,7 @@ body:has(.workspace-shell) > .site-header {
 .checkout-divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
 .checkout-divider::before,
 .checkout-divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
+.checkout-payment-fields { margin-bottom: 18px; }
 .account-tabs {
   display: flex;
   gap: 6px;
