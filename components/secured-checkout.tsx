@@ -16,6 +16,7 @@ import { Button, Price, Badge } from "./ui";
 import { Icon } from "./icon";
 import type { PublicCreator } from "@/types/creator";
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const testMode = publishableKey?.startsWith("pk_test_") === true;
 const stripePromise =
   publishableKey?.startsWith("pk_test_") ||
   publishableKey?.startsWith("pk_live_")
@@ -40,6 +41,7 @@ export function SecuredCheckout({
   const { message, setMessage } = useRequestDraft(creator.handle, kind);
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState("");
+  const [signInRequired, setSignInRequired] = useState(false);
   const [busy, setBusy] = useState(false);
   async function prepare(e: React.FormEvent) {
     e.preventDefault();
@@ -51,6 +53,7 @@ export function SecuredCheckout({
     }
     setBusy(true);
     setError("");
+    setSignInRequired(false);
     try {
       const fingerprint = Array.from(
         new Uint8Array(
@@ -78,7 +81,10 @@ export function SecuredCheckout({
           body: JSON.stringify({ creatorId: creator.id, attemptKey, message, kind }),
       });
       const data = await r.json();
-      if (!r.ok) throw Error(data.error);
+      if (!r.ok) {
+        setSignInRequired(r.status === 401);
+        throw Error(data.error);
+      }
       setQuote(data);
       track("checkout_started", kind);
     } catch (e) {
@@ -90,12 +96,12 @@ export function SecuredCheckout({
   if (!stripePromise)
     return (
       <p role="alert">
-        Test payment setup is unavailable. No payment was submitted.
+        Payment setup is unavailable. No payment was submitted.
       </p>
     );
   return (
     <div className="checkout-form">
-      <Badge>STRIPE TEST MODE</Badge>
+      {testMode && <Badge>STRIPE TEST MODE</Badge>}
       {!quote ? (
         <form onSubmit={prepare} className="auth-form">
           <p>
@@ -137,11 +143,13 @@ export function SecuredCheckout({
       {error && (
         <p className="form-error" role="alert">
           {error}{" "}
-          <Link
-            href={`/login?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`}
-          >
-            Sign in
-          </Link>
+          {signInRequired && (
+            <Link
+              href={`/login?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`}
+            >
+              Sign in
+            </Link>
+          )}
         </p>
       )}
       <p className="checkout-footnote">

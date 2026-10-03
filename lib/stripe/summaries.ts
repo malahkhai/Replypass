@@ -32,7 +32,7 @@ export async function paymentSummaries(
     .in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
   const { data: creators } = await db
     .from("creator_profiles")
-    .select("id,handle,profiles(display_name,avatar_path)")
+    .select("id,handle,profiles!creator_profiles_profile_id_fkey(display_name,avatar_path)")
     .in(
       "id",
       (data || []).length
