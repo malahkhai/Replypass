@@ -2,6 +2,7 @@ import "server-only";
 import { paymentBackend } from "./server";
 import { authOrigin } from "@/lib/site";
 import { payoutReadiness } from "./connect-state";
+import { connectAccountTable } from "./account-table";
 
 export type ConnectOnboardingStage =
   | "load_auth_user"
@@ -36,9 +37,10 @@ async function atStage<T>(
   }
 }
 export async function connectStatus(creatorId: string) {
-  const { stripe, db } = paymentBackend();
+  const { stripe, db, config } = paymentBackend();
+  const table = connectAccountTable(config.mode);
   const { data: row, error } = await db
-    .from("creator_stripe_accounts")
+    .from(table)
     .select("*")
     .eq("creator_id", creatorId)
     .maybeSingle();
@@ -64,7 +66,7 @@ export async function connectStatus(creatorId: string) {
   });
   const becameReady = ready && !row.ready;
   const { error: updateError } = await db
-    .from("creator_stripe_accounts")
+    .from(table)
     .update({
       ready,
       transfers_enabled: transfers,
@@ -74,7 +76,7 @@ export async function connectStatus(creatorId: string) {
     })
     .eq("creator_id", creatorId);
   if (updateError) throw Error("Could not save payout status.");
-  if (becameReady) {
+  if (becameReady && config.mode === "live") {
     const { error: pricingError } = await db
       .from("creator_pricing")
       .update({ active: true, updated_at: new Date().toISOString() })
@@ -85,7 +87,8 @@ export async function connectStatus(creatorId: string) {
   return { connected: true, ready, transfers, payouts, requirementsDue };
 }
 export async function onboardConnect(userId: string, origin: string) {
-  const { stripe, db } = paymentBackend();
+  const { stripe, db, config } = paymentBackend();
+  const table = connectAccountTable(config.mode);
   const { data: authData, error: authError } = await atStage(
     "load_auth_user",
     () => db.auth.admin.getUserById(userId),
@@ -103,7 +106,7 @@ export async function onboardConnect(userId: string, origin: string) {
   if (error || !creator) throw Error("Create your creator profile first.");
   const { error: initError } = await atStage("initialize_record", () =>
     db
-      .from("creator_stripe_accounts")
+      .from(table)
       .upsert(
         { creator_id: creator.id },
         { onConflict: "creator_id", ignoreDuplicates: true },
@@ -112,7 +115,7 @@ export async function onboardConnect(userId: string, origin: string) {
   if (initError) throw Error("Payout setup unavailable.");
   const { data: row, error: rowError } = await atStage("load_record", () =>
     db
-      .from("creator_stripe_accounts")
+      .from(table)
       .select("*")
       .eq("creator_id", creator.id)
       .single(),
@@ -149,7 +152,7 @@ export async function onboardConnect(userId: string, origin: string) {
     accountId = account.id;
     const { error: saveError } = await atStage("save_account", () =>
       db
-        .from("creator_stripe_accounts")
+        .from(table)
         .update({ stripe_account_id: accountId })
         .eq("creator_id", creator.id),
     );

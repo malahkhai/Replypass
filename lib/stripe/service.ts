@@ -221,9 +221,9 @@ export async function prepareCheckout(
       "This creator needs to finish payout setup before accepting paid requests.",
     );
   const { data, error } = await service.db.rpc(
-    kind === "message" ? "prepare_reply" : "prepare_media_request",
+    kind === "message" ? "prepare_reply_for_mode" : "prepare_media_request",
     kind === "message"
-      ? { fan: fanId, creator: creatorId, attempt, content: message, fee_basis: PLATFORM_FEE_BPS }
+      ? { fan: fanId, creator: creatorId, attempt, content: message, fee_basis: PLATFORM_FEE_BPS, payment_mode: service.config.mode }
       : { fan: fanId, creator: creatorId, attempt, content: message, interaction_type: kind, fee_basis: PLATFORM_FEE_BPS },
   );
   if (error)

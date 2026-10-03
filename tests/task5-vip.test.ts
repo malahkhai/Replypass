@@ -28,7 +28,7 @@ test("browser cannot supply price currency fee or destination", () => {
   assert.match(route, /createVipCheckout\(viewer\.id,body\.creatorId\)/);
   assert.doesNotMatch(route, /amountCents|currency|destination/);
   assert.match(server, /creator_membership_plans/);
-  assert.match(server, /creator_stripe_accounts/);
+  assert.match(server, /connectAccountTable\(config\.mode\)/);
 });
 test("Stripe Checkout uses recurring destination subscriptions and 15 percent fee", () => {
   assert.match(server, /mode:"subscription"/);

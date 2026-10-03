@@ -3,6 +3,7 @@ import { paymentBackend, serviceDatabase } from "@/lib/stripe/server";
 import { authOrigin, siteConfig } from "@/lib/site";
 import { vipAccessEligible, vipSplit, type VipPlan } from "./model";
 import { stripeConfig } from "@/lib/stripe/config";
+import { connectAccountTable } from "@/lib/stripe/account-table";
 
 export async function getVipPlan(creatorId:string):Promise<VipPlan|null>{
   const db=serviceDatabase();
@@ -22,7 +23,7 @@ export async function createVipCheckout(fanId:string,creatorId:string){
   const {stripe,db,config}=paymentBackend();
   const [planResult,creatorResult,profileResult,fanResult,existingResult]=await Promise.all([
     db.from("creator_membership_plans").select("*").eq("creator_id",creatorId).eq("enabled",true).single(),
-    db.from("creator_stripe_accounts").select("stripe_account_id,ready").eq("creator_id",creatorId).single(),
+    db.from(connectAccountTable(config.mode)).select("stripe_account_id,ready").eq("creator_id",creatorId).single(),
     db.from("creator_profiles").select("profile_id,handle,status,profiles(account_status)").eq("id",creatorId).single(),
     db.auth.admin.getUserById(fanId),
     db.from("subscriptions").select("*").eq("fan_id",fanId).eq("creator_id",creatorId).eq("stripe_mode",config.mode).in("status",["incomplete","trialing","active","past_due","unpaid","paused"]).maybeSingle(),

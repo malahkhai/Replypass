@@ -3,6 +3,7 @@ import "server-only";
 import type Stripe from "stripe";
 import { replyService } from "./service";
 import { connectStatus } from "./connect";
+import { connectAccountTable } from "./account-table";
 import { paymentLog } from "./log";
 import { accountEvents, paymentEvents } from "./events";
 import { reportMetaPurchase } from "@/lib/analytics/meta-server";
@@ -51,15 +52,16 @@ export async function processWebhook(raw: string, signature: string) {
   if (accountEvents.has(event.type)) {
     const id = event.related_object?.id;
     if (!id) throw Error("Missing account reference.");
+    const table = connectAccountTable(config.mode);
     const { data: account } = await db
-      .from("creator_stripe_accounts")
+      .from(table)
       .select("creator_id")
       .eq("stripe_account_id", id)
       .maybeSingle();
     if (account) {
       if (event.type === "v2.core.account.closed") {
         const { error } = await db
-          .from("creator_stripe_accounts")
+          .from(table)
           .update({
             ready: false,
             transfers_enabled: false,
