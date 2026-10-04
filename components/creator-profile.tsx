@@ -13,7 +13,6 @@ import { Avatar, Badge, Button, Card, CreatorStat, Price } from "./ui";
 import { Icon, type IconName } from "./icon";
 import { BottomSheet } from "./bottom-sheet";
 import { SaveCreator } from "./fan-account";
-import { BottomNavigation } from "./navigation";
 import { VipJoin } from "./vip-join";
 import type { VipPlan } from "@/lib/vip/model";
 import { paidRequestAvailable } from "@/lib/launch/scope";
@@ -229,6 +228,9 @@ export function CreatorProfile({
   const offerings = creator.offerings.filter(
     (offering) => paidRequestAvailable(offering.kind),
   );
+  const messageOffering = offerings.find((offering) => offering.kind === "message");
+  const hasCompletedChats = Number.parseFloat(creator.completedChats) > 0;
+  const hasPublicProof = creator.ratingCount > 0 || hasCompletedChats;
   const firstName = creator.name.split(" ")[0];
   const titles = {
     message: `Message ${firstName}`,
@@ -326,22 +328,28 @@ export function CreatorProfile({
                 ))}
               </div>
               <p className="bio">{creator.bio}</p>
-              <div className="stats">
-                <CreatorStat
-                  value={`★ ${creator.rating}`}
-                  label={creator.ratingCount ? `${creator.ratingCount.toLocaleString()} ratings` : "Fan rating"}
-                />
-                <CreatorStat value={creator.responseTime} label="Avg. reply" />
-                <CreatorStat
-                  value={creator.responseRate}
-                  label="Response rate"
-                />
-              </div>
-              <p className="completed">
-                <Icon name="message" size={15} />
-                <strong>{creator.completedChats}</strong> completed chats. A lot
-                of happy hellos.
-              </p>
+              {hasPublicProof && (
+                <>
+                  <div className="stats">
+                    {creator.ratingCount > 0 && (
+                      <CreatorStat
+                        value={`★ ${creator.rating}`}
+                        label={`${creator.ratingCount.toLocaleString()} ratings`}
+                      />
+                    )}
+                    <CreatorStat value={creator.responseTime} label="Avg. reply" />
+                    {creator.responseRate !== "—" && (
+                      <CreatorStat value={creator.responseRate} label="Response rate" />
+                    )}
+                  </div>
+                  {hasCompletedChats && (
+                    <p className="completed">
+                      <Icon name="message" size={15} />
+                      <strong>{creator.completedChats}</strong> completed chats
+                    </p>
+                  )}
+                </>
+              )}
             </div>
             <SaveCreator creator={creator} />
             <div className="desktop-promise">
@@ -461,7 +469,37 @@ export function CreatorProfile({
           </span>
         </footer>
       </main>
-      <BottomNavigation handle={creator.handle} />
+      <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
+        {messageOffering && (
+          <button
+            type="button"
+            className="profile-action-message"
+            onClick={() => { track("interaction_select", "message"); setSelected(messageOffering); }}
+          >
+            <Icon name="message" size={18} />
+            <span>Message</span>
+            <Price cents={messageOffering.cents} />
+          </button>
+        )}
+        {vipPlan?.enabled && vip && !creator.demo && (
+          activeVip ? (
+            <Link className="profile-action-vip" href={`/${creator.handle}/vip`}>
+              <Icon name="sparkles" size={18} />
+              <span>Your VIP</span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="profile-action-vip"
+              onClick={() => { track("interaction_select", "vip"); setSelected(vip); }}
+            >
+              <Icon name="sparkles" size={18} />
+              <span>VIP</span>
+              <Price cents={vipPlan.amountCents} unit="/mo" />
+            </button>
+          )
+        )}
+      </nav>
       <BottomSheet
         open={!!selected}
         onClose={() => setSelected(null)}
