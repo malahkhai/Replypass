@@ -469,7 +469,7 @@ export function CreatorProfile({
           </span>
         </footer>
       </main>
-      <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
+      {(messageOffering || (vipPlan?.enabled && vip && !creator.demo)) && <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
         {messageOffering && (
           <button
             type="button"
@@ -499,7 +499,7 @@ export function CreatorProfile({
             </button>
           )
         )}
-      </nav>
+      </nav>}
       <BottomSheet
         open={!!selected}
         onClose={() => setSelected(null)}

@@ -668,9 +668,6 @@ h1 {
   letter-spacing: -1px;
   color: var(--ink);
 }
-.bottom-nav {
-  display: none;
-}
 .bottom-sheet {
   position: fixed;
   inset: auto 0 0;
@@ -1103,33 +1100,6 @@ textarea {
   }
   .profile-footer > span:first-child {
     font-size: 10px;
-  }
-  .bottom-nav {
-    display: flex;
-    justify-content: space-around;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid var(--line);
-    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
-    background: #fffdfaef;
-    backdrop-filter: blur(14px);
-    z-index: 5;
-  }
-  .bottom-nav a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-width: 60px;
-    min-height: 44px;
-    color: #8b857c;
-    font-size: 10px;
-  }
-  .bottom-nav a[aria-current] {
-    color: var(--accent);
   }
   .bottom-sheet {
     padding: 10px 22px calc(25px + env(safe-area-inset-bottom));
