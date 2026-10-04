@@ -7,7 +7,7 @@ This records the implementation and local checks, not a comprehensive security a
 | Interaction | `paid_interactions`: offering, fan, creator and immutable payment snapshot linkage |
 | Request | `interaction_requests`: created only after authorization, independently accepted/fulfilled/declined/expired |
 | Payment | `reply_payments`: immutable integer minor-unit gross/fee/net/currency/account snapshot, Stripe references, durable capture/refund claims and reconciliation state |
-| Ledger | `transactions`: unique charge, fee, transfer and refund entries, no client writes |
+| Ledger | `transactions`: unique charge, fee, transfer, refund and completed transfer-reversal entries, no client writes (reversal entries require migration `202610040001_transfer_reversal_ledger.sql`) |
 | Payout account | `creator_stripe_accounts`: service-only Accounts v2 recipient mapping and eligibility flags; no public KYC details |
 | Event inbox | `stripe_webhook_events`: verified event ID/type, attempts and completion timestamp; no raw sensitive event payload |
 | Rating | `ratings`: one fan-owned score per completed paid interaction; raw author records remain protected while public profiles read a published aggregate |
