@@ -25,7 +25,7 @@ test("VIP access is centralized and excludes failed or ended memberships", () =>
 });
 test("browser cannot supply price currency fee or destination", () => {
   const route = read("app/api/vip/checkout/route.ts");
-  assert.match(route, /createVipCheckout\(viewer\.id,body\.creatorId\)/);
+  assert.match(route, /createVipCheckout\(viewer\.id,body\.creatorId,new URL\(request\.url\)\.origin\)/);
   assert.doesNotMatch(route, /amountCents|currency|destination/);
   assert.match(server, /creator_membership_plans/);
   assert.match(server, /connectAccountTable\(config\.mode\)/);

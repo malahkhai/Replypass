@@ -39,10 +39,20 @@ export function creatorUrl(handle: string) {
     throw new Error("Invalid creator username.");
   return `${siteConfig.url}/@${username}`;
 }
-/** Local auth stays local even when sharing/metadata use the production URL. */
-export function authOrigin(observedOrigin: string) {
+/** Keep a verified Preview checkout/auth flow on its own deployment. */
+export function authOrigin(observedOrigin: string, configuredOrigin = siteConfig.url) {
   const url = new URL(observedOrigin);
   return ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)
     ? normalizeAppUrl(url.origin)
-    : siteConfig.url;
+    : url.protocol === "https:" &&
+        !url.username &&
+        !url.password &&
+        /^replypass-[a-z0-9-]+-akinola-akintundes-projects\.vercel\.app$/.test(
+          new URL(configuredOrigin).hostname,
+        ) &&
+        /^replypass-[a-z0-9-]+-akinola-akintundes-projects\.vercel\.app$/.test(
+          url.hostname,
+        )
+      ? normalizeAppUrl(url.origin)
+      : configuredOrigin;
 }

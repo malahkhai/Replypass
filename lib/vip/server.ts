@@ -1,6 +1,6 @@
 import "server-only";
 import { paymentBackend, serviceDatabase } from "@/lib/stripe/server";
-import { authOrigin, siteConfig } from "@/lib/site";
+import { authOrigin } from "@/lib/site";
 import { vipAccessEligible, vipSplit, type VipPlan } from "./model";
 import { stripeConfig } from "@/lib/stripe/config";
 import { connectAccountTable } from "@/lib/stripe/account-table";
@@ -19,7 +19,7 @@ export async function hasActiveVipAccess(fanId:string,creatorId:string){
   if(error) throw Error("Membership access unavailable.");
   return !!data&&vipAccessEligible(data.status,data.current_period_end);
 }
-export async function createVipCheckout(fanId:string,creatorId:string){
+export async function createVipCheckout(fanId:string,creatorId:string,observedOrigin:string){
   const {stripe,db,config}=paymentBackend();
   const [planResult,creatorResult,profileResult,fanResult,existingResult]=await Promise.all([
     db.from("creator_membership_plans").select("*").eq("creator_id",creatorId).eq("enabled",true).single(),
@@ -69,7 +69,7 @@ export async function createVipCheckout(fanId:string,creatorId:string){
   const split=vipSplit(plan.amount_cents);
   const {data:membership,error}=await db.from("subscriptions").insert({fan_id:fanId,creator_id:creatorId,plan_id:plan.id,stripe_mode:config.mode,status:"incomplete",amount_cents:plan.amount_cents,currency:plan.currency,stripe_price_id:priceId,membership_name:plan.name,fee_bps:split.feeBps,fee_cents:split.feeCents,creator_cents:split.creatorCents}).select("id").single();
   if(error||!membership) throw Error("Could not reserve membership checkout.");
-  const origin=authOrigin(siteConfig.url);
+  const origin=authOrigin(observedOrigin);
   const session=await stripe.checkout.sessions.create({mode:"subscription",customer_email:email,client_reference_id:membership.id,line_items:[{price:priceId,quantity:1}],success_url:`${origin}/vip/success?session_id={CHECKOUT_SESSION_ID}`,cancel_url:`${origin}/@${encodeURIComponent(creator.handle)}`,subscription_data:{application_fee_percent:15,transfer_data:{destination:account.stripe_account_id},metadata:{replypass_membership_id:membership.id,replypass_creator_id:creatorId}},metadata:{replypass_membership_id:membership.id}},{idempotencyKey:`vip-checkout-${membership.id}`});
   return {existing:false,url:session.url};
 }
