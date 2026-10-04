@@ -1,6 +1,6 @@
 # ReplyPass production launch runbook
 
-Task 7 keeps the launch product limited to Guaranteed Reply, Voice Note, Photo Request, and VIP. Live Chat, Video, Tips, wallets, and credits are not launch products.
+The public V1 launch product is limited to Guaranteed Reply and VIP. Voice Note, Photo Request, Live Chat, Video, Tips, wallets, and credits are postponed.
 
 ## Automated release gates
 
@@ -29,9 +29,7 @@ Run these with a deliberately small amount and record the Stripe IDs, ReplyPass 
 2. Decline: authorize, creator declines, confirm authorization cancellation and no earning.
 3. Expiry: authorize, leave unfulfilled, confirm the five-minute scheduler releases the authorization and records expiry.
 4. Refund: capture a completed request, issue an admin refund, confirm refund record and transfer reversal/accounting.
-5. Voice Note: authorize, accept, record/upload valid private media, deliver, create fan entitlement, capture, transfer, and confirm the signed URL expires.
-6. Photo Request: repeat the Voice Note checks with a valid private image.
-7. VIP: subscribe, confirm access and creator earning, cancel at period end, confirm access remains through the period, then confirm removal. Test a failed renewal separately.
+5. VIP: subscribe, confirm access and creator earning, cancel at period end, confirm access remains through the period, then confirm removal. Test a failed renewal separately.
 
 Any disagreement between Stripe, Supabase, or the UI blocks launch. Real transactions, refunds, and transfer reversals require the owner to initiate or approve them.
 
