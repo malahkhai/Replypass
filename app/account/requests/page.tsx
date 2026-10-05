@@ -4,6 +4,7 @@ import { stripeConfig } from "@/lib/stripe/config";
 import { paymentSummaries } from "@/lib/stripe/summaries";
 import { FanRequestCard } from "@/components/fan-request-card";
 import { Icon } from "@/components/icon";
+import { FanPageNav } from "@/components/fan-page-nav";
 export const metadata = {
   title: "Your requests",
   robots: { index: false, follow: false },
@@ -37,6 +38,7 @@ export default async function Page() {
         </div>
         <Link className="button button-secondary" href="/account/deliveries">My deliveries <Icon name="arrow" size={16}/></Link>
       </section>
+      <FanPageNav current="Requests" />
       {!!rows.length && (
         <div className="fan-request-summary" aria-label="Request summary">
           <div>

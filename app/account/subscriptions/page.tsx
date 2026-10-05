@@ -1,4 +1,5 @@
 import { MembershipList, type MembershipView } from "@/components/membership-list";
+import { FanPageNav } from "@/components/fan-page-nav";
 import { requireRole } from "@/lib/auth/session";
 import { stripeConfig } from "@/lib/stripe/config";
 import { serviceDatabase } from "@/lib/stripe/server";
@@ -54,6 +55,7 @@ export default async function Page() {
           <h1>Memberships</h1>
           <p>Stay close to the creators you support. Your access and billing details are here.</p>
         </header>
+        <FanPageNav current="Memberships" />
         <MembershipList memberships={memberships} />
       </div>
     </main>
