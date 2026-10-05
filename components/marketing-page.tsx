@@ -285,7 +285,7 @@ export function MarketingPage({
           {[
             [
               "Can I sign up as a fan here?",
-              "Yes. Join ReplyPass directly or create your account through a creator’s link. One account keeps your messages, requests and VIP memberships together.",
+              "Start from the ReplyPass link of a creator you follow. When you choose a reply or VIP membership, you can create a fan profile in that creator’s context. One account keeps your conversations, requests and memberships together across creators.",
             ],
             [
               "Do I need an account for every creator?",

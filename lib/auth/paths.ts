@@ -13,10 +13,5 @@ export function safeNext(next: string | null | undefined) {
     : "/account";
 }
 export function signupAllowed(next: string | null | undefined) {
-  return (
-    !next ||
-    next === "/account" ||
-    next === "/creator/apply" ||
-    isCreatorDestination(next)
-  );
+  return next === "/creator/apply" || isCreatorDestination(next);
 }

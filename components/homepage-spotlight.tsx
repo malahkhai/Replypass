@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const stories = [
@@ -61,9 +60,7 @@ export function HomepageSpotlight() {
         </div>
       </div>
       <div className="spotlight-footer">
-        <Link className="showcase-link" href="/signup">
-          Join ReplyPass <span aria-hidden="true">↗</span>
-        </Link>
+        <span className="showcase-link">Start with a creator’s link</span>
         <div className="spotlight-controls" aria-label="Creator stories">
           {stories.map((item, index) => (
             <button

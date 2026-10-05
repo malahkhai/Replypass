@@ -1,6 +1,7 @@
 import { pageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site";
 import { AuthForm } from "@/components/auth-form";
+import Link from "next/link";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { findCreator } from "@/lib/creators/repository";
 import {
@@ -23,39 +24,68 @@ export default async function Signup({
     ? await findCreator(q.next.split("?")[0].slice(1))
     : null;
   const creatorMissing = isCreatorDestination(q.next) && !creator;
+  const creatorApplication = q.next === "/creator/apply";
+
+  if (!creatorApplication && !creator) {
+    return (
+      <main id="main" className="auth-page auth-page-signup">
+        <section className="auth-card auth-signup-gate">
+          <span className="auth-card-kicker">A PERSONAL CONNECTION</span>
+          <h1>A connection starts with a creator.</h1>
+          <p>
+            {creatorMissing
+              ? "This creator link is no longer available. Ask them for their current ReplyPass link to continue."
+              : "Fans create an account from a creator’s ReplyPass page, keeping that creator and your chosen interaction with you through signup."}
+          </p>
+          <p>
+            Once you join, one account keeps your conversations and memberships
+            together across the creators you follow.
+          </p>
+          <Link className="button button-primary" href="/creators">
+            Become a creator <span aria-hidden="true">↗</span>
+          </Link>
+          <p className="auth-switch">
+            <Link href="/">Back to ReplyPass</Link>
+          </p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main id="main" className="auth-page auth-page-signup">
       <section className="auth-intro">
         <span className="eyebrow">
-          {creator ? "YOU’RE ALMOST THERE" : "YOUR PEOPLE ARE HERE"}
+          {creatorApplication
+            ? "CREATOR SETUP"
+            : "YOU’RE ALMOST THERE"}
         </span>
         <h1>
-          {creator
-            ? `Get closer to ${creator.name.split(" ")[0]}.`
-            : "Keep every conversation close."}
+          {creatorApplication
+            ? "Build your creator page."
+            : `Get closer to ${creator!.name.split(" ")[0]}.`}
         </h1>
         <p className="auth-description">
-          {creator
-            ? `Create your free fan profile to message ${creator.name.split(" ")[0]}, follow your request and keep the conversation in one place.`
-            : "Create your free fan profile for the creators you follow. Your messages, requests and memberships stay together in one private space."}
+          {creatorApplication
+            ? "Create the account you’ll use to set up your ReplyPass creator page."
+            : `Create your free fan profile to message ${creator!.name.split(" ")[0]}, follow your request and keep the conversation in one place.`}
         </p>
-        <div className="auth-benefits" aria-label="Fan account benefits">
-          <div><span>01</span><p><strong>Start with a creator</strong>Open their ReplyPass link from a bio, story or post.</p></div>
-          <div><span>02</span><p><strong>No reply, no charge</strong>Follow every paid request from reservation to delivery.</p></div>
-          <div><span>03</span><p><strong>One private inbox</strong>Return to your conversations from any device.</p></div>
-        </div>
-      </section>
-      <section className="auth-card" aria-label="Create your fan profile">
-        <span className="auth-card-kicker">FREE FAN PROFILE</span>
-        <h2>Create your account.</h2>
-        <p>No public profile setup. Just the details you need to connect.</p>
-        {creatorMissing && (
-          <p className="form-error">That creator link is no longer available. You can still create your fan profile.</p>
+        {!creatorApplication && (
+          <div className="auth-benefits" aria-label="Fan account benefits">
+            <div><span>01</span><p><strong>Start with a creator</strong>Open their ReplyPass link from a bio, story or post.</p></div>
+            <div><span>02</span><p><strong>No reply, no charge</strong>Follow every paid request from reservation to delivery.</p></div>
+            <div><span>03</span><p><strong>One private inbox</strong>Return to your conversations from any device.</p></div>
+          </div>
         )}
+      </section>
+      <section className="auth-card" aria-label={creatorApplication ? "Create your creator account" : "Create your fan profile"}>
+        <span className="auth-card-kicker">{creatorApplication ? "CREATOR ACCOUNT" : "FREE FAN PROFILE"}</span>
+        <h2>{creatorApplication ? "Create your account." : "Create your fan profile."}</h2>
+        <p>{creatorApplication ? "Set up your creator page after you confirm your email." : "No public profile setup. Just the details you need to connect."}</p>
         <AuthForm
           mode="signup"
           configured={!!getSupabaseConfig()}
-          next={creatorMissing ? "/account" : safeNext(q.next)}
+          next={safeNext(q.next)}
         />
       </section>
     </main>

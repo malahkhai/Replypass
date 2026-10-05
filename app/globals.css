@@ -4247,3 +4247,5 @@ body:has(.workspace-shell) > .site-footer { display: none; }
   .profile-action-dock button, .profile-action-dock a { gap: 5px; padding-inline: 7px; font-size: 12px; }
   .profile-action-dock .price { font-size: 12px; }
 }
+.auth-page-signup .auth-signup-gate { grid-column: 1 / -1; max-width: 600px; width: 100%; margin: 0 auto; }
+.auth-signup-gate .button { margin-top: 8px; }
