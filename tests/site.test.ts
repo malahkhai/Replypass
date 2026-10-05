@@ -30,6 +30,12 @@ test("auth stays on loopback locally and configured origin in production", () =>
   assert.equal(authOrigin("http://localhost:3000"), "http://localhost:3000");
   assert.equal(authOrigin("http://127.0.0.1:3003"), "http://127.0.0.1:3003");
   assert.equal(authOrigin("https://untrusted.example"), siteConfig.url);
+  const previewConfigured = "https://replypass-git-main-akinola-akintundes-projects.vercel.app";
+  const previewDeployment = "https://replypass-q9klay9fi-akinola-akintundes-projects.vercel.app";
+  assert.equal(authOrigin(previewDeployment, previewConfigured), previewDeployment);
+  assert.equal(authOrigin("https://replypass-phish-attacker.vercel.app", previewConfigured), previewConfigured);
+  assert.equal(authOrigin("https://user:pass@replypass-q9klay9fi-akinola-akintundes-projects.vercel.app", previewConfigured), previewConfigured);
+  assert.equal(authOrigin(previewDeployment, "https://getreplypass.com"), "https://getreplypass.com");
 });
 test("Supabase public configuration rejects privileged keys and partial setup", () => {
   const previousUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

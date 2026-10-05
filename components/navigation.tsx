@@ -48,26 +48,3 @@ export function HeaderLinks({ role }: { role: string | null }) {
     </nav>
   );
 }
-export function BottomNavigation({ handle = "@stella" }: { handle?: string }) {
-  const next = encodeURIComponent(`/${handle}`);
-  return (
-    <nav className="bottom-nav" aria-label="Mobile navigation">
-      <Link href={`/${handle}`} aria-current="page">
-        <Icon name="user" />
-        <span>Profile</span>
-      </Link>
-      <Link href="/account">
-        <Icon name="message" />
-        <span>Inbox</span>
-      </Link>
-      <Link href={`/signup?next=${next}`}>
-        <Icon name="heart" />
-        <span>Join</span>
-      </Link>
-      <Link href="/account">
-        <Icon name="user" />
-        <span>Account</span>
-      </Link>
-    </nav>
-  );
-}

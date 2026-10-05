@@ -66,7 +66,11 @@ async function syncSubscription(subscription:Record<string,unknown>,db:ReturnTyp
   const id=String((subscription.metadata as Record<string,string>|null)?.replypass_membership_id||""); if(!id)return;
   const allowed=["incomplete","active","trialing","past_due","canceled","unpaid","paused"];
   const raw=String(subscription.status),status=allowed.includes(raw)?raw:"expired",period=periods(subscription);
+  const scheduledCancellation=subscription.cancel_at_period_end===true||(
+    Number(subscription.cancel_at||0)>Date.now()/1000&&
+    period.end>0&&Number(subscription.cancel_at)===period.end
+  );
   const ended=Number(subscription.ended_at||0),canceled=Number(subscription.canceled_at||0);
-  const {error}=await db.from("subscriptions").update({stripe_subscription_id:String(subscription.id),stripe_customer_id:ref(subscription.customer),status,current_period_start:period.start?new Date(period.start*1000).toISOString():null,current_period_end:period.end?new Date(period.end*1000).toISOString():null,cancel_at_period_end:subscription.cancel_at_period_end===true,canceled_at:canceled?new Date(canceled*1000).toISOString():null,ended_at:ended?new Date(ended*1000).toISOString():null,updated_at:new Date().toISOString()}).eq("id",id).eq("stripe_mode",mode).select("id").single();
+  const {error}=await db.from("subscriptions").update({stripe_subscription_id:String(subscription.id),stripe_customer_id:ref(subscription.customer),status,current_period_start:period.start?new Date(period.start*1000).toISOString():null,current_period_end:period.end?new Date(period.end*1000).toISOString():null,cancel_at_period_end:scheduledCancellation,canceled_at:canceled?new Date(canceled*1000).toISOString():null,ended_at:ended?new Date(ended*1000).toISOString():null,updated_at:new Date().toISOString()}).eq("id",id).eq("stripe_mode",mode).select("id").single();
   if(error) throw Error("VIP state could not be synchronized.");
 }

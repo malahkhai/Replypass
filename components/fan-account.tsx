@@ -109,7 +109,7 @@ export function FanAccount({
         ))}
       </div>
       <section className="account-panel" role="tabpanel">
-        {tab === "Requests" && <Link className="button button-secondary" href="/account/requests">Track secured replies</Link>}
+        {tab === "Requests" && <div className="account-request-cta"><Link className="button button-secondary" href="/account/requests">Track secured replies <Icon name="arrow" size={15} /></Link></div>}
         {tab === "Messages" && !selected && (
           <>
             {conversations.map((c) => (

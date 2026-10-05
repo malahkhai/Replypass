@@ -25,13 +25,14 @@ test("VIP access is centralized and excludes failed or ended memberships", () =>
 });
 test("browser cannot supply price currency fee or destination", () => {
   const route = read("app/api/vip/checkout/route.ts");
-  assert.match(route, /createVipCheckout\(viewer\.id,body\.creatorId\)/);
+  assert.match(route, /createVipCheckout\(viewer\.id,body\.creatorId,new URL\(request\.url\)\.origin\)/);
   assert.doesNotMatch(route, /amountCents|currency|destination/);
   assert.match(server, /creator_membership_plans/);
   assert.match(server, /connectAccountTable\(config\.mode\)/);
 });
 test("Stripe Checkout uses recurring destination subscriptions and 15 percent fee", () => {
   assert.match(server, /mode:"subscription"/);
+  assert.match(server, /managed_payments:\{enabled:false\}/);
   assert.match(server, /application_fee_percent:15/);
   assert.match(server, /transfer_data:\{destination:account\.stripe_account_id\}/);
   assert.match(server, /idempotencyKey:/);
@@ -39,6 +40,8 @@ test("Stripe Checkout uses recurring destination subscriptions and 15 percent fe
 test("webhooks own access, renewals, failures and cancellation state", () => {
   for (const event of ["checkout.session.completed","customer.subscription.updated","customer.subscription.deleted","invoice.paid","invoice.payment_failed"]) assert.match(webhook, new RegExp(event.replaceAll(".", "\\.")));
   assert.match(webhook, /status:"past_due"/);
+  assert.match(webhook, /subscription\.cancel_at_period_end===true/);
+  assert.match(webhook, /Number\(subscription\.cancel_at\)===period\.end/);
   assert.match(webhook, /subscription_payments/);
 });
 test("migration protects duplicate memberships, financial writes and private media", () => {
