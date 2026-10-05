@@ -38,6 +38,7 @@ export interface CreatorDraft {
   replyTime: string;
 }
 export interface PublicCreator {
+  payoutReady?: boolean;
   socialFollowers?: FollowerCounts;
   socialFollowersUpdatedAt?: string | null;
   id: string;
