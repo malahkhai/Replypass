@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -53,7 +54,7 @@ function MembershipCard({ membership, past = false }: { membership: MembershipVi
       />
       <div className="membership-card-main">
         <div className="membership-card-title">
-          <Link href={`/@${membership.creatorHandle}`} className="membership-name">
+          <Link href={`${creatorPath(membership.creatorHandle)}`} className="membership-name">
             {membership.name}
           </Link>
           <span className={`membership-status${membership.cancelAtPeriodEnd ? " is-ending" : ""}${membership.status === "past_due" ? " is-attention" : ""}`}>

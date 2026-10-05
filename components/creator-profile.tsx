@@ -1,4 +1,6 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
+import { CreatorSocials } from "./creator-socials";
 import { track } from "@/lib/analytics/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -42,7 +44,7 @@ function Checkout({
     event.preventDefault();
     if (!authenticated && !creator.demo) {
       router.push(
-        `/signup?next=${encodeURIComponent(`/${creator.handle}?interaction=${offering.kind}`)}`,
+        `/signup?next=${encodeURIComponent(`${creatorPath(creator.handle)}?interaction=${offering.kind}`)}`,
       );
       return;
     }
@@ -299,7 +301,7 @@ export function CreatorProfile({
                 </button>
               </div>
               <div className="hero-bottom">
-                <span>YOUR NEXT GOOD CONVERSATION</span>
+                <span>A LITTLE CLOSER TO {creator.name.toUpperCase()}</span>
                 <span>
                   Say hello <Icon name="arrow" size={18} />
                 </span>
@@ -328,6 +330,7 @@ export function CreatorProfile({
                 ))}
               </div>
               <p className="bio">{creator.bio}</p>
+              <CreatorSocials socials={creator.socials} counts={creator.socialFollowers} updatedAt={creator.socialFollowersUpdatedAt} />
               {hasPublicProof && (
                 <>
                   <div className="stats">
@@ -367,9 +370,9 @@ export function CreatorProfile({
             <div className="section-heading">
               <span className="eyebrow">MAKE A CONNECTION</span>
               <h2>
-                Choose how we talk<span className="pink">.</span>
+                Connect with {firstName}<span className="pink">.</span>
               </h2>
-              <p>Big questions. Little hellos. I’m here for it.</p>
+              <p>A personal reply. A closer connection.</p>
             </div>
             {offerings.length === 0 && (
               <p className="empty-inline">
@@ -390,7 +393,7 @@ export function CreatorProfile({
                     <strong>
                       {offering.title}
                       {index === 0 && (
-                        <span className="popular">FAN FAVORITE</span>
+                        <span className="popular">GUARANTEED</span>
                       )}
                     </strong>
                     <span>{offering.subtitle}</span>
@@ -415,7 +418,7 @@ export function CreatorProfile({
                   <h2>{vipPlan?.name ?? `${firstName} VIP`}</h2>
                   <p>{vipPlan?.description ?? "Private posts, exclusive updates and VIP inbox status."}</p>
                   <ul className="vip-benefits">{(vipPlan?.benefits ?? ["Private posts","Exclusive photos","VIP updates","VIP badge"]).map(item=><li key={item}>✓ {item}</li>)}</ul>
-                  {activeVip ? <Link className="button" href={`/${creator.handle}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
+                  {activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
                 </Card>
                 <section
                   className="private-section"
@@ -423,10 +426,11 @@ export function CreatorProfile({
                 >
                   <div className="private-title">
                     <h3>
-                      Just between us <Icon name="lock" size={15} />
+                      Inside {firstName}’s VIP <Icon name="lock" size={15} />
                     </h3>
                     <Badge>VIP ONLY</Badge>
                   </div>
+                  {vipPlan?.publicTeaser && <div className="vip-public-teaser"><span className="eyebrow">A NOTE FROM {firstName.toUpperCase()}</span><p>{vipPlan.publicTeaser}</p><small>A public preview · Full posts are for members</small></div>}
                   {creator.demo && <div className="preview-grid">
                     {[
                       "Life lately",
@@ -483,7 +487,7 @@ export function CreatorProfile({
         )}
         {vipPlan?.enabled && vip && !creator.demo && (
           activeVip ? (
-            <Link className="profile-action-vip" href={`/${creator.handle}/vip`}>
+            <Link className="profile-action-vip" href={`${creatorPath(creator.handle)}/vip`}>
               <Icon name="sparkles" size={18} />
               <span>Your VIP</span>
             </Link>

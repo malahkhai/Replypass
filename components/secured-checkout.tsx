@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 import { track } from "@/lib/analytics/client";
 import { useRouter } from "next/navigation";
 import { useRequestDraft } from "./request-draft";
@@ -47,7 +48,7 @@ export function SecuredCheckout({
     e.preventDefault();
     if (!authenticated) {
       router.push(
-        `/signup?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`,
+        `/signup?next=${encodeURIComponent(`${creatorPath(creator.handle)}?interaction=${kind}`)}`,
       );
       return;
     }
@@ -145,7 +146,7 @@ export function SecuredCheckout({
           {error}{" "}
           {signInRequired && (
             <Link
-              href={`/login?next=${encodeURIComponent(`/${creator.handle}?interaction=${kind}`)}`}
+              href={`/login?next=${encodeURIComponent(`${creatorPath(creator.handle)}?interaction=${kind}`)}`}
             >
               Sign in
             </Link>

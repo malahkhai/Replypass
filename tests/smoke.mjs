@@ -62,11 +62,11 @@ test("checkout derives its quote and keeps same-origin protection", async () => 
 
 test("production identity and draft trust metadata render", async () => {
   const html = await (
-    await fetch(`${base}/@stella`, { headers: { "User-Agent": "Twitterbot" } })
+    await fetch(`${base}/stella`, { headers: { "User-Agent": "Twitterbot" } })
   ).text();
   const canonical =
     process.env.NEXT_PUBLIC_APP_URL || "https://getreplypass.com";
-  assert.ok(html.includes(`${canonical}/@stella`));
+  assert.ok(html.includes(`${canonical}/stella`));
   assert.match(html, /property="og:site_name" content="ReplyPass"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
   assert.match(html, /rel="canonical"/);

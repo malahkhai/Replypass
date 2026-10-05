@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -145,7 +146,7 @@ export function FanAccount({
             <button className="back-link" onClick={() => setActive("")}>
               ← All messages
             </button>
-            {(selected.creatorHandle || data.demo) && <Link className="back-link" href={`/@${selected.creatorHandle || "stella"}`}>Back to @{selected.creatorHandle || "stella"}</Link>}
+            {(selected.creatorHandle || data.demo) && <Link className="back-link" href={`${creatorPath(selected.creatorHandle || "stella")}`}>Back to @{selected.creatorHandle || "stella"}</Link>}
             <div className="message-list">
               {selected.messages.map((m) => (
                 <div
@@ -263,7 +264,7 @@ export function FanAccount({
           <>
             {savedItems.map((c) => (
               <div className="saved-row" key={c.id}>
-                <Link href={`/@${c.handle}`}>
+                <Link href={`${creatorPath(c.handle)}`}>
                   <span className="initial-avatar sage">
                     {c.name
                       .split(" ")
@@ -353,7 +354,7 @@ export function SaveCreator({ creator }: { creator: PublicCreator }) {
               }),
             });
             if (r.status === 401) {
-              router.push("/login");
+              router.push(`/login?next=${encodeURIComponent(creatorPath(creator.handle))}`);
               return;
             }
             if (!r.ok) throw Error();

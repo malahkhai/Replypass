@@ -1,3 +1,4 @@
+import { creatorPath } from "@/lib/creators/paths";
 import "server-only";
 import { paymentBackend, serviceDatabase } from "@/lib/stripe/server";
 import { authOrigin } from "@/lib/site";
@@ -9,7 +10,7 @@ export async function getVipPlan(creatorId:string):Promise<VipPlan|null>{
   const db=serviceDatabase();
   const {data,error}=await db.from("creator_membership_plans").select("*").eq("creator_id",creatorId).maybeSingle();
   if(error) throw Error("VIP plan unavailable.");
-  return data?{id:data.id,creatorId:data.creator_id,name:data.name,description:data.description,benefits:data.benefits,amountCents:data.amount_cents,currency:data.currency,enabled:data.enabled}:null;
+  return data?{id:data.id,creatorId:data.creator_id,name:data.name,description:data.description,publicTeaser:data.public_teaser || "",benefits:data.benefits,amountCents:data.amount_cents,currency:data.currency,enabled:data.enabled}:null;
 }
 export async function hasActiveVipAccess(fanId:string,creatorId:string){
   const db=serviceDatabase();
@@ -80,7 +81,7 @@ export async function createVipCheckout(fanId:string,creatorId:string,observedOr
       client_reference_id:membership.id,
       line_items:[{price:priceId,quantity:1}],
       success_url:`${origin}/vip/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:`${origin}/@${encodeURIComponent(creator.handle)}`,
+      cancel_url:`${origin}${creatorPath(creator.handle)}`,
       subscription_data:{application_fee_percent:15,transfer_data:{destination:account.stripe_account_id},metadata:{replypass_membership_id:membership.id,replypass_creator_id:creatorId}},
       metadata:{replypass_membership_id:membership.id},
     },{idempotencyKey:`vip-checkout-${membership.id}`});

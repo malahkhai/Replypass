@@ -1,3 +1,4 @@
+import { creatorPath } from "@/lib/creators/paths";
 import Link from "next/link";
 import { requireRole } from "@/lib/auth/session";
 import { serviceDatabase } from "@/lib/stripe/server";
@@ -40,7 +41,7 @@ export default async function Page() {
 
   const creatorName = membership?.creator_profiles?.profiles?.display_name || "your creator";
   const creatorHandle = membership?.creator_profiles?.handle;
-  const creatorVipUrl = creatorHandle ? `/@${encodeURIComponent(creatorHandle)}/vip` : "/vip";
+  const creatorVipUrl = creatorHandle ? `${creatorPath(encodeURIComponent(creatorHandle))}/vip` : "/vip";
   const amount = membership ? new Intl.NumberFormat("en-IE", { style: "currency", currency: membership.currency.toUpperCase() }).format(membership.amount_cents / 100) : null;
 
   return (

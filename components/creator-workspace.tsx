@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -248,7 +249,7 @@ export function DashboardHome() {
         description="A little attention can make someone’s day."
       >
         <Link
-          href={`/@${data.creator.username}`}
+          href={`${creatorPath(data.creator.username)}`}
           className="button button-secondary"
         >
           View your page <Icon name="arrow" size={17} />
@@ -906,7 +907,7 @@ export function ProfileEditorPage() {
       <WorkspaceHeading eyebrow="MAKE IT YOURS" title="Your profile.">
         <Link
           className="button button-secondary"
-          href={`/@${data.creator.username}`}
+          href={`${creatorPath(data.creator.username)}`}
         >
           View public profile <Icon name="arrow" size={16} />
         </Link>

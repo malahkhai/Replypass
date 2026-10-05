@@ -1,4 +1,6 @@
 import { categories, type CreatorDraft } from "../../types/creator.ts";
+import { reservedCreatorNames } from "./paths.ts";
+import { validFollowerCounts } from "./socials.ts";
 export const priceLimits = {
   min: 100,
   max: 50000,
@@ -16,15 +18,7 @@ export const kinds = [
 export function validUsername(value: string) {
   return (
     /^[a-z0-9_]{3,30}$/.test(value) &&
-    ![
-      "admin",
-      "account",
-      "login",
-      "signup",
-      "creator",
-      "replypass",
-      "support",
-    ].includes(value)
+    !reservedCreatorNames.has(value)
   );
 }
 export function centsFromInput(value: string): number {
@@ -129,5 +123,7 @@ export function validateCreator(input: unknown): string[] {
         errors.push(`Enter a valid HTTPS ${key} URL.`);
       }
     }
+  if (d.socialFollowers !== undefined && !validFollowerCounts(d.socialFollowers))
+    errors.push("Follower counts must be whole numbers from 0 to 2 billion.");
   return errors;
 }

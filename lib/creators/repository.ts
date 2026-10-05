@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { demoCreator } from "@/lib/auth/demo";
 import { blankCreator, demoStella, toPublic } from "./catalog";
 import type { CreatorDraft, PublicCreator } from "@/types/creator";
-import { validUsername } from "./validation";
+
 export function draftFromRow(
   row: Record<string, unknown>,
   profile: { display_name: string; avatar_path: string | null },
@@ -24,6 +24,8 @@ export function draftFromRow(
     categories: row.categories as string[],
     country: String(row.country || "FR"),
     socials: { ...blankCreator.socials, ...(row.social_links as object) },
+    socialFollowers: (row.social_followers || {}) as CreatorDraft["socialFollowers"],
+    socialFollowersUpdatedAt: typeof row.social_followers_updated_at === "string" ? row.social_followers_updated_at : null,
     pricing: blankCreator.pricing.map((p) => {
       const saved = pricing.find((x) => x.kind === p.kind);
       return saved
@@ -77,7 +79,7 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
   } catch {
     return null;
   }
-  if (!validUsername(username)) return null;
+  if (!/^[a-z0-9_]{3,30}$/.test(username)) return null;
   const supabase = await createClient();
   if (!supabase) {
     if (process.env.NODE_ENV === "production") return null;

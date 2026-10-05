@@ -1,4 +1,5 @@
 "use client";
+import type { FollowerCounts } from "@/lib/creators/socials";
 import { track } from "@/lib/analytics/client";
 import { siteConfig } from "@/lib/site";
 
@@ -242,7 +243,7 @@ export function CreatorEditor({
           <label>
             Username
             <div className="username-field">
-              <span>replypass / @</span>
+              <span>replypass / </span>
               <input
                 value={draft.username}
                 onChange={(e) => {
@@ -316,6 +317,7 @@ export function CreatorEditor({
       )}
       {step === 2 && (
         <div className="editor-fields">
+          <p className="field-hint">Links appear beneath your bio. Optional follower counts are shown as creator-provided, with the date you last changed them.</p>
           {Object.entries({
             instagram: "Instagram",
             tiktok: "TikTok",
@@ -323,7 +325,7 @@ export function CreatorEditor({
             twitter: "X / Twitter",
             website: "Website",
           }).map(([key, label]) => (
-            <label key={key}>
+            <div className="social-editor-row" key={key}><label>
               {label} <span className="optional">Optional</span>
               <input
                 type="url"
@@ -335,6 +337,17 @@ export function CreatorEditor({
                 maxLength={300}
               />
             </label>
+            {key !== "website" && <label>Follower count <span className="optional">Optional</span>
+              <input type="number" inputMode="numeric" min="0" max="2000000000" step="1"
+                value={draft.socialFollowers?.[key as keyof FollowerCounts] ?? ""}
+                onChange={e => {
+                  const counts = { ...draft.socialFollowers };
+                  if (e.target.value === "") delete counts[key as keyof FollowerCounts];
+                  else counts[key as keyof FollowerCounts] = Number(e.target.value);
+                  patch("socialFollowers", counts);
+                }} placeholder="e.g. 12500" />
+            </label>}
+            </div>
           ))}
         </div>
       )}

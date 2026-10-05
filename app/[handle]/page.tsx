@@ -3,7 +3,8 @@ import { stripeConfig } from "@/lib/stripe/config";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site";
-import { notFound } from "next/navigation";
+import { creatorPath, creatorRedirect } from "@/lib/creators/paths";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CreatorProfile } from "@/components/creator-profile";
 import { ProfileViewTracker } from "@/components/profile-view-tracker";
 import { findCreator } from "@/lib/creators/repository";
@@ -21,7 +22,7 @@ export async function generateMetadata({
     };
   return pageMetadata(
     creator.name,
-    `/${creator.handle}`,
+    creatorPath(creator.handle),
     `${creator.name} on ${siteConfig.name}. ${siteConfig.tagline} ${siteConfig.fanPromise}`,
   );
 }
@@ -30,19 +31,22 @@ export default async function Profile({
   searchParams,
 }: {
   params: Promise<{ handle: string }>;
-  searchParams: Promise<{ interaction?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { handle } = await params;
-  const { interaction } = await searchParams;
+  const query = await searchParams;
+  const interaction = typeof query.interaction === "string" ? query.interaction : undefined;
   let decoded = "";
   try {
     decoded = decodeURIComponent(handle);
   } catch {
     notFound();
   }
-  if (!decoded.startsWith("@")) notFound();
+  if (!/^@?[a-z0-9_]{3,30}$/.test(decoded)) notFound();
   const creator = await findCreator(handle);
   if (!creator) notFound();
+  const redirectTo = creatorRedirect(decoded, query);
+  if (redirectTo) permanentRedirect(redirectTo);
   const viewer = await getViewer();
   let vipPlan = null, activeVip = false;
   if (!creator.demo) {
