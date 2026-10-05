@@ -32,6 +32,7 @@ test("browser cannot supply price currency fee or destination", () => {
 });
 test("Stripe Checkout uses recurring destination subscriptions and 15 percent fee", () => {
   assert.match(server, /mode:"subscription"/);
+  assert.match(server, /managed_payments:\{enabled:false\}/);
   assert.match(server, /application_fee_percent:15/);
   assert.match(server, /transfer_data:\{destination:account\.stripe_account_id\}/);
   assert.match(server, /idempotencyKey:/);

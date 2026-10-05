@@ -70,6 +70,23 @@ export async function createVipCheckout(fanId:string,creatorId:string,observedOr
   const {data:membership,error}=await db.from("subscriptions").insert({fan_id:fanId,creator_id:creatorId,plan_id:plan.id,stripe_mode:config.mode,status:"incomplete",amount_cents:plan.amount_cents,currency:plan.currency,stripe_price_id:priceId,membership_name:plan.name,fee_bps:split.feeBps,fee_cents:split.feeCents,creator_cents:split.creatorCents}).select("id").single();
   if(error||!membership) throw Error("Could not reserve membership checkout.");
   const origin=authOrigin(observedOrigin);
-  const session=await stripe.checkout.sessions.create({mode:"subscription",customer_email:email,client_reference_id:membership.id,line_items:[{price:priceId,quantity:1}],success_url:`${origin}/vip/success?session_id={CHECKOUT_SESSION_ID}`,cancel_url:`${origin}/@${encodeURIComponent(creator.handle)}`,subscription_data:{application_fee_percent:15,transfer_data:{destination:account.stripe_account_id},metadata:{replypass_membership_id:membership.id,replypass_creator_id:creatorId}},metadata:{replypass_membership_id:membership.id}},{idempotencyKey:`vip-checkout-${membership.id}`});
+  let session;
+  try {
+    session=await stripe.checkout.sessions.create({
+      mode:"subscription",
+      // Managed Payments cannot be combined with Connect destination charges.
+      managed_payments:{enabled:false},
+      customer_email:email,
+      client_reference_id:membership.id,
+      line_items:[{price:priceId,quantity:1}],
+      success_url:`${origin}/vip/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:`${origin}/@${encodeURIComponent(creator.handle)}`,
+      subscription_data:{application_fee_percent:15,transfer_data:{destination:account.stripe_account_id},metadata:{replypass_membership_id:membership.id,replypass_creator_id:creatorId}},
+      metadata:{replypass_membership_id:membership.id},
+    },{idempotencyKey:`vip-checkout-${membership.id}`});
+  } catch (error) {
+    await db.from("subscriptions").update({status:"expired",ended_at:new Date().toISOString()}).eq("id",membership.id).eq("status","incomplete");
+    throw error;
+  }
   return {existing:false,url:session.url};
 }
