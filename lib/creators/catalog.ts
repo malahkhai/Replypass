@@ -108,6 +108,8 @@ export function toPublic(d: CreatorDraft, demo = true): PublicCreator {
     vip: enabled.find((p) => p.kind === "vip") || null,
     demo,
     socials: d.socials,
+    socialFollowers: d.socialFollowers || {},
+    socialFollowersUpdatedAt: d.socialFollowersUpdatedAt || null,
   };
 }
 export const demoStella: PublicCreator = {

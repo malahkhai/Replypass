@@ -19,8 +19,8 @@ try {
  await page.goto(base+'/signup');assert.equal(await page.locator('input[name="email"]').count(),0);await page.getByRole('heading',{name:'A connection starts with a creator.'}).waitFor();
  await page.goto(base+'/signup?next=%2F%40unknown_replypass_test');assert.equal(await page.locator('input[name="email"]').count(),0);
  await page.goto(base+'/@stella');
- assert.match(await page.getByRole('link',{name:'Back to @stella profile',exact:true}).getAttribute('href'),/^\/@stella/);
- await page.getByRole('link',{name:'Back to @stella profile',exact:true}).click();assert.equal(new URL(page.url()).pathname,'/@stella');
+ assert.match(await page.getByRole('link',{name:'Back to @stella profile',exact:true}).getAttribute('href'),/^\/stella/);
+ await page.getByRole('link',{name:'Back to @stella profile',exact:true}).click();assert.equal(new URL(page.url()).pathname,'/stella');
  await page.getByRole('button',{name:/Message me/}).click();
  const draft='My private question stays with this creator.';
  await page.locator('textarea').fill(draft);

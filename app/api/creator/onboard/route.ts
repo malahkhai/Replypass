@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     if (!viewer) return fail("Sign in before launching your page.", 401);
     const limited = await enforceRateLimit(request, "requestAction", viewer.id);
     if (limited) return limited;
-    const { error } = await supabase.rpc("save_creator_profile", { draft });
+    const { error } = await supabase.rpc("save_creator_profile_with_audience", { draft });
     if (error)
       return fail(
         error.code === "23505"

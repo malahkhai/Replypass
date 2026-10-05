@@ -219,7 +219,7 @@ export function MarketingPage({
           <li>
             <strong>Share your link</strong>
             <p>
-              Add getreplypass.com/@yourname to your bio. Fans arrive on your
+              Add getreplypass.com/yourname to your bio. Fans arrive on your
               page and stay connected to you.
             </p>
           </li>

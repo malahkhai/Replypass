@@ -1,3 +1,4 @@
+import { creatorPath } from "./creators/paths.ts";
 /** Public brand configuration only. Never put secrets in this module. */
 export function normalizeAppUrl(value: string) {
   const url = new URL(value);
@@ -37,7 +38,7 @@ export function creatorUrl(handle: string) {
   const username = handle.replace(/^@/, "");
   if (!/^[a-z0-9_]{3,30}$/.test(username))
     throw new Error("Invalid creator username.");
-  return `${siteConfig.url}/@${username}`;
+  return `${siteConfig.url}${creatorPath(username)}`;
 }
 /** Keep a verified Preview checkout/auth flow on its own deployment. */
 export function authOrigin(observedOrigin: string, configuredOrigin = siteConfig.url) {

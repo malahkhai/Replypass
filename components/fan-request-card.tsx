@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -138,7 +139,7 @@ function requestState(request: FanRequestSummary) {
 export function FanRequestCard({ request }: { request: FanRequestSummary }) {
   const state = requestState(request);
   const active = request.payment_state === "authorized";
-  const creatorHref = request.creatorHandle ? `/@${request.creatorHandle}` : "/account";
+  const creatorHref = request.creatorHandle ? `${creatorPath(request.creatorHandle)}` : "/account";
   const [reported, setReported] = useState(false);
   async function report() {
     const response = await fetch(`/api/requests/${request.id}/safety`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "report", reason: "Fan reported a paid request or delivery" }) });

@@ -31,7 +31,7 @@ import assert from "node:assert/strict";
   });
   await page.goto(base + '/@stella');
   await page.getByRole('button', {name: 'Share Stella May’s profile'}).click();
-  assert.equal(await page.evaluate(() => window.__sharedProfile), `${process.env.NEXT_PUBLIC_APP_URL || 'https://getreplypass.com'}/@stella`);
+  assert.equal(await page.evaluate(() => window.__sharedProfile), `${process.env.NEXT_PUBLIC_APP_URL || 'https://getreplypass.com'}/stella`);
   for (const route of ['/terms', '/privacy', '/community-guidelines', '/creator-terms']) {
     await page.goto(base + route);
     await page.getByText('Draft placeholder — not finalized.', {exact:true}).waitFor();

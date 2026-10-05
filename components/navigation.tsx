@@ -3,17 +3,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/site";
 import { Icon } from "@/components/icon";
-const profilePath = /^\/@[a-z0-9_]{3,30}$/;
+import { isCreatorProfilePath } from "@/lib/creators/paths";
 export function Logo() {
   const pathname = usePathname();
-  const creator = profilePath.test(pathname);
+  const creator = isCreatorProfilePath(pathname);
   return (
     <a
       href={creator ? `${pathname}#main` : "/"}
       className="logo"
       aria-label={
         creator
-          ? `Back to ${pathname.slice(1)} profile`
+          ? `Back to @${pathname.slice(1).replace(/^@/, "")} profile`
           : `${siteConfig.name} home`
       }
     >
@@ -24,7 +24,7 @@ export function Logo() {
 }
 export function HeaderLinks({ role }: { role: string | null }) {
   const path = usePathname();
-  const login = profilePath.test(path)
+  const login = isCreatorProfilePath(path)
     ? `/login?next=${encodeURIComponent(path)}`
     : "/login";
   return (

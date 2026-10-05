@@ -1,3 +1,4 @@
+import type { FollowerCounts } from "../lib/creators/socials";
 import type { InteractionKind, Offering, UserRole } from "./domain";
 export const categories = [
   "Creator",
@@ -13,6 +14,8 @@ export const categories = [
 ] as const;
 export type Availability = "online" | "away" | "offline";
 export interface CreatorDraft {
+  socialFollowers?: FollowerCounts;
+  socialFollowersUpdatedAt?: string | null;
   payoutReady?: boolean;
   displayName: string;
   username: string;
@@ -33,6 +36,8 @@ export interface CreatorDraft {
   replyTime: string;
 }
 export interface PublicCreator {
+  socialFollowers?: FollowerCounts;
+  socialFollowersUpdatedAt?: string | null;
   id: string;
   name: string;
   handle: string;

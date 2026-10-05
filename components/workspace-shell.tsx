@@ -1,4 +1,5 @@
 "use client";
+import { creatorPath } from "@/lib/creators/paths";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -44,7 +45,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <Link className="sidebar-public" href={`/@${data.creator.username}`}>
+        <Link className="sidebar-public" href={`${creatorPath(data.creator.username)}`}>
           <Icon name="arrow" />
           View public profile
         </Link>
@@ -73,7 +74,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             {data.demo && (
               <span className="workspace-demo">DEMO WORKSPACE</span>
             )}
-            <Link href={`/@${data.creator.username}`}>
+            <Link href={`${creatorPath(data.creator.username)}`}>
               My ReplyPass <Icon name="arrow" size={15} />
             </Link>
           </div>

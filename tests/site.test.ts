@@ -10,7 +10,7 @@ import { getSupabaseConfig } from "../lib/supabase/config.ts";
 test("brand and creator links use one canonical origin", () => {
   assert.equal(siteConfig.name, "ReplyPass");
   assert.equal(siteConfig.domain, "getreplypass.com");
-  assert.equal(creatorUrl("@stella"), `${siteConfig.url}/@stella`);
+  assert.equal(creatorUrl("@stella"), `${siteConfig.url}/stella`);
   assert.equal(creatorUrl("stella"), creatorUrl("@stella"));
   assert.throws(() => creatorUrl("//evil.example"));
   assert.equal(

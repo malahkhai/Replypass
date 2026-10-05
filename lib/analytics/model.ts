@@ -1,3 +1,4 @@
+import { isCreatorProfilePath } from "../creators/paths.ts";
 export const GA_ID = "G-C6DL1WLHDM";
 export const CONSENT_KEY = "replypass:analytics-consent:v1";
 export const MARKETING_CONSENT_KEY = "replypass:marketing-consent:v1";
@@ -6,7 +7,7 @@ export function analyticsHostAllowed(hostname: string) {
   return hostname === "getreplypass.com" || hostname === "www.getreplypass.com";
 }
 export function pageGroup(path: string) {
-  if (/^\/@[^/]+$/.test(path)) return "creator_profile";
+  if (isCreatorProfilePath(path)) return "creator_profile";
   if (/^\/creator\/inbox\/[^/]+$/.test(path)) return "creator_conversation";
   const pages: Record<string, string> = {
     "/": "home", "/creators": "creator_landing", "/login": "login", "/signup": "signup",
