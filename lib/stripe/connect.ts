@@ -1,3 +1,5 @@
+import { after } from "next/server";
+import { tryDeliverCreatorAdminEvents } from "@/lib/notifications/creator-lifecycle";
 import "server-only";
 import { paymentBackend } from "./server";
 import { authOrigin } from "@/lib/site";
@@ -64,7 +66,6 @@ export async function connectStatus(creatorId: string) {
     payoutsStatus: balances?.payouts?.status,
     requirements: account.requirements?.entries,
   });
-  const becameReady = ready && !row.ready;
   const { error: updateError } = await db
     .from(table)
     .update({
@@ -76,14 +77,7 @@ export async function connectStatus(creatorId: string) {
     })
     .eq("creator_id", creatorId);
   if (updateError) throw Error("Could not save payout status.");
-  if (becameReady && config.mode === "live") {
-    const { error: pricingError } = await db
-      .from("creator_pricing")
-      .update({ active: true, updated_at: new Date().toISOString() })
-      .eq("creator_id", creatorId)
-      .eq("kind", "message");
-    if (pricingError) throw Error("Could not enable guaranteed replies.");
-  }
+  if (config.mode === "live") after(tryDeliverCreatorAdminEvents);
   return { connected: true, ready, transfers, payouts, requirementsDue };
 }
 export async function onboardConnect(userId: string, origin: string) {
@@ -94,7 +88,7 @@ export async function onboardConnect(userId: string, origin: string) {
     () => db.auth.admin.getUserById(userId),
   );
   const contactEmail = authData.user?.email;
-  if (authError || !contactEmail)
+  if (authError || !contactEmail || !authData.user?.email_confirmed_at)
     throw Error("A verified email address is required for payout setup.");
   const { data: creator, error } = await atStage("load_creator", () =>
     db

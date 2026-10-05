@@ -52,7 +52,7 @@ export default async function Profile({
   if (!creator.demo) {
     try { vipPlan = await getVipPlan(creator.id); activeVip = !!viewer && !viewer.demo && await hasActiveVipAccess(viewer.id, creator.id); } catch {}
   }
-  const presentedCreator = creator.demo ? creator : { ...creator, vip: vipPlan?.enabled ? { kind: "vip" as const, title: "Join VIP", subtitle: vipPlan.description, cents: vipPlan.amountCents, unit: "/month", icon: "sparkles" } : null };
+  const presentedCreator = creator.demo ? creator : { ...creator, vip: vipPlan?.enabled && creator.payoutReady ? { kind: "vip" as const, title: "Join VIP", subtitle: vipPlan.description, cents: vipPlan.amountCents, unit: "/month", icon: "sparkles" } : null };
   return (
     <>
       {!creator.demo && <ProfileViewTracker creatorId={creator.id} />}

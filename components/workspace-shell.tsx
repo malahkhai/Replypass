@@ -1,5 +1,5 @@
 "use client";
-import { creatorPath } from "@/lib/creators/paths";
+import { creatorPublication } from "@/lib/creators/publication";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -22,6 +22,7 @@ export const creatorNav: { name: string; path: string; icon: IconName }[] = [
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const path = usePathname();
   const { data } = useWorkspace();
+  const publication = creatorPublication(data.creator, data.demo);
   return (
     <div className="workspace-shell">
       <aside className="creator-sidebar">
@@ -45,9 +46,9 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <Link className="sidebar-public" href={`${creatorPath(data.creator.username)}`}>
+        <Link className="sidebar-public" href={publication.href}>
           <Icon name="arrow" />
-          View public profile
+          {publication.label}
         </Link>
         <div className="sidebar-person">
           <span className="initial-avatar sage">
@@ -74,12 +75,16 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
             {data.demo && (
               <span className="workspace-demo">DEMO WORKSPACE</span>
             )}
-            <Link href={`${creatorPath(data.creator.username)}`}>
-              My ReplyPass <Icon name="arrow" size={15} />
+            <Link href={publication.href}>
+              {publication.published ? "My ReplyPass" : "Private preview"} <Icon name="arrow" size={15} />
             </Link>
           </div>
         </header>
         <main id="main" className="workspace-content">
+          {!publication.published && <section className="creator-publication-notice" aria-label="Publication status">
+            <Icon name="shield" size={22} />
+            <div><strong>{publication.title}</strong><p>{publication.description}</p></div>
+          </section>}
           {children}
         </main>
       </div>

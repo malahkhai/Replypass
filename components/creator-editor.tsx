@@ -524,7 +524,7 @@ export function CreatorEditor({
             : step === 5
               ? editing
                 ? "Save my ReplyPass"
-                : "Launch my ReplyPass"
+                : "Publish my ReplyPass"
               : "Continue"}
           <Icon name="arrow" size={18} />
         </Button>

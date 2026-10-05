@@ -1,0 +1,31 @@
+do $$
+declare uid uuid:=gen_random_uuid(); cid uuid; n int;
+begin
+ insert into auth.users values(uid,null); insert into profiles(id) values(uid);
+ insert into creator_profiles(profile_id,handle,onboarding_complete,accepting_messages) values(uid,'qa',true,true) returning id into cid;
+ if (select status from creator_profiles where id=cid)<>'pending' then raise exception 'Unverified published'; end if;
+ update auth.users set email_confirmed_at=now() where id=uid;
+ update creator_profiles set status=status where id=cid;
+ if (select status from creator_profiles where id=cid)<>'approved' then raise exception 'Verified did not publish'; end if;
+ if (select count(*) from creator_admin_events where creator_id=cid)<>1 then raise exception 'Publication event missing'; end if;
+ insert into creator_pricing values(cid,'message',true);
+ if (select count(*) from creator_admin_events where creator_id=cid)<>1 then raise exception 'Enabled without Stripe'; end if;
+ insert into creator_stripe_accounts values(cid,true);
+ insert into creator_membership_plans values(cid,true);
+ update creator_profiles set status=status where id=cid;
+ if (select count(*) from creator_admin_events where creator_id=cid)<>3 then raise exception 'Events missing or duplicated'; end if;
+ update creator_profiles set status='suspended' where id=cid;
+ update creator_profiles set onboarding_complete=true where id=cid;
+ if (select status from creator_profiles where id=cid)<>'suspended' then raise exception 'Suspension removed'; end if;
+ update creator_profiles set status='under_review' where id=cid;
+ update creator_profiles set onboarding_complete=true where id=cid;
+ if (select status from creator_profiles where id=cid)<>'under_review' then raise exception 'Review hold removed'; end if;
+ update creator_profiles set status='rejected' where id=cid;
+ update creator_profiles set onboarding_complete=true where id=cid;
+ if (select status from creator_profiles where id=cid)<>'rejected' then raise exception 'Rejection removed'; end if;
+ update profiles set account_status='suspended' where id=uid;
+ update creator_profiles set status='pending' where id=cid;
+ if (select status from creator_profiles where id=cid)<>'pending' then raise exception 'Suspended account published'; end if;
+ if has_table_privilege('authenticated','creator_admin_events','SELECT') then raise exception 'Outbox exposed'; end if;
+ raise notice 'PASS: email verification, automatic publication, Stripe gates, deduplication, moderation holds, private queue';
+end $$;

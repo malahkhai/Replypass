@@ -14,6 +14,8 @@ export const categories = [
 ] as const;
 export type Availability = "online" | "away" | "offline";
 export interface CreatorDraft {
+  publicationStatus?: string;
+  onboardingComplete?: boolean;
   socialFollowers?: FollowerCounts;
   socialFollowersUpdatedAt?: string | null;
   payoutReady?: boolean;
@@ -36,6 +38,7 @@ export interface CreatorDraft {
   replyTime: string;
 }
 export interface PublicCreator {
+  payoutReady?: boolean;
   socialFollowers?: FollowerCounts;
   socialFollowersUpdatedAt?: string | null;
   id: string;

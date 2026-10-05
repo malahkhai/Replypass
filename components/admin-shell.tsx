@@ -5,7 +5,7 @@ import { Logo } from "./navigation";
 import { LogoutButton } from "./logout-button";
 
 const links=[
-  ["Overview","/admin"],["Users","/admin/users"],["Creators","/admin/creators"],
+  ["Overview","/admin"],["Notifications","/notifications"],["Users","/admin/users"],["Creators","/admin/creators"],
   ["Payments","/admin/payments"],["Subscriptions","/admin/subscriptions"],["Payouts","/admin/payouts"],
   ["Requests","/admin/requests"],["Reports","/admin/reports"],["Disputes","/admin/disputes"],
   ["Content","/admin/content"],["System","/admin/system"],["Launch readiness","/admin/launch-readiness"],

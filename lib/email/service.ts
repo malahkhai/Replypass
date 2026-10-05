@@ -2,10 +2,13 @@ import "server-only";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { captureException, logEvent } from "@/lib/observability/log";
 
-export type EmailTemplate = "operational_test"| "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
+export type EmailTemplate = "creator_published"|"creator_replies_enabled"|"creator_vip_enabled"|"operational_test"| "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
 type EmailInput = { recipientId: string; to: string; template: EmailTemplate; eventKey: string; link: string };
 
 const copy: Record<EmailTemplate,{subject:string;body:string}> = {
+  creator_published:{subject:"A new ReplyPass creator is live",body:"A creator completed their profile and verified their email. Their public page is live; no routine approval is needed. Review their admin record below."},
+  creator_replies_enabled:{subject:"A creator enabled Guaranteed Replies",body:"A creator has enabled Guaranteed Replies with an eligible live Stripe account. Open their admin record to review or manage the account."},
+  creator_vip_enabled:{subject:"A creator enabled VIP",body:"A creator has enabled VIP with an eligible live Stripe account. Open their admin record to review or manage the account."},
   operational_test:{subject:"ReplyPass production email test",body:"This is the test notification you requested. No payment or subscription was created."},
   request_received:{subject:"Your request is secured",body:"Your request has reached the creator."},
   creator_request_received:{subject:"You have a new paid request",body:"A new secured request is waiting in ReplyPass."},

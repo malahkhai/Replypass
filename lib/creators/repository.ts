@@ -1,3 +1,5 @@
+import { serviceDatabase } from "@/lib/stripe/server";
+import { connectAccountTable } from "@/lib/stripe/account-table";
 import { stripeConfig } from '@/lib/stripe/config';
 import { connectStatus } from '@/lib/stripe/connect';
 import "server-only";
@@ -17,6 +19,8 @@ export function draftFromRow(
 ): CreatorDraft {
   return {
     ...blankCreator,
+    publicationStatus: String(row.status || "draft"),
+    onboardingComplete: row.onboarding_complete === true,
     displayName: profile.display_name,
     username: String(row.handle),
     image: profile.avatar_path || "",
@@ -130,9 +134,18 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
     ]);
     if (pError || priceError || !profile) throw Error();
     const result = toPublic(draftFromRow(row, profile, prices || []), false);
+    const mode = stripeConfig()?.mode;
+    let payoutReady = false;
+    if (mode) {
+      const { data: payout } = await serviceDatabase().from(connectAccountTable(mode)).select("ready").eq("creator_id", row.id).maybeSingle();
+      payoutReady = payout?.ready === true;
+    }
     return {
       ...result,
       id: row.id,
+      payoutReady,
+      offerings: payoutReady ? result.offerings : [],
+      vip: payoutReady ? result.vip : null,
       verified: row.verified,
       responseRate: row.response_rate === null ? "—" : `${row.response_rate}%`,
       responseTime: row.reply_time || "Not set",
