@@ -107,6 +107,7 @@ export interface Subscriber {
   amountCents: number;
   status: string;
   renewsAt: string;
+  cancelAtPeriodEnd: boolean;
 }
 export interface WorkspaceData {
   demo: boolean;

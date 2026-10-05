@@ -31,7 +31,8 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       ).eq("stripe_mode", stripeConfig()?.mode || "live"),
     supabase
       .from("subscriptions")
-      .select("id,fan_id,creator_id,amount_cents,status,current_period_end"),
+      .select("id,fan_id,creator_id,amount_cents,status,current_period_end,cancel_at_period_end")
+      .eq("stripe_mode", stripeConfig()?.mode || "live"),
   ]);
   if (memberError || paymentError || subError)
     throw Error("Your workspace could not be loaded. Please try again.");
@@ -247,6 +248,7 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       amountCents: s.amount_cents,
       status: s.status,
       renewsAt: s.current_period_end || "",
+      cancelAtPeriodEnd: s.cancel_at_period_end,
     })),
     earnedToday: revenue[6],
     profileViews,

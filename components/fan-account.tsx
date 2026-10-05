@@ -219,7 +219,12 @@ export function FanAccount({
                     <strong>
                       {data.demo ? "Stella May VIP" : "VIP membership"}
                     </strong>
-                    <p>{s.status} · Basic messaging and private posts</p>
+                    <p>
+                      {s.cancelAtPeriodEnd && s.renewsAt
+                        ? `Access ends ${new Date(s.renewsAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`
+                        : s.status.replaceAll("_", " ")}
+                      {" · Basic messaging and private posts"}
+                    </p>
                   </div>
                   <Price cents={s.amountCents} unit="/month" />
                 </div>
