@@ -118,6 +118,7 @@ export function demoWorkspace(name = "Stella May"): WorkspaceData {
         amountCents: 1900,
         status: "active",
         renewsAt: ago(-43200),
+        cancelAtPeriodEnd: false,
       })),
     earnedToday: 12800,
     profileViews: 386,
