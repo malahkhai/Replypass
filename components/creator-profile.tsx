@@ -199,6 +199,7 @@ export function CreatorProfile({
   initialInteraction,
   vipPlan,
   activeVip = false,
+  preview = false,
 }: {
   creator: PublicCreator;
   paymentsEnabled?: boolean;
@@ -206,6 +207,7 @@ export function CreatorProfile({
   initialInteraction?: string;
   vipPlan?: VipPlan | null;
   activeVip?: boolean;
+  preview?: boolean;
 }) {
   const [demoImage, setDemoImage] = useState("");
   useEffect(() => {
@@ -243,7 +245,7 @@ export function CreatorProfile({
     vip: `Your ${firstName} VIP pass`,
   };
   const [selected, setSelected] = useState<Offering | null>(
-    () =>
+    () => preview ? null :
       [...initial.offerings.filter((offering) => offering.kind === "message"), ...(initial.vip ? [initial.vip] : [])].find(
         (o) => o.kind === initialInteraction,
       ) || null,
@@ -295,6 +297,7 @@ export function CreatorProfile({
                 <button
                   className="share-button"
                   aria-label={`Share ${creator.name}’s profile`}
+                  disabled={preview}
                   onClick={share}
                 >
                   <Icon name="share" size={18} />
@@ -354,7 +357,7 @@ export function CreatorProfile({
                 </>
               )}
             </div>
-            <SaveCreator creator={creator} />
+            {!preview && <SaveCreator creator={creator} />}
             <div className="desktop-promise">
               <Icon name="shield" size={23} />
               <div>
@@ -383,6 +386,7 @@ export function CreatorProfile({
               {offerings.map((offering, index) => (
                 <button
                   key={offering.kind}
+                  disabled={preview}
                   className={`offering ${index === 0 ? "offering-featured" : ""}`}
                   onClick={() => { track("interaction_select", offering.kind); setSelected(offering); }}
                 >
@@ -418,7 +422,7 @@ export function CreatorProfile({
                   <h2>{vipPlan?.name ?? `${firstName} VIP`}</h2>
                   <p>{vipPlan?.description ?? "Private posts, exclusive updates and VIP inbox status."}</p>
                   <ul className="vip-benefits">{(vipPlan?.benefits ?? ["Private posts","Exclusive photos","VIP updates","VIP badge"]).map(item=><li key={item}>✓ {item}</li>)}</ul>
-                  {activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
+                  {preview ? <Button disabled>Join VIP · Preview only</Button> : activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
                 </Card>
                 <section
                   className="private-section"
@@ -440,6 +444,7 @@ export function CreatorProfile({
                       <button
                         className={`preview-tile preview-${index}`}
                         key={title}
+                        disabled={preview}
                         onClick={() => { track("interaction_select", "vip"); setSelected(vip); }}
                         aria-label={`Unlock ${title} with VIP`}
                       >
@@ -473,7 +478,7 @@ export function CreatorProfile({
           </span>
         </footer>
       </main>
-      {(messageOffering || (vipPlan?.enabled && vip && !creator.demo)) && <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
+      {!preview && (messageOffering || (vipPlan?.enabled && vip && !creator.demo)) && <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
         {messageOffering && (
           <button
             type="button"
@@ -505,11 +510,11 @@ export function CreatorProfile({
         )}
       </nav>}
       <BottomSheet
-        open={!!selected}
+        open={!preview && !!selected}
         onClose={() => setSelected(null)}
         title={selected ? titles[selected.kind] : ""}
       >
-        {selected &&
+        {!preview && selected &&
           (selected.kind === "vip" && vipPlan?.enabled ? (
             <div className="checkout-form"><p>{vipPlan.description}</p><ul className="vip-benefits">{vipPlan.benefits.map((benefit)=><li key={benefit}>✓ {benefit}</li>)}</ul><VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/></div>
           ) : paymentsEnabled && ["message", "voice_note", "photo"].includes(selected.kind) ? (

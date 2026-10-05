@@ -4267,3 +4267,14 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .social-editor-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
 .social-editor-row > label { min-width: 0; }
 @media (max-width: 560px) { .social-editor-row { grid-template-columns: 1fr; gap: 10px; } .creator-socials { margin-top: 18px; } .creator-social-links a { min-height: 44px; } }
+
+/* Creator publication state is visible before offering a shareable profile. */
+.creator-publication-notice { display:flex; align-items:flex-start; gap:14px; padding:20px; margin-bottom:28px; border:1px solid #dce3d3; border-radius:16px; background:#f0f4e9; }
+.creator-publication-notice > svg { flex-shrink:0; margin-top:2px; }
+.creator-publication-notice strong { display:block; font-size:16px; }
+.creator-publication-notice p { margin:6px 0 0; max-width:680px; font-size:14px; line-height:1.6; }
+.creator-preview-notice { max-width:1100px; margin:28px auto 0; padding:24px; border:1px solid #dce3d3; border-radius:20px; background:#f0f4e9; display:flex; gap:24px; align-items:center; justify-content:space-between; }
+.creator-preview-notice h1 { font-size:24px; margin:8px 0; }
+.creator-preview-notice p { max-width:650px; font-size:14px; line-height:1.6; margin:6px 0; }
+.creator-preview-links { display:flex; flex-wrap:wrap; gap:10px; flex-shrink:0; }
+@media(max-width:700px) { .creator-preview-notice { margin:16px; padding:20px; flex-direction:column; align-items:stretch; } .creator-preview-links .button { flex:1; } }

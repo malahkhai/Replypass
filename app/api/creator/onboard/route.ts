@@ -1,5 +1,6 @@
+import { tryDeliverCreatorAdminEvents } from "@/lib/notifications/creator-lifecycle";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/lib/auth/session";
 import { demoCookieOptions } from "@/lib/auth/demo";
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
     }
     const viewer = await getViewer();
     if (!viewer) return fail("Sign in before launching your page.", 401);
+    const { data: verifiedAuth } = await supabase.auth.getUser();
+    if (!verifiedAuth.user?.email_confirmed_at) return fail("Verify your email before publishing your profile.", 403);
     const limited = await enforceRateLimit(request, "requestAction", viewer.id);
     if (limited) return limited;
     const { error } = await supabase.rpc("save_creator_profile_with_audience", { draft });
@@ -40,12 +43,13 @@ export async function POST(request: Request) {
         409,
       );
     const db = serviceDatabase();
-    await db.from("creator_profiles").update({
-      status: "submitted",
+    const { error: termsError } = await db.from("creator_profiles").update({
       submitted_at: new Date().toISOString(),
       community_terms_accepted_at: new Date().toISOString(),
       community_terms_version: "2026-09-launch-draft",
-    }).eq("profile_id", viewer.id).in("status", ["pending", "draft", "rejected"]);
+    }).eq("profile_id", viewer.id);
+    if (termsError) throw termsError;
+    after(tryDeliverCreatorAdminEvents);
     return NextResponse.json({ ok: true });
   } catch {
     return fail("Unable to save. Please try again.");

@@ -1,3 +1,4 @@
+import { deliverCreatorAdminEvents } from "@/lib/notifications/creator-lifecycle";
 import { timingSafeEqual } from "node:crypto";
 import { replyService } from "@/lib/stripe/service";
 import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
@@ -34,6 +35,8 @@ export async function GET(request: Request) {
   let processed = 0,
     attention = 0;
   const started = Date.now();
+  try { await deliverCreatorAdminEvents(); }
+  catch (error) { attention++; captureException(error, { event: "creator_admin_notification", status: "failed" }); }
   for (const p of data || []) {
     if (Date.now() - started > 45000) break;
     try {

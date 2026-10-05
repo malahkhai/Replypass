@@ -17,6 +17,8 @@ export function draftFromRow(
 ): CreatorDraft {
   return {
     ...blankCreator,
+    publicationStatus: String(row.status || "draft"),
+    onboardingComplete: row.onboarding_complete === true,
     displayName: profile.display_name,
     username: String(row.handle),
     image: profile.avatar_path || "",

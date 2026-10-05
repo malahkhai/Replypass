@@ -1,0 +1,10 @@
+create role anon; create role authenticated; create role service_role;
+create schema private; create schema auth;
+create table auth.users(id uuid primary key,email_confirmed_at timestamptz);
+create table public.profiles(id uuid primary key,account_status text default 'active');
+create table public.creator_profiles(id uuid primary key default gen_random_uuid(),profile_id uuid,handle text,status text default 'pending',onboarding_complete boolean default false,accepting_messages boolean default false);
+create table public.creator_pricing(creator_id uuid,kind text,active boolean);
+create table public.creator_stripe_accounts(creator_id uuid,ready boolean);
+create table public.creator_membership_plans(creator_id uuid,enabled boolean);
+alter table creator_profiles enable row level security; alter table profiles enable row level security; alter table creator_pricing enable row level security;
+create policy creators_public on creator_profiles for select using(true); create policy profiles_public_creator on profiles for select using(true); create policy pricing_public on creator_pricing for select using(true);

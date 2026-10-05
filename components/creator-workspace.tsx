@@ -1,5 +1,5 @@
 "use client";
-import { creatorPath } from "@/lib/creators/paths";
+import { creatorPublication } from "@/lib/creators/publication";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -240,6 +240,7 @@ export function RequestDetailPage({ requestId }: { requestId: string }) {
 }
 export function DashboardHome() {
   const { data } = useWorkspace();
+  const publication = creatorPublication(data.creator, data.demo);
   const pending = data.requests.filter((r) => r.status === "pending");
   return (
     <>
@@ -249,10 +250,10 @@ export function DashboardHome() {
         description="A little attention can make someone’s day."
       >
         <Link
-          href={`${creatorPath(data.creator.username)}`}
+          href={publication.href}
           className="button button-secondary"
         >
-          View your page <Icon name="arrow" size={17} />
+          {publication.label} <Icon name="arrow" size={17} />
         </Link>
       </WorkspaceHeading>
       <div className="today-label">
@@ -902,14 +903,15 @@ export function AnalyticsPage() {
 }
 export function ProfileEditorPage() {
   const { data } = useWorkspace();
+  const publication = creatorPublication(data.creator, data.demo);
   return (
     <>
       <WorkspaceHeading eyebrow="MAKE IT YOURS" title="Your profile.">
         <Link
           className="button button-secondary"
-          href={`${creatorPath(data.creator.username)}`}
+          href={publication.href}
         >
-          View public profile <Icon name="arrow" size={16} />
+          {publication.label} <Icon name="arrow" size={16} />
         </Link>
       </WorkspaceHeading>
       <Link className="button button-secondary" href="/creator/vip">Configure VIP membership</Link>
