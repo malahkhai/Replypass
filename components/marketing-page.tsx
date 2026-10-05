@@ -6,6 +6,7 @@ import {
   splitPayment,
 } from "@/lib/payments/fees";
 import { Price } from "./ui";
+import { HomepageSpotlight } from "./homepage-spotlight";
 export function MarketingPage({
   forCreators = false,
   creatorAuthenticated = false,
@@ -68,24 +69,7 @@ export function MarketingPage({
               : "Here for someone? Start with the ReplyPass link in their bio."}
           </p>
         </div>
-        <div className="marketing-showcase">
-          <div className="showcase-photo launch-showcase">
-            <span className="showcase-label">YOUR PEOPLE. ONE PERSONAL LINK.</span>
-            <div className="launch-showcase-symbol" aria-hidden="true">↗</div>
-            <div className="showcase-name">Beyond the comments<span>A message. A reply. A closer connection.</span></div>
-          </div>
-          <div className="showcase-message">
-            <span className="eyebrow">A QUESTION WORTH ASKING</span>
-            <p>“What helped you find your own creative style?”</p>
-            <div>
-              <span>Guaranteed reply</span>
-              <strong>No reply = no charge.</strong>
-            </div>
-          </div>
-          <Link className="showcase-link" href="/signup">
-            Join ReplyPass <span aria-hidden="true">↗</span>
-          </Link>
-        </div>
+        <HomepageSpotlight />
       </section>
       <section className="marketing-strip" aria-label="Who ReplyPass is for">
         <p>
@@ -221,8 +205,8 @@ export function MarketingPage({
           <li>
             <strong>Make it yours</strong>
             <p>
-              Choose your username, add your photo and bio, and preview your
-              public page.
+              Choose your username, add your photo and bio, and check the page
+              fans will see.
             </p>
           </li>
           <li>
