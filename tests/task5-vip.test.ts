@@ -40,6 +40,8 @@ test("Stripe Checkout uses recurring destination subscriptions and 15 percent fe
 test("webhooks own access, renewals, failures and cancellation state", () => {
   for (const event of ["checkout.session.completed","customer.subscription.updated","customer.subscription.deleted","invoice.paid","invoice.payment_failed"]) assert.match(webhook, new RegExp(event.replaceAll(".", "\\.")));
   assert.match(webhook, /status:"past_due"/);
+  assert.match(webhook, /subscription\.cancel_at_period_end===true/);
+  assert.match(webhook, /Number\(subscription\.cancel_at\)===period\.end/);
   assert.match(webhook, /subscription_payments/);
 });
 test("migration protects duplicate memberships, financial writes and private media", () => {
