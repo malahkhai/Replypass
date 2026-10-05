@@ -32,12 +32,28 @@ export const viewport: Viewport = {
   themeColor: "#fcfbf8",
   viewportFit: "cover",
 };
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  sameAs: [
+    "https://www.instagram.com/getreplypass/",
+    "https://x.com/getreplypass",
+  ],
+};
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <RecoveryRedirect />
         <a href="#main" className="skip-link">
           Skip to content
