@@ -3,6 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import { replyService } from "@/lib/stripe/service";
 import { notifyPaymentLifecycle } from "@/lib/notifications/payment-lifecycle";
 import { captureException } from "@/lib/observability/log";
+import { cronBatchOutcome } from "@/lib/cron/outcome";
 export const maxDuration = 60;
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -33,10 +34,11 @@ export async function GET(request: Request) {
     return new Response("Retry required", { status: 503 });
   }
   let processed = 0,
-    attention = 0;
+    attention = 0,
+    notificationAttention = 0;
   const started = Date.now();
   try { await deliverCreatorAdminEvents(); }
-  catch (error) { attention++; captureException(error, { event: "creator_admin_notification", status: "failed" }); }
+  catch (error) { notificationAttention++; captureException(error, { event: "creator_admin_notification", status: "failed" }); }
   for (const p of data || []) {
     if (Date.now() - started > 45000) break;
     try {
@@ -61,9 +63,10 @@ export async function GET(request: Request) {
         .eq("id", p.id);
     }
   }
-  if (run) await db.from("operational_runs").update({ status: attention ? "failed" : "succeeded", processed, attention, completed_at: new Date().toISOString(), error_code: attention ? "payment_items_need_attention" : null }).eq("id", run.id);
-  return Response.json(
-    { processed, attention },
-    { status: attention ? 503 : 200, headers: { "Cache-Control": "no-store" } },
-  );
+  const outcome = cronBatchOutcome({ processed, paymentAttention: attention, notificationAttention });
+  if (run) await db.from("operational_runs").update({ ...outcome.run, completed_at: new Date().toISOString() }).eq("id", run.id);
+  return Response.json(outcome.body, {
+    status: outcome.httpStatus,
+    headers: { "Cache-Control": "no-store" },
+  });
 }
