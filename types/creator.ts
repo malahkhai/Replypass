@@ -125,7 +125,9 @@ export interface WorkspaceData {
   requests: CreatorRequest[];
   conversations: Conversation[];
   subscribers: Subscriber[];
+  creatorProfileId: string | null;
   earnedToday: number;
   profileViews: number;
+  creatorLinkCopies: number;
   revenue: number[];
 }

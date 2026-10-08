@@ -211,6 +211,7 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       );
   });
   let profileViews = 0;
+  let creatorLinkCopies = 0;
   const { data: ownedCreator, error: creatorLookupError } = await supabase
     .from("creator_profiles")
     .select("id")
@@ -229,6 +230,19 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
     if (viewsError) throw Error("Could not load profile analytics.");
     profileViews = (viewDays || []).reduce(
       (total, day) => total + Number(day.view_count),
+      0,
+    );
+    const { data: copyDays, error: copiesError } = await supabase
+      .from("creator_link_copy_days")
+      .select("copy_count,surface")
+      .eq("creator_id", ownedCreator.id)
+      .eq("surface", "creator_dashboard")
+      .gte("copied_on", since);
+    // The dashboard remains usable while the analytics migration rolls out.
+    if (copiesError && !["42P01", "PGRST205"].includes(copiesError.code))
+      throw Error("Could not load creator link analytics.");
+    creatorLinkCopies = (copyDays || []).reduce(
+      (total, day) => total + Number(day.copy_count),
       0,
     );
   }
@@ -250,8 +264,10 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       renewsAt: s.current_period_end || "",
       cancelAtPeriodEnd: s.cancel_at_period_end,
     })),
+    creatorProfileId: ownedCreator?.id ?? null,
     earnedToday: revenue[6],
     profileViews,
+    creatorLinkCopies,
     revenue,
   };
 }

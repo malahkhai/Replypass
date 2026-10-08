@@ -11,6 +11,7 @@ export const limits = {
   media: { limit: 20, windowSeconds: 60 },
   requestAction: { limit: 20, windowSeconds: 60 },
   report: { limit: 5, windowSeconds: 600 },
+  linkCopy: { limit: 30, windowSeconds: 60 },
   admin: { limit: 30, windowSeconds: 60 },
 } satisfies Record<string, Limit>;
 

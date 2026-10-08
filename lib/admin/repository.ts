@@ -59,9 +59,15 @@ export async function adminUsers(search=""){
 
 export async function adminCreators(){
   const db=serviceDatabase();
-  const {data,error}=await db.from("creator_profiles").select("id,profile_id,handle,status,verified,onboarding_complete,created_at,profiles!creator_profiles_profile_id_fkey(display_name,account_status),creator_stripe_accounts(ready,transfers_enabled,payouts_enabled),creator_pricing(kind,active),subscriptions(id,status),paid_interactions(id,status)").order("created_at",{ascending:false}).limit(100);
-  if(error) throw Error("Creators unavailable.");
-  return data||[];
+  const since=new Date(Date.now()-6*86400000).toISOString().slice(0,10);
+  const [{data,error},{data:copyDays,error:copyError}]=await Promise.all([
+    db.from("creator_profiles").select("id,profile_id,handle,status,verified,onboarding_complete,created_at,profiles!creator_profiles_profile_id_fkey(display_name,account_status),creator_stripe_accounts(ready,transfers_enabled,payouts_enabled),creator_pricing(kind,active),subscriptions(id,status),paid_interactions(id,status)").order("created_at",{ascending:false}).limit(100),
+    db.from("creator_link_copy_days").select("creator_id,surface,copy_count").gte("copied_on",since),
+  ]);
+  if(error||(copyError&&!["42P01","PGRST205"].includes(copyError.code))) throw Error("Creators unavailable.");
+  const copies=new Map<string,{dashboard:number;profile:number}>();
+  for(const row of copyDays||[]){const current=copies.get(row.creator_id)||{dashboard:0,profile:0};if(row.surface==="creator_dashboard")current.dashboard+=Number(row.copy_count);else current.profile+=Number(row.copy_count);copies.set(row.creator_id,current);}
+  return (data||[]).map(creator=>({...creator,linkCopies7d:copies.get(creator.id)?.dashboard||0,profileLinkCopies7d:copies.get(creator.id)?.profile||0}));
 }
 
 export async function adminPayments(mode: "test" | "live" | "unknown" = paymentMode()){

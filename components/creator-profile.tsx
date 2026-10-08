@@ -16,6 +16,7 @@ import { Icon, type IconName } from "./icon";
 import { BottomSheet } from "./bottom-sheet";
 import { SaveCreator } from "./fan-account";
 import { VipJoin } from "./vip-join";
+import { CopyCreatorLink } from "./copy-creator-link";
 import type { VipPlan } from "@/lib/vip/model";
 import { paidRequestAvailable } from "@/lib/launch/scope";
 
@@ -325,7 +326,15 @@ export function CreatorProfile({
                     </span>
                   )}
                 </h1>
-                <span className="handle">{creator.handle}</span>
+                <CopyCreatorLink
+                  creatorId={creator.id || null}
+                  handle={creator.handle}
+                  surface="public_profile"
+                  className="handle-copy-button"
+                  trackable={!creator.demo && !preview}
+                >
+                  {creator.handle}
+                </CopyCreatorLink>
               </div>
               <div className="categories">
                 {creator.categories.map((category) => (
@@ -470,13 +479,6 @@ export function CreatorProfile({
             )}
           </section>
         </div>
-        <footer className="profile-footer">
-          <span>Real attention. A little connection.</span>
-          <span>
-            {siteConfig.logo}
-            <span className="pink">.</span>
-          </span>
-        </footer>
       </main>
       {!preview && (messageOffering || (vipPlan?.enabled && vip && !creator.demo)) && <nav className="profile-action-dock" aria-label={`Connect with ${creator.name}`}>
         {messageOffering && (
