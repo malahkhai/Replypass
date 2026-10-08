@@ -237,6 +237,7 @@ export function CreatorProfile({
   const hasCompletedChats = Number.parseFloat(creator.completedChats) > 0;
   const hasPublicProof = creator.ratingCount > 0 || hasCompletedChats;
   const firstName = creator.name.split(" ")[0];
+  const photoFocusLow = creator.handle.replace(/^@/, "").toLowerCase() === "slthedj";
   const titles = {
     message: `Message ${firstName}`,
     live_chat: `Live chat with ${firstName}`,
@@ -281,7 +282,7 @@ export function CreatorProfile({
             className="profile-intro"
             aria-label={`About ${creator.name}`}
           >
-            <div className="hero-image">
+            <div className={`hero-image${photoFocusLow ? " hero-image--low-subject" : ""}`}>
               <Image
                 src={creator.image}
                 alt={`${creator.name} profile photo`}

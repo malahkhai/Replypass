@@ -204,6 +204,7 @@ button:disabled {
   object-fit: cover;
   object-position: center 37%;
 }
+.hero-image--low-subject > img { object-position: center 70%; }
 .hero-image::after {
   content: "";
   position: absolute;
@@ -4276,8 +4277,9 @@ body:has(.workspace-shell) > .site-footer { display: none; }
   .site-header:has(+ .profile-page) .header-inner { height: 58px; }
   .profile-page { padding: 0; }
   .profile-breadcrumb { display: none; }
-  .hero-image { height: clamp(250px, 78vw, 340px); border-radius: 0 0 26px 26px; }
+  .hero-image { height: clamp(360px, 108vw, 460px); border-radius: 0 0 26px 26px; }
   .hero-image > img { object-position: center top; }
+  .hero-image--low-subject > img { object-position: center bottom; }
   .hero-bottom { display: none; }
   .hero-topline { top: 16px; left: 20px; right: 20px; }
   .creator-details { padding: 0 20px; }
@@ -4313,10 +4315,10 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .creator-audience strong { font-size: 24px; letter-spacing: -.7px; }
 .creator-audience > span { color: #6b7265; font-size: 12px; }
 .creator-social-links { display: flex; flex-wrap: wrap; gap: 8px; }
-.creator-social-links a { display: inline-flex; align-items: center; gap: 9px; min-height: 42px; padding: 9px 12px; border: 1px solid #dfe3d8; border-radius: 24px; background: #fff; text-decoration: none; font-size: 12px; font-weight: 600; transition: background .15s, border-color .15s; }
+.creator-social-links a { display: inline-flex; align-items: center; justify-content: center; width: 44px; min-height: 44px; border: 1px solid #dfe3d8; border-radius: 50%; background: #fff; color: #2b332a; text-decoration: none; transition: background .15s, border-color .15s; }
 .creator-social-links a:hover { background: #eff3e8; border-color: #9faa8d; }
 .creator-social-links a:focus-visible { outline: 2px solid #687b51; outline-offset: 3px; }
-.creator-social-links small { color: #687b51; font-size: 11px; }
+.creator-social-links svg { width: 21px; height: 21px; }
 .creator-audience-note { margin: 11px 0 0; color: #72796b; font-size: 10px; line-height: 1.6; }
 .vip-public-teaser { padding: 22px; margin-top: 14px; border: 1px solid #dfe3d8; border-radius: 18px; background: #f3f5ed; }
 .vip-public-teaser p { margin: 12px 0; line-height: 1.7; font-size: 15px; white-space: pre-wrap; overflow-wrap: anywhere; }
