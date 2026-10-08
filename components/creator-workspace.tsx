@@ -22,6 +22,7 @@ import type {
 } from "@/types/creator";
 import { creatorNav } from "./workspace-shell";
 import { CreatorEditor } from "./creator-editor";
+import { CopyCreatorLink } from "./copy-creator-link";
 import { LogoutButton } from "./logout-button";
 import { VoiceRecorder } from "./voice-recorder";
 import { PhotoDelivery } from "./photo-delivery";
@@ -249,12 +250,21 @@ export function DashboardHome() {
         title={`Good to see you, ${data.creator.displayName.split(" ")[0]}.`}
         description="A little attention can make someone’s day."
       >
-        <Link
-          href={publication.href}
-          className="button button-secondary"
-        >
-          {publication.label} <Icon name="arrow" size={17} />
-        </Link>
+        <div className="workspace-heading-actions">
+          <Link href={publication.href} className="button button-secondary">
+            {publication.label} <Icon name="arrow" size={17} />
+          </Link>
+          {!data.demo && data.creatorProfileId && publication.published && (
+            <CopyCreatorLink
+              creatorId={data.creatorProfileId}
+              handle={data.creator.username}
+              surface="creator_dashboard"
+              className="button button-tertiary"
+            >
+              Copy link
+            </CopyCreatorLink>
+          )}
+        </div>
       </WorkspaceHeading>
       <div className="today-label">
         Today{" "}
@@ -876,6 +886,12 @@ export function AnalyticsPage() {
           value={data.profileViews}
           note={data.demo ? "Demo data" : "Last 7 days"}
           icon="user"
+        />
+        <Metric
+          label="Link copies"
+          value={data.creatorLinkCopies}
+          note={data.demo ? "Demo data" : "Your copies · last 7 days"}
+          icon="share"
         />
         <Metric
           label="Conversations"

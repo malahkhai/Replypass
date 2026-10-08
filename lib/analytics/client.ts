@@ -18,7 +18,8 @@ type AnalyticsEvent =
   | "creator_onboarding_start"
   | "creator_onboarding_step"
   | "creator_launch_success"
-  | "checkout_started";
+  | "checkout_started"
+  | "creator_link_copied";
 
 type MetaPixel = ((command: string, event: string, parameters?: Record<string, unknown>) => void) & {
   callMethod?: (...args: unknown[]) => void;
@@ -79,7 +80,7 @@ export function trackMetaPage(pathname: string) {
 }
 
 export function track(event: AnalyticsEvent, option?: string | number) {
-  const allowed = ["fan", "creator", "message", "live_chat", "voice_note", "photo", "video", "vip", 1, 2, 3, 4, 5];
+  const allowed = ["fan", "creator", "message", "live_chat", "voice_note", "photo", "video", "vip", "creator_dashboard", "public_profile", 1, 2, 3, 4, 5];
   const safeOption = allowed.includes(option as string | number) ? option : undefined;
   if (analyticsAllowed()) {
     window.gtag?.("event", event, {
@@ -102,6 +103,7 @@ export function track(event: AnalyticsEvent, option?: string | number) {
     creator_onboarding_step: { mode: "trackCustom", name: "CreatorOnboardingStep" },
     creator_launch_success: { mode: "track", name: "CompleteRegistration" },
     checkout_started: { mode: "track", name: "InitiateCheckout" },
+    creator_link_copied: { mode: "trackCustom", name: "CreatorLinkCopied" },
   };
   const mapped = metaEvents[event];
   window.fbq?.(mapped.mode, mapped.name, detail);

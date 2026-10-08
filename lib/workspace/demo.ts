@@ -120,8 +120,10 @@ export function demoWorkspace(name = "Stella May"): WorkspaceData {
         renewsAt: ago(-43200),
         cancelAtPeriodEnd: false,
       })),
+    creatorProfileId: null,
     earnedToday: 12800,
     profileViews: 386,
+    creatorLinkCopies: 42,
     revenue: [4200, 6800, 5100, 9200, 7600, 11200, 12800],
   };
 }
