@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { AdminAction } from "@/components/admin-actions";
 import { AdminHeading, AdminTable, Status } from "@/components/admin-ui";
 import { adminCreators } from "@/lib/admin/repository";
+import { creatorUrl } from "@/lib/site";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ creator?: string }> }) {
   const selected = (await searchParams).creator;
@@ -16,8 +18,10 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ c
         const products = (c.creator_pricing || []).filter((p: any) => p.active).map((p: any) => p.kind.replace("_", " ")).join(", ") || "None";
         const replies = (c.paid_interactions || []).filter((i: any) => ["captured", "completed"].includes(i.status)).length;
         const vip = (c.subscriptions || []).filter((s: any) => ["active", "trialing"].includes(s.status)).length;
+        const publicUrl = creatorUrl(c.handle);
+        const published = c.status === "approved" && c.onboarding_complete === true;
         return <tr key={c.id}>
-          <td><strong>{profile?.display_name || `@${c.handle}`}</strong><small>@{c.handle} · {c.verified ? "verified" : "not verified"}</small><small><Status tone={c.status === "approved" ? "good" : c.status === "suspended" ? "bad" : "warn"}>{c.status}</Status></small></td>
+          <td><strong>{profile?.display_name || `@${c.handle}`}</strong><small>@{c.handle} · {c.verified ? "verified" : "not verified"}</small>{published ? <Link className="admin-public-link" href={publicUrl} target="_blank" rel="noopener noreferrer" aria-label={`View @${c.handle}'s public page in a new tab`}>{publicUrl.replace(/^https?:\/\//, "")} ↗</Link> : <small className="admin-unpublished-link">Public page not live yet</small>}<small><Status tone={c.status === "approved" ? "good" : c.status === "suspended" ? "bad" : "warn"}>{c.status}</Status></small></td>
           <td><strong>{c.linkCopies7d + c.profileLinkCopies7d}</strong><small>Dashboard {c.linkCopies7d} · Public profile {c.profileLinkCopies7d}</small></td>
           <td><Status tone={stripe?.ready ? "good" : "warn"}>{stripe?.ready ? "Eligible" : "Not eligible"}</Status><small>Stripe transfers and payouts must both be checked.</small></td>
           <td><strong>{products}</strong><small>{replies} completed replies · {vip} active VIP</small></td>

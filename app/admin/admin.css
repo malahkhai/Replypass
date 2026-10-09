@@ -99,6 +99,9 @@ body:has(.admin-shell) > .site-footer { display: none; }
 .admin-table tbody tr:hover { background: #fbfcfa; }
 .admin-table td strong, .admin-table td small { display: block; }
 .admin-table td small { max-width: 260px; margin-top: 5px; color: #718073; font-size: 11px; overflow-wrap: anywhere; }
+.admin-shell .admin-public-link { display: block; width: fit-content; max-width: 260px; margin-top: 7px; color: #416741; font-size: 12px; font-weight: 800; overflow-wrap: anywhere; }
+.admin-shell .admin-public-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.admin-table td small.admin-unpublished-link { margin-top: 7px; color: #90653c; }
 .admin-table-empty { padding: 32px !important; text-align: center; color: #708070 !important; }
 .admin-status { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; background: #eef1ed; color: #566456; font-size: 11px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
 .admin-status.good { background: #e7f3e6; color: #336c3c; }
