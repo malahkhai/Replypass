@@ -26,9 +26,21 @@ export default async function Page() {
     { name: "Sentry", ready: !!process.env.ERROR_MONITORING_DSN, detail: "Configuration only. Confirm ingestion and an actionable alert in Sentry." },
     { name: "GA4 and Meta", ready: process.env.NEXT_PUBLIC_GA_ENABLED === "true" && process.env.NEXT_PUBLIC_META_ENABLED === "true", detail: "Consent-gated configuration only. Confirm events in the provider dashboards." },
   ];
-  const manual = ["Legal/operator details and professional review", "Real Guaranteed Reply: capture, 15/85 split and creator transfer", "Real decline and expiry releases", "Real refund and transfer reversal", "Creator bank payout", "Real VIP subscription, renewal failure and period-end cancellation", "iPhone Safari and Instagram in-app checkout", "Apple Pay and Google Pay on eligible devices"];
+  const manual = [
+    "Confirm supported creator countries and France-to-US Connect transfers before another live charge",
+    "Onboard an eligible creator with accurate country and identity details; verify transfers and payouts are active",
+    "Reconcile the October €4 live test: charge, €3.40 connected-account transfer, bank payout status and any refund/reversal",
+    "Real Guaranteed Reply with an eligible creator: authorization, reply, capture, 15/85 split, transfer and settled bank payout",
+    "Real decline and expiry releases",
+    "Real refund and transfer reversal, including recovery if the reversal fails",
+    "Real VIP subscription, renewal failure and period-end cancellation",
+    "iPhone Safari and Instagram in-app checkout",
+    "Apple Pay and Google Pay on eligible devices",
+    "Legal/operator details and professional review",
+  ];
   return <><AdminHeading eyebrow="CONTROLLED LAUNCH" title="Launch readiness" description="Configuration checks are separate from real-world verification. No financial test is marked complete automatically."/>
     <section className="admin-card"><h2>Live configuration</h2><div className="attention-list">{checks.map(check=><p key={check.name}><Status tone={check.ready?"good":"warn"}>{check.ready?"Ready":"Needs attention"}</Status> <strong>{check.name}</strong><br/><small>{check.detail}</small></p>)}</div></section>
+    <section className="admin-card"><h2>Real-money test snapshot · 9 October 2026</h2><p>Owner-provided Stripe screenshots show a €4 charge and a €3.40 transfer to the test creator’s connected Stripe account. They do not show a bank payout. The creator lives in Nigeria while the connected account shown in Stripe was created as French; a second creator reported payout-onboarding failure while in Nigeria. Review their actual eligibility and connected-account status before counting this as a completed payout.</p><p><Status tone="warn">Open</Status> Paid public launch remains blocked by creator eligibility, bank payout, refund/reversal and the other manual checks below. This dated snapshot is not a live Stripe balance or payout-status feed.</p></section>
     <section className="admin-card"><h2>Manual verification required</h2><p>Record the date, tester, Stripe object or support reference, and outcome in the owner checklist before marking any item done.</p><ul>{manual.map(item=><li key={item}>{item}</li>)}</ul><p><Link href="/admin/system">System details →</Link></p></section>
   </>;
 }
