@@ -18,23 +18,22 @@ const priorities = [
     action: "Review creators",
   },
   {
-    title: "Reconcile the October €4 test",
-    detail: "Match the charge and €3.40 connected-account transfer to ReplyPass records. Check the refund and reversal status before taking any further action.",
-    href: "/admin/payments",
-    action: "Open payments",
-  },
-  {
     title: "Prove a bank payout end to end",
     detail: "Use an eligible creator with accurate details. Confirm Stripe shows a settled payout to their bank, not only a transfer to their Stripe balance.",
     href: "/admin/payouts",
     action: "Open payouts",
+  },
+  {
+    title: "Test no reply = no charge",
+    detail: "Run a live decline and a cron-driven expiry. Confirm both authorizations release without a charge or creator earnings.",
+    href: "/admin/payments",
+    action: "Open payments",
   },
 ];
 
 const gates = [
   { title: "Creator eligibility", detail: "The Nigeria onboarding reports and the test creator’s French account need review. Confirm supported countries and accurate account details with Stripe.", href: "/admin/creators", action: "Review creators" },
   { title: "Bank payout", detail: "A connected-account transfer was observed. A settled bank payout has not been evidenced.", href: "/admin/payouts", action: "Review payouts" },
-  { title: "Refund and transfer reversal", detail: "Test one live fan refund and separately verify the creator transfer reversal or visible recovery liability.", href: "/admin/payments", action: "Review payments" },
   { title: "No reply = no charge", detail: "Test a live decline and an expired request. Both authorizations must be released without creator earnings.", href: "/admin/payments", action: "Review payments" },
   { title: "VIP billing lifecycle", detail: "Live subscription, renewal failure, cancellation and access removal remain unverified. The live VIP charge was deferred by the owner.", href: "/admin/subscriptions", action: "Review subscriptions" },
   { title: "Mobile checkout and wallets", detail: "Complete iPhone Safari, Instagram browser, Android Chrome and eligible Apple Pay/Google Pay journeys.", href: "/admin/system", action: "Review system" },
@@ -63,13 +62,13 @@ export default async function Page() {
     <AdminHeading eyebrow="CONTROLLED LAUNCH" title="Launch readiness" description="What has been observed, what still blocks launch, and where to go next. Last evidence review: 9 October 2026." />
 
     <section className="readiness-hero" aria-labelledby="launch-decision">
-      <div><Status tone="warn">Launch blocked</Status><h2 id="launch-decision">Paid public launch is not verified yet.</h2><p>The live €4 test proves a charge and a connected-account transfer were observed. It does not prove a bank payout, creator eligibility or the refund path.</p></div>
+      <div><Status tone="warn">Launch blocked</Status><h2 id="launch-decision">Paid public launch is not verified yet.</h2><p>The live €4 charge, fan refund and full €3.40 creator transfer reversal now match in Stripe and ReplyPass. Creator eligibility, a settled bank payout and other live checks remain open.</p></div>
       <a className="admin-primary-link" href="#next-actions">See next actions ↓</a>
     </section>
 
     <div className="readiness-milestones" aria-label="Live payment milestones">
-      <article className="readiness-milestone"><span>01 · Observed</span><strong>€4 charged</strong><p>From owner-provided live Stripe screenshots; match provider and ReplyPass IDs.</p></article>
-      <article className="readiness-milestone"><span>02 · Observed</span><strong>€3.40 transferred</strong><p>Funds reached a connected Stripe account. This is not a bank payout.</p></article>
+      <article className="readiness-milestone"><span>01 · Verified</span><strong>€4 charged</strong><p>Stripe and ReplyPass records match for the October Guaranteed Reply test.</p></article>
+      <article className="readiness-milestone"><span>02 · Verified</span><strong>€4 refunded · €3.40 reversed</strong><p>Stripe issued the refund and fully reversed the creator transfer on 9 October. Card receipt may take several business days.</p></article>
       <article className="readiness-milestone open"><span>03 · Still open</span><strong>Bank payout</strong><p>No settled payout to the creator’s bank has been evidenced.</p></article>
     </div>
 
@@ -84,6 +83,6 @@ export default async function Page() {
     </section>
 
     <details className="readiness-details"><summary>Technical setup checks · {checks.filter(check => check.configured).length} of {checks.length} configured</summary><div className="readiness-details-body"><p className="admin-note">“Configured” means the setting or recent job run is present; it does not certify delivery or payment settlement.</p><div className="readiness-config">{checks.map(check => <article key={check.name}><h3><Status tone={check.configured ? "good" : "warn"}>{check.configured ? "Configured" : "Check"}</Status> {check.name}</h3><p>{check.detail}</p></article>)}</div><p><Link className="admin-secondary-link" href="/admin/system">Open system details →</Link></p></div></details>
-    <details className="readiness-details"><summary>About the October test evidence</summary><div className="readiness-details-body"><p className="admin-note">The €4 charge and €3.40 connected-account transfer come from owner-provided screenshots. The creator’s actual eligibility, bank payout, refund and transfer reversal need live Stripe and ReplyPass reconciliation. This is a dated evidence snapshot, not a live Stripe balance feed.</p><p className="admin-note">For each completed financial check, record the date, tester, ReplyPass payment ID, Stripe IDs, expected and actual amounts, and outcome in the owner checklist.</p></div></details>
+    <details className="readiness-details"><summary>About the October test evidence</summary><div className="readiness-details-body"><p className="admin-note">On 9 October, live Stripe showed the €4 refund issued and the full €3.40 creator transfer reversed; ReplyPass showed payment refunded and transfer reversed for the same payment and transfer IDs. Stripe still says the card credit may take several business days. This is a dated evidence snapshot, not a live Stripe balance feed or proof of bank payout.</p><p className="admin-note">For each completed financial check, record the date, tester, ReplyPass payment ID, Stripe IDs, expected and actual amounts, and outcome in the owner checklist.</p></div></details>
   </>;
 }
