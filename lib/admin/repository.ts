@@ -36,7 +36,7 @@ export async function adminOverview(){
     {label:"Active VIP subscriptions",value:String(subscriptions.data?.length||0)}, {label:"Paid requests",value:String(rows.length)},
     {label:"VIP monthly gross",value:money((subscriptions.data||[]).filter(s=>s.currency==="eur").reduce((n,s)=>n+s.amount_cents,0))},
     {label:"VIP payments",value:String(vipRows.filter(p=>p.status==="paid").length)},
-    {label:"Gross payment volume",value:money(gross)}, {label:"ReplyPass revenue",value:money(fees)},
+    {label:"Gross payment volume",value:money(gross)}, {label:"Platform share before Stripe fees",value:money(fees)},
     {label:"Creator earnings",value:money(earnings)}, {label:"Refunds",value:money(refunds)},
     {label:"Open reports",value:String(reports.count||0),attention:!!reports.count},
     {label:"Failed transfers",value:String(transferFailures),attention:transferFailures>0},
