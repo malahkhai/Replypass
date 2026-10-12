@@ -13,7 +13,7 @@ export const creatorNav: { name: string; path: string; icon: IconName }[] = [
   { name: "Requests", path: "/creator/requests", icon: "bolt" },
   { name: "Subscribers", path: "/creator/subscribers", icon: "heart" },
   { name: "VIP", path: "/creator/vip", icon: "sparkles" },
-  { name: "Payouts", path: "/creator/payouts", icon: "shield" },
+  { name: "Payouts", path: "/creator/payouts", icon: "wallet" },
   { name: "Earnings", path: "/creator/earnings", icon: "star" },
   { name: "Analytics", path: "/creator/analytics", icon: "sparkles" },
   { name: "Profile", path: "/creator/profile", icon: "user" },
@@ -94,7 +94,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       >
         {creatorNav
           .filter((n) =>
-            ["Home", "Inbox", "Requests", "Profile", "Settings"].includes(
+            ["Home", "Inbox", "Requests", "Payouts", "Profile", "Settings"].includes(
               n.name,
             ),
           )
@@ -105,7 +105,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               aria-current={path.startsWith(item.path) ? "page" : undefined}
             >
               <Icon name={item.icon} />
-              <span>{item.name}</span>
+              <span>{item.name === "Payouts" ? "Money" : item.name}</span>
             </Link>
           ))}
       </nav>

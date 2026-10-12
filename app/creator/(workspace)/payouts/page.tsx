@@ -1,9 +1,10 @@
 import { Icon } from "@/components/icon";
 import { PayoutSetup } from "@/components/payout-setup";
+import { Price } from "@/components/ui";
+import Link from "next/link";
 import { requireRole } from "@/lib/auth/session";
-import { connectStatus } from "@/lib/stripe/connect";
 import { stripeConfig } from "@/lib/stripe/config";
-import { paymentBackend } from "@/lib/stripe/server";
+import { creatorPayoutOverview, type CreatorPayoutOverview } from "@/lib/stripe/creator-payout-overview";
 
 export const metadata = { title: "Payouts" };
 
@@ -11,30 +12,33 @@ export default async function Page() {
   const viewer = await requireRole(["creator", "admin"]);
   const stripe = stripeConfig();
   const enabled = !!stripe;
-  let status = {
+  let status: CreatorPayoutOverview = {
     connected: false,
     ready: false,
     transfers: false,
     payouts: false,
     requirementsDue: true,
+    balanceAvailable: false,
+    pendingCents: 0,
+    availableCents: 0,
+    scheduledCents: 0,
+    inTransitCents: 0,
+    paidCents: 0,
+    paidIsRecent: false,
+    nextArrival: null,
   };
   let statusError = false;
 
   if (enabled && !viewer.demo) {
     try {
-      const { db } = paymentBackend();
-      const { data } = await db
-        .from("creator_profiles")
-        .select("id")
-        .eq("profile_id", viewer.id)
-        .single();
-      if (data) status = await connectStatus(data.id);
+      status = await creatorPayoutOverview(viewer.id);
     } catch {
       statusError = true;
     }
   }
 
-  const heading = status.ready
+  const needsAction = !status.ready || status.requirementsDue;
+  const heading = !needsAction
     ? "You’re ready to get paid"
     : status.connected
       ? "Finish setting up payouts"
@@ -56,16 +60,42 @@ export default async function Page() {
         </span>
       </header>
 
+      {status.connected && (
+        <section className="payout-money-section" aria-label="Money at Stripe and bank payouts">
+          <div className="payout-money-title">
+            <div>
+              <p className="eyebrow">YOUR MONEY</p>
+              <h2>Where your earnings are.</h2>
+            </div>
+            <Link href="/creator/earnings">See all earnings <Icon name="arrow" size={15} /></Link>
+          </div>
+          {status.balanceAvailable ? (
+            <>
+              <div className="payout-money-grid">
+                <article><span>Pending at Stripe</span><strong><Price cents={status.pendingCents} decimals /></strong><small>Processing before payout</small></article>
+                <article><span>Available at Stripe</span><strong><Price cents={status.availableCents} decimals /></strong><small>Waiting for the next payout</small></article>
+                <article><span>Scheduled payout</span><strong><Price cents={status.scheduledCents} decimals /></strong><small>Stripe is preparing to send it</small></article>
+                <article><span>On the way to bank</span><strong><Price cents={status.inTransitCents} decimals /></strong><small>{status.nextArrival ? `Stripe estimates ${new Date(status.nextArrival * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "No payout in transit"}</small></article>
+                <article><span>{status.paidIsRecent ? "Recently paid" : "Paid to bank"}</span><strong><Price cents={status.paidCents} decimals /></strong><small>Marked paid by Stripe</small></article>
+              </div>
+              <p className="payout-money-explainer">These are Stripe payout stages, not extra charges. A completed reply first appears in Earnings, then moves through Stripe’s balance before a bank payout. “Paid” means Stripe sent it; your bank may take longer to show it.</p>
+            </>
+          ) : (
+            <p className="payout-money-explainer" role="status">Stripe’s balance is temporarily unavailable. Your setup status is shown below; refresh to check the money amounts again.</p>
+          )}
+        </section>
+      )}
+
       <div className="payout-layout">
         <article className="payout-hero-card">
           <div className="payout-card-topline">
             <span className="payout-icon">
-              <Icon name={status.ready ? "check" : "shield"} size={24} />
+              <Icon name={!needsAction ? "check" : "shield"} size={24} />
             </span>
             <span
-              className={`payout-state ${status.ready ? "ready" : "pending"}`}
+              className={`payout-state ${!needsAction ? "ready" : "pending"}`}
             >
-              {status.ready
+              {!needsAction
                 ? "Ready"
                 : status.connected
                   ? "Action needed"
@@ -76,12 +106,12 @@ export default async function Page() {
           <div className="payout-card-copy">
             <p className="eyebrow">POWERED BY STRIPE</p>
             <h2>
-              {status.ready
+              {!needsAction
                 ? "Your payout account is active."
                 : "Set up your payout account."}
             </h2>
             <p>
-              {status.ready
+              {!needsAction
                 ? "You can accept secured replies and receive your creator share."
                 : "Stripe verifies your identity and sends earnings directly to your bank account."}
             </p>
@@ -114,13 +144,15 @@ export default async function Page() {
             </div>
           )}
 
-          {enabled && !viewer.demo ? (
-            status.ready ? (
+          {statusError ? (
+            <Link className="button button-secondary" href="/creator/payouts">Refresh payout status</Link>
+          ) : enabled && !viewer.demo ? (
+            !needsAction ? (
               <div className="payout-ready-note">
                 <Icon name="check" size={18} />
                 <span>
                   <strong>Payout setup complete</strong>
-                  Guaranteed Reply is enabled on your creator profile.
+                  Guaranteed Reply is enabled on your creator profile. Stripe sends eligible earnings to the bank you added during setup.
                 </span>
               </div>
             ) : (

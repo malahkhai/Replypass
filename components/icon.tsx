@@ -15,6 +15,7 @@ export type IconName =
   | "compass"
   | "shield"
   | "star"
+  | "wallet"
   | "share";
 const paths: Record<IconName, React.ReactNode> = {
   heart: (
@@ -75,6 +76,12 @@ const paths: Record<IconName, React.ReactNode> = {
     </>
   ),
   star: <path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-6Z" />,
+  wallet: (
+    <>
+      <rect x="2" y="5" width="20" height="16" rx="3" />
+      <path d="M2 9h20M16 15h3" />
+    </>
+  ),
   share: (
     <>
       <path d="M12 16V2m-4 4 4-4 4 4M5 10H3v11h18V10h-2" />

@@ -16,7 +16,7 @@ function statusLabel(row: Rows[number]) {
   if (row.manual_review) return "Under review";
   if (row.payment_state === "authorized") return "Reply pending";
   if (row.payment_state === "captured" && row.transfer_state === "transferred")
-    return "Paid out";
+    return "In payout balance";
   if (row.payment_state === "captured") return "Earned";
   return row.payment_state.replaceAll("_", " ");
 }

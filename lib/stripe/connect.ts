@@ -38,7 +38,7 @@ async function atStage<T>(
     });
   }
 }
-export async function connectStatus(creatorId: string) {
+export async function connectStatus(creatorId: string, { persist = true }: { persist?: boolean } = {}) {
   const { stripe, db, config } = paymentBackend();
   const table = connectAccountTable(config.mode);
   const { data: row, error } = await db
@@ -66,18 +66,20 @@ export async function connectStatus(creatorId: string) {
     payoutsStatus: balances?.payouts?.status,
     requirements: account.requirements?.entries,
   });
-  const { error: updateError } = await db
-    .from(table)
-    .update({
-      ready,
-      transfers_enabled: transfers,
-      payouts_enabled: payouts,
-      requirements_due: requirementsDue,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("creator_id", creatorId);
-  if (updateError) throw Error("Could not save payout status.");
-  if (config.mode === "live") after(tryDeliverCreatorAdminEvents);
+  if (persist) {
+    const { error: updateError } = await db
+      .from(table)
+      .update({
+        ready,
+        transfers_enabled: transfers,
+        payouts_enabled: payouts,
+        requirements_due: requirementsDue,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("creator_id", creatorId);
+    if (updateError) throw Error("Could not save payout status.");
+    if (config.mode === "live") after(tryDeliverCreatorAdminEvents);
+  }
   return { connected: true, ready, transfers, payouts, requirementsDue };
 }
 export async function onboardConnect(userId: string, origin: string) {

@@ -2744,7 +2744,38 @@ body:has(.workspace-shell) > .site-header {
   margin-left: auto;
 }
 /* Payouts */
+.dashboard-money {
+  padding: 24px;
+  margin: 0 0 30px;
+  background: #f0f3e9;
+  border: 1px solid #dfe6d7;
+  border-radius: 22px;
+}
+.dashboard-money.needs-setup { background: #f6f3e9; border-color: #e7dfcb; }
+.dashboard-money-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.dashboard-money-heading .eyebrow { color: #748363; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; }
+.dashboard-money-heading h2 { margin: 8px 0; font-size: 24px; letter-spacing: -.8px; }
+.dashboard-money-heading p { max-width: 590px; margin: 0; font-size: 12px; line-height: 1.6; color: #66715f; }
+.dashboard-money-heading .button { flex-shrink: 0; min-height: 44px; }
+.dashboard-money-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+.dashboard-money-grid > div { display: flex; flex-direction: column; gap: 7px; min-width: 0; padding: 14px; background: #fff; border: 1px solid #e5e9dd; border-radius: 14px; }
+.dashboard-money-grid span { color: #687361; font-size: 10px; }
+.dashboard-money-grid strong, .dashboard-money-grid strong .price { font-size: 22px; line-height: 1.1; letter-spacing: -.5px; }
+.dashboard-money-grid small { color: #8b9187; font-size: 10px; line-height: 1.35; }
+.dashboard-money-unavailable { margin: 18px 0 0; color: #687361; font-size: 11px; }
 .payout-page { max-width: 1050px; margin: 0 auto; }
+.payout-money-section { margin-bottom: 24px; }
+.payout-money-title { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.payout-money-title .eyebrow { font-size: 9px; color: #879176; letter-spacing: 1.7px; }
+.payout-money-title h2 { margin: 7px 0 0; font-size: 21px; letter-spacing: -.6px; }
+.payout-money-title a { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #61734d; white-space: nowrap; }
+.payout-money-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.payout-money-grid article { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+.payout-money-grid article:first-child { background: #eef3e7; border-color: #e1e9d8; }
+.payout-money-grid span { font-size: 11px; color: #6e7866; }
+.payout-money-grid strong, .payout-money-grid strong .price { font-size: 26px; line-height: 1; letter-spacing: -.7px; }
+.payout-money-grid small { font-size: 10px; line-height: 1.45; color: #8b9187; }
+.payout-money-explainer { margin: 12px 0 0; color: #747d6e; font-size: 11px; line-height: 1.6; }
 .payout-heading { align-items: flex-end; }
 .payout-heading > div { max-width: 620px; }
 .payout-mode-badge,
@@ -3437,6 +3468,16 @@ body:has(.workspace-shell) > .site-header {
   }
 }
 @media (max-width: 760px) {
+  .dashboard-money { padding: 19px; border-radius: 18px; margin-bottom: 26px; }
+  .dashboard-money-heading { align-items: stretch; flex-direction: column; gap: 17px; }
+  .dashboard-money-heading h2 { font-size: 22px; }
+  .dashboard-money-heading .button { width: 100%; justify-content: center; }
+  .dashboard-money-grid, .payout-money-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dashboard-money-grid > div, .payout-money-grid article { padding: 14px; }
+  .dashboard-money-grid strong, .dashboard-money-grid strong .price { font-size: 20px; }
+  .payout-money-grid strong, .payout-money-grid strong .price { font-size: 23px; }
+  .payout-money-title { align-items: flex-start; }
+  .payout-money-title h2 { font-size: 19px; }
   .onboarding-intro {
     display: block;
     margin: 40px auto;
@@ -3680,7 +3721,8 @@ body:has(.workspace-shell) > .site-header {
     align-items: center;
     gap: 6px;
     color: #919b83;
-    min-width: 53px;
+    min-width: 0;
+    flex: 1;
     min-height: 45px;
     font-size: 9px;
   }
