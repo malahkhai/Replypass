@@ -15,6 +15,13 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
     return { ...data, viewer, creator: await demoCreator() };
   }
   const supabase = (await createClient())!;
+  const { data: ownedCreator, error: creatorLookupError } = await supabase
+    .from("creator_profiles")
+    .select("id")
+    .eq("profile_id", viewer.id)
+    .maybeSingle();
+  if (creatorLookupError) throw Error("Could not load creator workspace.");
+  const creatorId = ownedCreator?.id ?? "00000000-0000-0000-0000-000000000000";
   const [
     { data: members, error: memberError },
     { data: interactions, error: paymentError },
@@ -28,11 +35,11 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
       .from("paid_interactions")
       .select(
         "id,fan_id,creator_id,kind,amount_cents,currency,status,created_at,captured_at,completed_at,fee_cents,creator_cents,conversation_id",
-      ).eq("stripe_mode", stripeConfig()?.mode || "live"),
+      ).eq("stripe_mode", stripeConfig()?.mode || "live").eq("creator_id", creatorId),
     supabase
       .from("subscriptions")
       .select("id,fan_id,creator_id,amount_cents,status,current_period_end,cancel_at_period_end")
-      .eq("stripe_mode", stripeConfig()?.mode || "live"),
+      .eq("stripe_mode", stripeConfig()?.mode || "live").eq("creator_id", creatorId),
   ]);
   if (memberError || paymentError || subError)
     throw Error("Your workspace could not be loaded. Please try again.");
@@ -212,12 +219,6 @@ export async function loadWorkspace(viewer: Viewer): Promise<WorkspaceData> {
   });
   let profileViews = 0;
   let creatorLinkCopies = 0;
-  const { data: ownedCreator, error: creatorLookupError } = await supabase
-    .from("creator_profiles")
-    .select("id")
-    .eq("profile_id", viewer.id)
-    .maybeSingle();
-  if (creatorLookupError) throw Error("Could not load profile analytics.");
   if (ownedCreator) {
     const since = new Date(Date.now() - 6 * 86400000)
       .toISOString()

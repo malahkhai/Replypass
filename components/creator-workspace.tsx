@@ -26,6 +26,7 @@ import { CopyCreatorLink } from "./copy-creator-link";
 import { LogoutButton } from "./logout-button";
 import { VoiceRecorder } from "./voice-recorder";
 import { PhotoDelivery } from "./photo-delivery";
+import type { CreatorPayoutOverview } from "@/lib/stripe/creator-payout-overview";
 export function WorkspaceHeading({
   eyebrow,
   title,
@@ -239,10 +240,11 @@ export function RequestDetailPage({ requestId }: { requestId: string }) {
     <RequestCard request={request} compact/>
   </>;
 }
-export function DashboardHome() {
+export function DashboardHome({ payoutOverview = null }: { payoutOverview?: CreatorPayoutOverview | null }) {
   const { data } = useWorkspace();
   const publication = creatorPublication(data.creator, data.demo);
   const pending = data.requests.filter((r) => r.status === "pending");
+  const payoutNeedsAction = !!payoutOverview && (!payoutOverview.ready || payoutOverview.requirementsDue);
   return (
     <>
       <WorkspaceHeading
@@ -266,6 +268,43 @@ export function DashboardHome() {
           )}
         </div>
       </WorkspaceHeading>
+      {!data.demo && !payoutOverview && (
+        <section className="dashboard-money needs-setup" aria-label="Payout setup">
+          <div className="dashboard-money-heading">
+            <div><span className="eyebrow">YOUR MONEY</span><h2>Set up how you get paid.</h2><p>Connect to Stripe and add your bank account to receive earnings. Check your payout status here anytime.</p></div>
+            <Link href="/creator/payouts" className="button">Open payouts <Icon name="arrow" size={16} /></Link>
+          </div>
+        </section>
+      )}
+      {!data.demo && payoutOverview && (
+        <section className={`dashboard-money ${payoutNeedsAction ? "needs-setup" : "is-ready"}`} aria-label="Your money and payout setup">
+          <div className="dashboard-money-heading">
+            <div>
+              <span className="eyebrow">YOUR MONEY</span>
+              <h2>{!payoutNeedsAction ? "From replies to your bank." : payoutOverview.connected ? "Finish your payout setup." : "Get ready to earn."}</h2>
+              <p>{!payoutNeedsAction
+                ? "Track your earnings and when Stripe sends them to your bank."
+                : payoutOverview.connected
+                  ? payoutOverview.requirementsDue
+                    ? "Stripe needs more details from you before payouts can continue."
+                    : "Complete Stripe’s secure setup to receive your creator share."
+                  : "Connect to Stripe, verify your details and add your bank account to offer Guaranteed Reply. You don’t need to open a separate Stripe account."}</p>
+            </div>
+            <Link href="/creator/payouts" className={`button ${!payoutNeedsAction ? "button-secondary" : ""}`}>
+              {!payoutNeedsAction ? "See payout details" : payoutOverview.connected ? "Continue setup" : "Set up payouts"} <Icon name="arrow" size={16} />
+            </Link>
+          </div>
+          {payoutOverview.ready && payoutOverview.balanceAvailable && (
+            <div className="dashboard-money-grid">
+              <div><span>Earned today</span><strong><Price cents={data.earnedToday} decimals /></strong><small>Completed requests</small></div>
+              <div><span>At Stripe</span><strong><Price cents={payoutOverview.pendingCents + payoutOverview.availableCents} decimals /></strong><small>Waiting for bank payout</small></div>
+              <div><span>Bank payout started</span><strong><Price cents={payoutOverview.scheduledCents + payoutOverview.inTransitCents} decimals /></strong><small>Scheduled or in transit</small></div>
+              <div><span>{payoutOverview.paidIsRecent ? "Recently paid" : "Paid"}</span><strong><Price cents={payoutOverview.paidCents} decimals /></strong><small>Stripe marked paid</small></div>
+            </div>
+          )}
+          {payoutOverview.ready && !payoutOverview.balanceAvailable && <p className="dashboard-money-unavailable">Stripe balance is temporarily unavailable. Open Payouts to try again.</p>}
+        </section>
+      )}
       <div className="today-label">
         Today{" "}
         <span>
