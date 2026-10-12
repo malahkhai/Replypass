@@ -60,7 +60,7 @@ export default async function Page() {
   ];
 
   return <>
-    <AdminHeading eyebrow="CONTROLLED LAUNCH" title="Launch readiness" description="What has been observed, what still blocks launch, and where to go next. Last evidence review: 9 October 2026." />
+    <AdminHeading eyebrow="CONTROLLED LAUNCH" title="Launch readiness" description="What has been observed, what still blocks launch, and where to go next. Last evidence review: 13 October 2026." />
 
     <section className="readiness-hero" aria-labelledby="launch-decision">
       <div><Status tone="warn">Launch blocked</Status><h2 id="launch-decision">Paid public launch is not verified yet.</h2><p>The live €4 test proves a charge and a connected-account transfer were observed. It does not prove a bank payout, creator eligibility or the refund path.</p></div>
@@ -72,6 +72,14 @@ export default async function Page() {
       <article className="readiness-milestone"><span>02 · Observed</span><strong>€3.40 transferred</strong><p>Funds reached a connected Stripe account. This is not a bank payout.</p></article>
       <article className="readiness-milestone open"><span>03 · Still open</span><strong>Bank payout</strong><p>No settled payout to the creator’s bank has been evidenced.</p></article>
     </div>
+
+    <section aria-labelledby="creator-experience-heading">
+      <div className="admin-section-heading"><div><h2 id="creator-experience-heading">Creator experience</h2><p>Product improvements help creators understand their money, but do not close the bank-payout gate.</p></div></div>
+      <div className="readiness-gates">
+        <article className="readiness-gate"><div><h3>Mobile payout clarity</h3><Status tone="good">Shipped</Status></div><p>The dashboard now prompts Stripe setup and the Money tab shows funds at Stripe, payout in transit and paid status. Verify the signed-in production view with an eligible creator.</p><Link href="/admin/payouts">Review payouts →</Link></article>
+        <article className="readiness-gate"><div><h3>Creator photos and fan context</h3><Status tone="warn">Planned</Status></div><p>Creators currently have one image with a fixed crop. A three-photo editor is planned. Fan requests should show name, optional self-reported country and a short intro; these are not verified identity checks.</p><Link href="/admin/creators">Review creators →</Link></article>
+      </div>
+    </section>
 
     <section id="next-actions" aria-labelledby="next-actions-heading">
       <div className="admin-section-heading"><div><h2 id="next-actions-heading">Do these next</h2><p>Complete these in order before another live payout test.</p></div></div>
