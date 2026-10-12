@@ -77,7 +77,7 @@ export default async function Page() {
       <div className="admin-section-heading"><div><h2 id="creator-experience-heading">Creator experience</h2><p>Product improvements help creators understand their money, but do not close the bank-payout gate.</p></div></div>
       <div className="readiness-gates">
         <article className="readiness-gate"><div><h3>Mobile payout clarity</h3><Status tone="good">Shipped</Status></div><p>The dashboard now prompts Stripe setup and the Money tab shows funds at Stripe, payout in transit and paid status. Verify the signed-in production view with an eligible creator.</p><Link href="/admin/payouts">Review payouts →</Link></article>
-        <article className="readiness-gate"><div><h3>Creator photos and fan context</h3><Status tone="warn">Planned</Status></div><p>Creators currently have one image with a fixed crop. A three-photo editor is planned. Fan requests should show name, optional self-reported country and a short intro; these are not verified identity checks.</p><Link href="/admin/creators">Review creators →</Link></article>
+        <article className="readiness-gate"><div><h3>Creator photos and fan context</h3><Status tone="warn">Planned</Status></div><p>Creators currently have one image with a fixed crop. A three-photo editor is planned. Fan requests should show the fan’s name and any age, gender, country or short intro they choose to share. These are self-reported details, not verified identity checks.</p><Link href="/admin/creators">Review creators →</Link></article>
       </div>
     </section>
 

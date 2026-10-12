@@ -17,7 +17,7 @@
 
 - **Shipped:** Mobile creator navigation includes Money. The dashboard points new creators to Stripe onboarding; the payout page separates pending, available, scheduled, in-transit and paid funds. “Paid” means Stripe sent the payout; bank posting can follow later. Local typecheck, lint, build and 89 tests passed, and Vercel marked the production deployment successful. A signed-in production view with a real connected creator has not yet been manually checked.
 - **Next improvement:** The creator currently uploads one image. Its public hero uses a fixed crop, so a face can be cut off. A three-image gallery with a per-image mobile crop/position preview is a product-quality improvement, not a substitute for any financial gate.
-- **Agreed next improvement:** Show a fan's display name, optional self-reported country and optional short introduction to the relevant creator on a request. A notification can summarize those details without treating them as verified identity. Do not add age or gender to signup for this feature. Creator country is already collected for their profile and Stripe onboarding.
+- **Agreed next improvement:** Give fans the option to share their age, self-described gender, country and a short introduction with a creator when sending a request. Show only the details supplied, alongside their display name, on that creator's request; an in-app notification can summarize them without claiming they are verified identity. Keep a “prefer not to say” choice, explain who sees the details, and avoid putting the request message in email or lock-screen previews. Creator country is already collected for their profile and Stripe onboarding. This fan-context feature is not yet built.
 
 ## Next controlled test
 
