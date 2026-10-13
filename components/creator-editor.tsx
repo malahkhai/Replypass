@@ -8,32 +8,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { categories, type CreatorDraft } from "@/types/creator";
 import { blankCreator, catalog } from "@/lib/creators/catalog";
+import { creatorCountries } from "@/lib/creators/countries";
 import { validateCreator, centsFromInput } from "@/lib/creators/validation";
 import { splitPayment, PLATFORM_FEE_PERCENT } from "@/lib/payments/fees";
 import { Button, Price } from "./ui";
 import { Icon } from "./icon";
 import { paidRequestAvailable } from "@/lib/launch/scope";
-const countries = [
-  ["FR", "France"],
-  ["GB", "United Kingdom"],
-  ["US", "United States"],
-  ["CA", "Canada"],
-  ["DE", "Germany"],
-  ["ES", "Spain"],
-  ["IT", "Italy"],
-  ["NL", "Netherlands"],
-  ["BE", "Belgium"],
-  ["PT", "Portugal"],
-  ["AU", "Australia"],
-  ["BR", "Brazil"],
-  ["IN", "India"],
-  ["JP", "Japan"],
-  ["NG", "Nigeria"],
-  ["ZA", "South Africa"],
-  ["AE", "United Arab Emirates"],
-  ["SG", "Singapore"],
-  ["MX", "Mexico"],
-];
 export function CreatorEditor({
   initial = blankCreator,
   demo,
@@ -306,7 +286,7 @@ export function CreatorEditor({
               value={draft.country}
               onChange={(e) => patch("country", e.target.value)}
             >
-              {countries.map(([code, name]) => (
+              {creatorCountries.map(([code, name]) => (
                 <option key={code} value={code}>
                   {name}
                 </option>

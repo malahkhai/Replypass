@@ -142,6 +142,7 @@ export async function findCreator(raw: string): Promise<PublicCreator | null> {
     }
     return {
       ...result,
+      country: typeof row.country === "string" ? row.country : undefined,
       id: row.id,
       payoutReady,
       offerings: payoutReady ? result.offerings : [],

@@ -17,6 +17,7 @@ import { BottomSheet } from "./bottom-sheet";
 import { SaveCreator } from "./fan-account";
 import { VipJoin } from "./vip-join";
 import { CopyCreatorLink } from "./copy-creator-link";
+import { creatorCountry } from "@/lib/creators/countries";
 import type { VipPlan } from "@/lib/vip/model";
 import { paidRequestAvailable } from "@/lib/launch/scope";
 
@@ -229,6 +230,7 @@ export function CreatorProfile({
     });
   }, [initial.demo, initial.handle]);
   const creator = demoImage ? { ...initial, image: demoImage } : initial;
+  const country = creatorCountry(creator.country);
   const { vip } = creator;
   const offerings = creator.offerings.filter(
     (offering) => paidRequestAvailable(offering.kind),
@@ -342,6 +344,12 @@ export function CreatorProfile({
                   <span key={category}>{category}</span>
                 ))}
               </div>
+              {country && (
+                <p className="creator-country">
+                  <span aria-hidden="true">{country.flag}</span>
+                  <span>Country: {country.name}</span>
+                </p>
+              )}
               <p className="bio">{creator.bio}</p>
               <CreatorSocials socials={creator.socials} counts={creator.socialFollowers} updatedAt={creator.socialFollowersUpdatedAt} />
               {hasPublicProof && (
