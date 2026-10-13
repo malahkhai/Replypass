@@ -47,6 +47,7 @@ export interface PublicCreator {
   bio: string;
   image: string;
   categories: string[];
+  country?: string;
   rating: string;
   ratingCount: number;
   responseRate: string;

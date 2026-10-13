@@ -321,6 +321,18 @@ h1 {
   border-radius: 30px;
   color: #5e5b56;
 }
+.creator-country {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.creator-country span:first-child {
+  font-size: 17px;
+  line-height: 1;
+}
 .bio {
   font-size: 15px;
   line-height: 1.7;

@@ -89,6 +89,7 @@ export function toPublic(d: CreatorDraft, demo = true): PublicCreator {
     bio: d.bio,
     image: d.image || "/images/avatar.svg",
     categories: d.categories,
+    country: d.country,
     rating: "New",
     ratingCount: 0,
     responseRate: "—",
