@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useRequestDraft } from "./request-draft";
 import { SecuredCheckout } from "./secured-checkout";
 import { creatorUrl, siteConfig } from "@/lib/site";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { PublicCreator } from "@/types/creator";
 import type { Offering } from "@/types/domain";
 import { Avatar, Badge, Button, Card, CreatorStat, Price } from "./ui";
@@ -243,8 +243,17 @@ export function CreatorProfile({
   const firstName = creator.name.split(" ")[0];
   const photoFocusLow = creator.handle.replace(/^@/, "").toLowerCase() === "slthedj";
   const [heroIndex, setHeroIndex] = useState(0);
+  const photoTrack = useRef<HTMLDivElement>(null);
   const profilePhotos = creator.profilePhotos?.length ? creator.profilePhotos : [{ url: creator.image, x: 50, y: photoFocusLow ? 70 : 50, scale: 100 }];
-  const heroPhoto = profilePhotos[Math.min(heroIndex, profilePhotos.length - 1)];
+  const activeHeroIndex = Math.min(heroIndex, profilePhotos.length - 1);
+  function showPhoto(index: number) {
+    const track = photoTrack.current;
+    if (!track) return;
+    track.scrollTo({
+      left: Math.max(0, Math.min(index, profilePhotos.length - 1)) * track.clientWidth,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  }
   const titles = {
     message: `Message ${firstName}`,
     live_chat: `Live chat with ${firstName}`,
@@ -290,18 +299,39 @@ export function CreatorProfile({
             aria-label={`About ${creator.name}`}
           >
             <div className="hero-image">
-              <Image
-                src={heroPhoto.url}
-                alt={`${creator.name} profile photo ${heroIndex + 1} of ${profilePhotos.length}`}
-                fill
-                loading="eager"
-                unoptimized={heroPhoto.url.startsWith("http")}
-                sizes="(max-width: 760px) 100vw, 480px"
-                style={{ objectPosition: `${heroPhoto.x}% ${heroPhoto.y}%`, transform: `scale(${heroPhoto.scale / 100})` }}
-              />
-              {profilePhotos.length > 1 && <div className="hero-photo-controls" role="group" aria-label="Creator photos">
-                {profilePhotos.map((photo, index) => <button key={`${photo.url}-${index}`} type="button" aria-label={`Show photo ${index + 1}`} aria-pressed={index === heroIndex} onClick={() => setHeroIndex(index)} />)}
-              </div>}
+              <div
+                ref={photoTrack}
+                className="hero-photo-track"
+                role="group"
+                aria-label={profilePhotos.length > 1 ? `${creator.name} photos. Swipe or use arrow keys to browse.` : `${creator.name} photo`}
+                tabIndex={profilePhotos.length > 1 ? 0 : undefined}
+                onScroll={(event) => {
+                  const track = event.currentTarget;
+                  if (track.clientWidth) setHeroIndex(Math.min(profilePhotos.length - 1, Math.round(track.scrollLeft / track.clientWidth)));
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+                  event.preventDefault();
+                  showPhoto(activeHeroIndex + (event.key === "ArrowRight" ? 1 : -1));
+                }}
+              >
+                {profilePhotos.map((photo, index) => <div className="hero-photo-slide" key={`${photo.url}-${index}`} aria-hidden={index !== activeHeroIndex}>
+                  <Image
+                    src={photo.url}
+                    alt={`${creator.name} profile photo ${index + 1} of ${profilePhotos.length}`}
+                    fill
+                    loading={index === 0 ? "eager" : "lazy"}
+                    unoptimized={photo.url.startsWith("http")}
+                    sizes="(max-width: 760px) 100vw, 480px"
+                    style={{ objectPosition: `${photo.x}% ${photo.y}%`, transform: `scale(${photo.scale / 100})` }}
+                  />
+                </div>)}
+              </div>
+              {profilePhotos.length > 1 && <>
+                <button className="hero-photo-arrow hero-photo-arrow--previous" type="button" aria-label="Previous photo" disabled={activeHeroIndex === 0} onClick={() => showPhoto(activeHeroIndex - 1)}>←</button>
+                <button className="hero-photo-arrow hero-photo-arrow--next" type="button" aria-label="Next photo" disabled={activeHeroIndex === profilePhotos.length - 1} onClick={() => showPhoto(activeHeroIndex + 1)}>→</button>
+                <span className="hero-photo-count" aria-live="polite">{activeHeroIndex + 1} / {profilePhotos.length}<span className="hero-photo-swipe-hint"> · Swipe</span></span>
+              </>}
               <div className="hero-topline">
                 <Badge className="online-badge">
                   <i className={`status-dot ${creator.availability}`} />{" "}
