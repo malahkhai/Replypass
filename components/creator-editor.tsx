@@ -112,6 +112,15 @@ export function CreatorEditor({
       return { ...current, profilePhotos, image: index === 0 ? profilePhotos[0]?.url || "" : current.image };
     });
   }
+  function movePhoto(index: number, direction: -1 | 1) {
+    setDraft((current) => {
+      const profilePhotos = [...(current.profilePhotos || [])];
+      const target = index + direction;
+      if (target < 0 || target >= profilePhotos.length) return current;
+      [profilePhotos[index], profilePhotos[target]] = [profilePhotos[target], profilePhotos[index]];
+      return { ...current, profilePhotos, image: profilePhotos[0].url };
+    });
+  }
   async function next() {
     setError("");
     if (step === 1) {
@@ -241,6 +250,8 @@ export function CreatorEditor({
                 <label>Move up or down<input type="range" min="0" max="100" value={photo.y} onChange={(e) => positionPhoto(index,"y",Number(e.target.value))} /></label>
                 <label>Zoom photo<input type="range" min="100" max="200" value={photo.scale} onChange={(e) => positionPhoto(index,"scale",Number(e.target.value))} /></label>
                 <label className="profile-photo-replace">Replace photo<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => upload(e.target.files?.[0],index)} /></label>
+                {index > 0 && <button type="button" onClick={() => movePhoto(index,-1)}>{index === 1 ? "Make cover" : "Move earlier"}</button>}
+                {index < (draft.profilePhotos || []).length - 1 && <button type="button" onClick={() => movePhoto(index,1)}>Move later</button>}
                 <button type="button" onClick={() => removePhoto(index)}>Remove from page</button>
               </div>)}
             </div>
