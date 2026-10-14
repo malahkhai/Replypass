@@ -12,6 +12,15 @@ export async function getVipPlan(creatorId:string):Promise<VipPlan|null>{
   if(error) throw Error("VIP plan unavailable.");
   return data?{id:data.id,creatorId:data.creator_id,name:data.name,description:data.description,publicTeaser:data.public_teaser || "",benefits:data.benefits,amountCents:data.amount_cents,currency:data.currency,enabled:data.enabled}:null;
 }
+export async function getPublicVipActivity(creatorId:string):Promise<{postCount:number;latestPostAt:string|null}>{
+  const db=serviceDatabase();
+  const [{count,error:countError},{data,error:latestError}]=await Promise.all([
+    db.from("vip_posts").select("id",{count:"exact",head:true}).eq("creator_id",creatorId).is("moderation_hidden_at",null),
+    db.from("vip_posts").select("published_at").eq("creator_id",creatorId).is("moderation_hidden_at",null).order("published_at",{ascending:false}).limit(1),
+  ]);
+  if(countError||latestError)throw Error("VIP activity unavailable.");
+  return {postCount:count||0,latestPostAt:data?.[0]?.published_at||null};
+}
 export async function hasActiveVipAccess(fanId:string,creatorId:string){
   const db=serviceDatabase();
   const mode=stripeConfig()?.mode;

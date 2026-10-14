@@ -69,6 +69,14 @@ export function validateCreator(input: unknown): string[] {
     (d.image && !d.image.startsWith("/") && !d.image.startsWith("https://"))
   )
     errors.push("Choose a valid profile image.");
+  if (d.profilePhotos !== undefined && (
+    !Array.isArray(d.profilePhotos) || d.profilePhotos.length > 3 ||
+    d.profilePhotos.some((photo) => !photo || typeof photo.url !== "string" || photo.url.length > 2048 ||
+      !/^https:\/\/[^\s]+\/storage\/v1\/object\/public\/avatars\//.test(photo.url) ||
+      !Number.isInteger(photo.x) || photo.x < 0 || photo.x > 100 ||
+      !Number.isInteger(photo.y) || photo.y < 0 || photo.y > 100 ||
+      !Number.isInteger(photo.scale) || photo.scale < 100 || photo.scale > 200)
+  )) errors.push("Choose up to three uploaded photos and position each one.");
   if (
     !Array.isArray(d.pricing) ||
     d.pricing.length !== 6 ||

@@ -89,7 +89,7 @@ export function AuthForm({
         setFeedback(
           next === "/creator/apply"
             ? "Check your email to confirm your account, then continue creator setup."
-            : "Check your inbox and spam folder to confirm your account. After confirming, return to this browser to continue. If the link opens elsewhere, come back here and log in—your draft stays in this tab.",
+            : "Check your inbox and spam folder to confirm your account. The confirmation link will bring you back to this creator, where you can write your request and continue to payment—even if you open it on another device.",
         );
       }
     } catch (error) {
@@ -226,7 +226,7 @@ export function AuthForm({
           <>
             New here?{" "}
             <Link href={`/signup?next=${encodeURIComponent(next)}`}>
-              Join ReplyPass
+              Create a fan account to continue
             </Link>
           </>
         ) : (

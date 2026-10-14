@@ -51,8 +51,11 @@ export default async function Page() {
           <p className="eyebrow">PAYOUTS</p>
           <h1>{heading}</h1>
           <p>
-            Connect with Stripe once, then receive your ReplyPass earnings
-            securely.
+            {needsAction
+              ? "Complete your secure Stripe setup to receive ReplyPass earnings."
+              : status.nextArrival
+                ? `Stripe estimates your next bank arrival on ${new Date(status.nextArrival * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}.`
+                : "Your payout account is ready. Track each payout stage below."}
           </p>
         </div>
         <span className="payout-mode-badge">
@@ -76,7 +79,7 @@ export default async function Page() {
                 <article><span>Available at Stripe</span><strong><Price cents={status.availableCents} decimals /></strong><small>Waiting for the next payout</small></article>
                 <article><span>Scheduled payout</span><strong><Price cents={status.scheduledCents} decimals /></strong><small>Stripe is preparing to send it</small></article>
                 <article><span>On the way to bank</span><strong><Price cents={status.inTransitCents} decimals /></strong><small>{status.nextArrival ? `Stripe estimates ${new Date(status.nextArrival * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "No payout in transit"}</small></article>
-                <article><span>{status.paidIsRecent ? "Recently paid" : "Paid to bank"}</span><strong><Price cents={status.paidCents} decimals /></strong><small>Marked paid by Stripe</small></article>
+                <article><span>{status.paidIsRecent ? "Recently sent by Stripe" : "Sent by Stripe"}</span><strong><Price cents={status.paidCents} decimals /></strong><small>Bank arrival may take longer</small></article>
               </div>
               <p className="payout-money-explainer">These are Stripe payout stages, not extra charges. A completed reply first appears in Earnings, then moves through Stripe’s balance before a bank payout. “Paid” means Stripe sent it; your bank may take longer to show it.</p>
             </>
@@ -168,29 +171,27 @@ export default async function Page() {
 
         <aside className="payout-guide-card">
           <p className="eyebrow">WHAT TO EXPECT</p>
-          <h2>A quick, secure setup.</h2>
+          <h2>{needsAction ? "A quick, secure setup." : "Your payout journey."}</h2>
           <ol>
             <li>
               <span>1</span>
               <div>
-                <strong>Confirm your details</strong>
-                <p>Stripe will ask about you and your creator activity.</p>
+                <strong>{needsAction ? "Confirm your details" : "Account verified"}</strong>
+                <p>{needsAction ? "Stripe will ask about you and your creator activity." : "Stripe has the details needed for payouts."}</p>
               </div>
             </li>
             <li>
               <span>2</span>
               <div>
-                <strong>Add your payout account</strong>
-                <p>Your bank information is handled directly by Stripe.</p>
+                <strong>{needsAction ? "Add your payout account" : "Earnings reach Stripe"}</strong>
+                <p>{needsAction ? "Your bank information is handled directly by Stripe." : "Completed replies move to your Stripe balance."}</p>
               </div>
             </li>
             <li>
               <span>3</span>
               <div>
-                <strong>Start accepting replies</strong>
-                <p>
-                  Guaranteed Reply unlocks when Stripe approves your account.
-                </p>
+                <strong>{needsAction ? "Start accepting replies" : "Stripe sends your bank payout"}</strong>
+                <p>{needsAction ? "Guaranteed Reply unlocks when Stripe approves your account." : "The bank may show the payment after Stripe marks it paid."}</p>
               </div>
             </li>
           </ol>

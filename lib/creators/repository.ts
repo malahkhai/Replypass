@@ -24,6 +24,7 @@ export function draftFromRow(
     displayName: profile.display_name,
     username: String(row.handle),
     image: profile.avatar_path || "",
+    profilePhotos: Array.isArray(row.profile_photos) ? row.profile_photos as CreatorDraft["profilePhotos"] : [],
     bio: String(row.bio || ""),
     categories: row.categories as string[],
     country: String(row.country || "FR"),

@@ -268,6 +268,14 @@ export function DashboardHome({ payoutOverview = null }: { payoutOverview?: Crea
           )}
         </div>
       </WorkspaceHeading>
+      <section className="dashboard-attention" aria-label="What needs your attention">
+        <Link href="/creator/requests">
+          <span>Open requests</span><strong>{pending.length}</strong><Icon name="arrow" size={17} />
+        </Link>
+        <Link href="/creator/inbox">
+          <span>Unread conversations</span><strong>{data.conversations.filter((c) => c.unread > 0).length}</strong><Icon name="arrow" size={17} />
+        </Link>
+      </section>
       {!data.demo && !payoutOverview && (
         <section className="dashboard-money needs-setup" aria-label="Payout setup">
           <div className="dashboard-money-heading">
@@ -295,12 +303,7 @@ export function DashboardHome({ payoutOverview = null }: { payoutOverview?: Crea
             </Link>
           </div>
           {payoutOverview.ready && payoutOverview.balanceAvailable && (
-            <div className="dashboard-money-grid">
-              <div><span>Earned today</span><strong><Price cents={data.earnedToday} decimals /></strong><small>Completed requests</small></div>
-              <div><span>At Stripe</span><strong><Price cents={payoutOverview.pendingCents + payoutOverview.availableCents} decimals /></strong><small>Waiting for bank payout</small></div>
-              <div><span>Bank payout started</span><strong><Price cents={payoutOverview.scheduledCents + payoutOverview.inTransitCents} decimals /></strong><small>Scheduled or in transit</small></div>
-              <div><span>{payoutOverview.paidIsRecent ? "Recently paid" : "Paid"}</span><strong><Price cents={payoutOverview.paidCents} decimals /></strong><small>Stripe marked paid</small></div>
-            </div>
+            <p className="dashboard-money-summary">At Stripe: <strong><Price cents={payoutOverview.pendingCents + payoutOverview.availableCents} decimals /></strong> <span>· View payout stages in Payouts</span></p>
           )}
           {payoutOverview.ready && !payoutOverview.balanceAvailable && <p className="dashboard-money-unavailable">Stripe balance is temporarily unavailable. Open Payouts to try again.</p>}
         </section>
@@ -314,12 +317,7 @@ export function DashboardHome({ payoutOverview = null }: { payoutOverview?: Crea
         </span>
       </div>
       <div className="metric-grid">
-        <Metric
-          label="Earned"
-          value={<Price cents={data.earnedToday} />}
-          note={`Your ${CREATOR_SHARE_PERCENT}% share`}
-          icon="star"
-        />
+        <Metric label="Earned today" value={<Price cents={data.earnedToday} />} note={`Your ${CREATOR_SHARE_PERCENT}% share`} icon="star" />
         <Metric
           label="Open requests"
           value={pending.length}
@@ -327,7 +325,7 @@ export function DashboardHome({ payoutOverview = null }: { payoutOverview?: Crea
           icon="bolt"
         />
         <Metric
-          label="Waiting for reply"
+          label="Unread conversations"
           value={data.conversations.filter((c) => c.unread > 0).length}
           note="People in your inbox"
           icon="message"

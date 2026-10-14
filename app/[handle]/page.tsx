@@ -8,7 +8,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { CreatorProfile } from "@/components/creator-profile";
 import { ProfileViewTracker } from "@/components/profile-view-tracker";
 import { findCreator } from "@/lib/creators/repository";
-import { getVipPlan, hasActiveVipAccess } from "@/lib/vip/server";
+import { getVipPlan, getPublicVipActivity, hasActiveVipAccess } from "@/lib/vip/server";
 export async function generateMetadata({
   params,
 }: {
@@ -48,9 +48,9 @@ export default async function Profile({
   const redirectTo = creatorRedirect(decoded, query);
   if (redirectTo) permanentRedirect(redirectTo);
   const viewer = await getViewer();
-  let vipPlan = null, activeVip = false;
+  let vipPlan = null, activeVip = false, vipActivity = null;
   if (!creator.demo) {
-    try { vipPlan = await getVipPlan(creator.id); activeVip = !!viewer && !viewer.demo && await hasActiveVipAccess(viewer.id, creator.id); } catch {}
+    try { vipPlan = await getVipPlan(creator.id); activeVip = !!viewer && !viewer.demo && await hasActiveVipAccess(viewer.id, creator.id); if(vipPlan?.enabled)vipActivity=await getPublicVipActivity(creator.id); } catch {}
   }
   const presentedCreator = creator.demo ? creator : { ...creator, vip: vipPlan?.enabled && creator.payoutReady ? { kind: "vip" as const, title: "Join VIP", subtitle: vipPlan.description, cents: vipPlan.amountCents, unit: "/month", icon: "sparkles" } : null };
   return (
@@ -62,6 +62,7 @@ export default async function Profile({
         creator={presentedCreator}
         authenticated={!!viewer}
         vipPlan={vipPlan}
+        vipActivity={vipActivity}
         activeVip={activeVip}
         paymentsEnabled={!!stripeConfig() && !creator.demo}
       />

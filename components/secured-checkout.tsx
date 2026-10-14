@@ -100,6 +100,19 @@ export function SecuredCheckout({
         Payment setup is unavailable. No payment was submitted.
       </p>
     );
+  if (!authenticated) {
+    return (
+      <div className="checkout-form checkout-signup-step">
+        {testMode && <Badge>STRIPE TEST MODE</Badge>}
+        <h3>Continue with {creator.name.split(" ")[0]}</h3>
+        <p>Create your fan account first. After confirming your email, you’ll return to this creator to write your request and choose a payment method.</p>
+        <Button onClick={() => router.push(`/signup?next=${encodeURIComponent(`${creatorPath(creator.handle)}?interaction=${kind}`)}`)}>
+          Create account to continue <Icon name="arrow" size={17} />
+        </Button>
+        <Link href={`/login?next=${encodeURIComponent(`${creatorPath(creator.handle)}?interaction=${kind}`)}`}>Already have an account? Log in</Link>
+      </div>
+    );
+  }
   return (
     <div className="checkout-form">
       {testMode && <Badge>STRIPE TEST MODE</Badge>}
@@ -201,7 +214,9 @@ function Confirmation({ quote, name, kind }: { quote: Quote; name: string; kind:
         );
       setExpires(result.expiresAt);
       setReserved(true);
+      track("request_reserved", kind);
     } catch (e) {
+      track("checkout_error", kind);
       setError(e instanceof Error ? e.message : "Please try again.");
     } finally {
       setBusy(false);

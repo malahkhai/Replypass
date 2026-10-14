@@ -97,7 +97,7 @@ export function MembershipList({ memberships }: { memberships: MembershipView[] 
         <span className="membership-empty-mark" aria-hidden="true">♡</span>
         <h2>Your people are one link away.</h2>
         <p>When you join a creator’s VIP membership, you’ll find your updates and billing details here.</p>
-        <Link href="/" className="membership-browse-link">Explore ReplyPass <span aria-hidden="true">↗</span></Link>
+        <Link href="/account#saved-creators" className="membership-browse-link">Your saved creators <span aria-hidden="true">↗</span></Link>
       </div>
     );
   }

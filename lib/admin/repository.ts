@@ -60,20 +60,39 @@ export async function adminUsers(search=""){
 export async function adminCreators(){
   const db=serviceDatabase();
   const since=new Date(Date.now()-6*86400000).toISOString().slice(0,10);
-  const [{data,error},{data:copyDays,error:copyError}]=await Promise.all([
+  const [{data,error},{data:copyDays,error:copyError},{data:viewDays,error:viewError},{data:requestStarts,error:requestError},{data:vipStarts,error:vipError}]=await Promise.all([
     db.from("creator_profiles").select("id,profile_id,handle,status,verified,onboarding_complete,created_at,profiles!creator_profiles_profile_id_fkey(display_name,account_status),creator_stripe_accounts(ready,transfers_enabled,payouts_enabled),creator_pricing(kind,active),subscriptions(id,status),paid_interactions(id,status)").order("created_at",{ascending:false}).limit(100),
     db.from("creator_link_copy_days").select("creator_id,surface,copy_count").gte("copied_on",since),
+    db.from("creator_profile_view_days").select("creator_id,view_count").gte("viewed_on",since),
+    db.from("paid_interactions").select("creator_id").gte("created_at",`${since}T00:00:00Z`).limit(10000),
+    db.from("subscriptions").select("creator_id").eq("stripe_mode",paymentMode()).gte("created_at",`${since}T00:00:00Z`).in("status",["active","trialing"]).limit(10000),
   ]);
-  if(error||(copyError&&!["42P01","PGRST205"].includes(copyError.code))) throw Error("Creators unavailable.");
+  if(error||viewError||requestError||vipError||(copyError&&!["42P01","PGRST205"].includes(copyError.code))) throw Error("Creators unavailable.");
   const copies=new Map<string,{dashboard:number;profile:number}>();
   for(const row of copyDays||[]){const current=copies.get(row.creator_id)||{dashboard:0,profile:0};if(row.surface==="creator_dashboard")current.dashboard+=Number(row.copy_count);else current.profile+=Number(row.copy_count);copies.set(row.creator_id,current);}
-  return (data||[]).map(creator=>({...creator,linkCopies7d:copies.get(creator.id)?.dashboard||0,profileLinkCopies7d:copies.get(creator.id)?.profile||0}));
+  const views=new Map<string,number>();for(const row of viewDays||[])views.set(row.creator_id,(views.get(row.creator_id)||0)+Number(row.view_count));
+  const requests=new Map<string,number>();for(const row of requestStarts||[])requests.set(row.creator_id,(requests.get(row.creator_id)||0)+1);
+  const vipJoins=new Map<string,number>();for(const row of vipStarts||[])vipJoins.set(row.creator_id,(vipJoins.get(row.creator_id)||0)+1);
+  return (data||[]).map(creator=>({...creator,linkCopies7d:copies.get(creator.id)?.dashboard||0,profileLinkCopies7d:copies.get(creator.id)?.profile||0,profileViews7d:views.get(creator.id)||0,requestStarts7d:requests.get(creator.id)||0,vipJoins7d:vipJoins.get(creator.id)||0}));
 }
 
-export async function adminPayments(mode: "test" | "live" | "unknown" = paymentMode()){
+export async function adminPayments(mode: "test" | "live" | "unknown" = paymentMode(), search = ""){
   const db=serviceDatabase();
   const {data,error}=await db.from("reply_payments").select("id,interaction_kind,gross_cents,fee_cents,creator_cents,currency,payment_state,transfer_state,stripe_payment_intent_id,stripe_charge_id,stripe_transfer_id,created_at,fan_id,creator_id,needs_reconciliation,manual_review,stripe_mode").eq("stripe_mode",mode).order("created_at",{ascending:false}).limit(100);
-  if(error) throw Error("Payments unavailable."); return data||[];
+  if(error) throw Error("Payments unavailable.");
+  const rows=data||[];
+  if(!rows.length)return [];
+  const fanIds=[...new Set(rows.map(p=>p.fan_id).filter(Boolean))];
+  const creatorIds=[...new Set(rows.map(p=>p.creator_id).filter(Boolean))];
+  const [{data:fans,error:fanError},{data:creators,error:creatorError}]=await Promise.all([
+    db.from("profiles").select("id,display_name").in("id",fanIds),
+    db.from("creator_profiles").select("id,handle,profiles!creator_profiles_profile_id_fkey(display_name)").in("id",creatorIds),
+  ]);
+  if(fanError||creatorError)throw Error("Payment people unavailable.");
+  const fanNames=new Map((fans||[]).map(f=>[f.id,f.display_name]));
+  const creatorNames=new Map((creators||[]).map(c=>{const related=c.profiles as unknown as {display_name:string}|{display_name:string}[]|null;const profile=Array.isArray(related)?related[0]:related;return [c.id,{name:profile?.display_name||c.handle,handle:c.handle}]}));
+  const needle=search.trim().toLowerCase();
+  return rows.map(p=>({...p,fanName:fanNames.get(p.fan_id)||"Unknown fan",creatorName:creatorNames.get(p.creator_id)?.name||"Unknown creator",creatorHandle:creatorNames.get(p.creator_id)?.handle||""})).filter(p=>!needle||[p.id,p.fan_id,p.creator_id,p.fanName,p.creatorName,p.creatorHandle,p.stripe_payment_intent_id,p.stripe_transfer_id].some(v=>String(v||"").toLowerCase().includes(needle)));
 }
 
 export async function adminSubscriptions(){const db=serviceDatabase();const{data,error}=await db.from("subscriptions").select("id,fan_id,creator_id,membership_name,amount_cents,currency,status,stripe_mode,stripe_subscription_id,current_period_start,current_period_end,cancel_at_period_end,created_at").order("created_at",{ascending:false}).limit(100);if(error)throw Error("Subscriptions unavailable.");return data||[];}
