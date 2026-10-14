@@ -1752,11 +1752,10 @@ select {
   letter-spacing: -1px;
   margin-bottom: 16px;
 }
-.phone-preview > img {
+.preview-cover-frame { position: relative; height: 220px; overflow: hidden; border-radius: 16px; }
+.preview-cover-frame img {
   width: 100%;
-  height: 220px;
   object-fit: cover;
-  border-radius: 16px;
 }
 .phone-preview h2 {
   font-size: 24px;
@@ -3403,6 +3402,9 @@ body:has(.workspace-shell) > .site-header {
 .profile-photo-slot button, .profile-photo-add, .profile-photo-replace { border: 1px solid var(--line); border-radius: 9px; background: #f6f8f2; padding: 9px 10px; text-align: center; font-size: 11px; cursor: pointer; }
 .profile-photo-add { display: inline-block; margin-top: 12px; }
 .profile-photo-add input, .profile-photo-replace input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.preview-photo-strip { display: flex; gap: 8px; padding: 8px 0; }
+.preview-photo-thumb { position: relative; width: 72px; height: 72px; overflow: hidden; border-radius: 10px; }
+.preview-photo-thumb img { object-fit: cover; }
 .hero-photo-controls { position: absolute; z-index: 2; left: 50%; bottom: 54px; transform: translateX(-50%); display: flex; gap: 8px; padding: 8px; border-radius: 20px; background: #1b221b70; }
 .hero-photo-controls button { width: 20px; height: 20px; border: 0; border-radius: 50%; background: #fff8; box-shadow: inset 0 0 0 5px #fff8; cursor: pointer; }
 .hero-photo-controls button[aria-pressed="true"] { background: white; box-shadow: inset 0 0 0 5px white; }

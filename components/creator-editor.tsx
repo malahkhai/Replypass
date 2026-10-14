@@ -206,7 +206,7 @@ export function CreatorEditor({
             "Optional links. Keep your community connected.",
             "Choose what you offer. Change it whenever you like.",
             "Let fans know how and when you’re available.",
-            "Here’s how your ReplyPass will look on a phone.",
+            "Review the main details people will see on your public page.",
           ][step]
         }
       </p>
@@ -494,24 +494,27 @@ export function CreatorEditor({
           <div className="preview-phone-bar">
             {siteConfig.logo}<span className="pink">.</span>
           </div>
-          <Image
+          <div className="preview-cover-frame"><Image
             src={avatar || draft.profilePhotos?.[0]?.url || draft.image || "/images/avatar.svg"}
             alt="Your public profile preview"
-            width={320}
-            height={250}
+            fill
             unoptimized
             style={{objectPosition: draft.profilePhotos?.[0] ? `${draft.profilePhotos[0].x}% ${draft.profilePhotos[0].y}%` : undefined, transform: draft.profilePhotos?.[0] ? `scale(${draft.profilePhotos[0].scale / 100})` : undefined}}
-          />
+          /></div>
+          {!!draft.profilePhotos && draft.profilePhotos.length > 1 && <div className="preview-photo-strip">
+            {draft.profilePhotos.slice(1).map((photo,index) => <div className="preview-photo-thumb" key={photo.url}><Image src={photo.url} alt={`Additional profile photo ${index + 2}`} fill unoptimized style={{objectPosition:`${photo.x}% ${photo.y}%`,transform:`scale(${photo.scale/100})`}} /></div>)}
+          </div>}
           <h2>{draft.displayName}</h2>
           <span className="muted">
             @{draft.username} · {draft.availability}
           </span>
           <p>{draft.bio}</p>
           <p>{creatorCountries.find(([code]) => code === draft.country)?.[1]}</p>
-          {!!draft.profilePhotos?.length && <small>{draft.profilePhotos.length} profile photo{draft.profilePhotos.length === 1 ? "" : "s"}</small>}
+          <p>{draft.categories.join(" · ")}</p>
+          <p>{Object.entries(draft.socials).filter(([,url])=>!!url).map(([platform])=>platform).join(" · ")}</p>
           <h3>Choose how we talk.</h3>
           {draft.pricing
-            .filter((p) => p.enabled && p.kind === "message")
+            .filter((p) => p.enabled && (p.kind === "message" || p.kind === "vip"))
             .map((p) => (
               <div className="preview-offering" key={p.kind}>
                 <span>{catalog.find((c) => c.kind === p.kind)?.title}</span>
