@@ -29,6 +29,7 @@ export function CreatorEditor({
     image: initial.image.startsWith("data:")
       ? "/images/avatar.svg"
       : initial.image,
+    profilePhotos: initial.profilePhotos?.length ? initial.profilePhotos : initial.image.includes("/storage/v1/object/public/avatars/") ? [{ url: initial.image, x: 50, y: 50, scale: 100 }] : [],
   });
   const [step, setStep] = useState(1);
   const [busy, setBusy] = useState(false);
@@ -60,7 +61,7 @@ export function CreatorEditor({
       return false;
     }
   }
-  async function upload(file?: File) {
+  async function upload(file?: File, photoIndex = 0) {
     if (!file) return;
     if (
       file.size > 2 * 1024 * 1024 ||
@@ -87,13 +88,29 @@ export function CreatorEditor({
         const r = await fetch("/api/creator/avatar", { method: "POST", body });
         const data = await r.json();
         if (!r.ok) throw Error(data.error);
-        patch("image", data.url);
+        setDraft((current) => {
+          const profilePhotos = [...(current.profilePhotos || [])];
+          profilePhotos[photoIndex] = { url: data.url, x: 50, y: 50, scale: 100 };
+          return { ...current, image: photoIndex === 0 ? data.url : current.image, profilePhotos };
+        });
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Image upload failed.");
     } finally {
       setBusy(false);
     }
+  }
+  function positionPhoto(index: number, axis: "x" | "y" | "scale", value: number) {
+    setDraft((current) => ({
+      ...current,
+      profilePhotos: (current.profilePhotos || []).map((photo, photoIndex) => photoIndex === index ? { ...photo, [axis]: value } : photo),
+    }));
+  }
+  function removePhoto(index: number) {
+    setDraft((current) => {
+      const profilePhotos = (current.profilePhotos || []).filter((_, photoIndex) => photoIndex !== index);
+      return { ...current, profilePhotos, image: index === 0 ? profilePhotos[0]?.url || "" : current.image };
+    });
   }
   async function next() {
     setError("");
@@ -177,6 +194,9 @@ export function CreatorEditor({
           <span key={n} className={n <= step ? "active" : ""} />
         ))}
       </div>
+      {editing && <nav className="editor-section-nav" aria-label="Edit profile sections">
+        {[[1,"Basics & photos"],[2,"Links"],[3,"Prices"],[4,"Availability"],[5,"Preview"]].map(([number,label]) => <button key={number} type="button" aria-current={step===number?"step":undefined} onClick={() => setStep(Number(number))}>{label}</button>)}
+      </nav>}
       <h1>{headings[step]}</h1>
       <p className="editor-description">
         {
@@ -192,7 +212,7 @@ export function CreatorEditor({
       </p>
       {step === 1 && (
         <div className="editor-fields">
-          <div className="avatar-upload">
+          {demo && <div className="avatar-upload">
             <Image
               src={avatar || draft.image || "/images/avatar.svg"}
               alt="Profile preview"
@@ -209,7 +229,23 @@ export function CreatorEditor({
               />
               <small>JPG, PNG or WebP · Up to 2 MB</small>
             </label>
-          </div>
+          </div>}
+          {!demo && <div className="profile-photo-editor">
+            <h2>Your profile photos</h2>
+            <p className="field-hint">Add up to three photos. Drag the sliders to position each photo as it will appear on your public page. The first photo is your cover.</p>
+            <div className="profile-photo-grid">
+              {(draft.profilePhotos || []).map((photo, index) => <div className="profile-photo-slot" key={photo.url}>
+                <div className="profile-photo-frame"><Image src={photo.url} alt={`Photo ${index + 1} crop preview`} fill unoptimized style={{objectPosition:`${photo.x}% ${photo.y}%`,transform:`scale(${photo.scale / 100})`}} /></div>
+                <strong>{index === 0 ? "Cover photo" : `Photo ${index + 1}`}</strong>
+                <label>Move left or right<input type="range" min="0" max="100" value={photo.x} onChange={(e) => positionPhoto(index,"x",Number(e.target.value))} /></label>
+                <label>Move up or down<input type="range" min="0" max="100" value={photo.y} onChange={(e) => positionPhoto(index,"y",Number(e.target.value))} /></label>
+                <label>Zoom photo<input type="range" min="100" max="200" value={photo.scale} onChange={(e) => positionPhoto(index,"scale",Number(e.target.value))} /></label>
+                <label className="profile-photo-replace">Replace photo<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => upload(e.target.files?.[0],index)} /></label>
+                <button type="button" onClick={() => removePhoto(index)}>Remove from page</button>
+              </div>)}
+            </div>
+            {(draft.profilePhotos || []).length < 3 && <label className="profile-photo-add">Add photo {(draft.profilePhotos || []).length + 1}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => upload(e.target.files?.[0],(draft.profilePhotos || []).length)} /></label>}
+          </div>}
           <label>
             Display name
             <input
@@ -459,17 +495,20 @@ export function CreatorEditor({
             {siteConfig.logo}<span className="pink">.</span>
           </div>
           <Image
-            src={avatar || draft.image || "/images/avatar.svg"}
+            src={avatar || draft.profilePhotos?.[0]?.url || draft.image || "/images/avatar.svg"}
             alt="Your public profile preview"
             width={320}
             height={250}
             unoptimized
+            style={{objectPosition: draft.profilePhotos?.[0] ? `${draft.profilePhotos[0].x}% ${draft.profilePhotos[0].y}%` : undefined, transform: draft.profilePhotos?.[0] ? `scale(${draft.profilePhotos[0].scale / 100})` : undefined}}
           />
           <h2>{draft.displayName}</h2>
           <span className="muted">
             @{draft.username} · {draft.availability}
           </span>
           <p>{draft.bio}</p>
+          <p>{creatorCountries.find(([code]) => code === draft.country)?.[1]}</p>
+          {!!draft.profilePhotos?.length && <small>{draft.profilePhotos.length} profile photo{draft.profilePhotos.length === 1 ? "" : "s"}</small>}
           <h3>Choose how we talk.</h3>
           {draft.pricing
             .filter((p) => p.enabled && p.kind === "message")
@@ -498,10 +537,12 @@ export function CreatorEditor({
         >
           Back
         </Button>
-        <Button disabled={busy} onClick={step === 5 ? launch : next}>
+        <Button disabled={busy} onClick={editing || step === 5 ? launch : next}>
           {busy
             ? "Saving…"
-            : step === 5
+            : editing
+              ? "Save changes"
+              : step === 5
               ? editing
                 ? "Save my ReplyPass"
                 : "Publish my ReplyPass"

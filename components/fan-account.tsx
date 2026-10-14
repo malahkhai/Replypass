@@ -31,10 +31,24 @@ export function FanAccount({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [savedItems, setSavedItems] = useState(saved);
+  function chooseTab(nextTab: string) {
+    setTab(nextTab);
+    setActive("");
+    if (window.location.hash === "#saved-creators" && nextTab !== "Saved creators") window.history.replaceState(null,"","/account");
+    if (nextTab === "Saved creators" && window.location.hash !== "#saved-creators") window.history.replaceState(null,"","/account#saved-creators");
+  }
   useEffect(() => {
     if (data.demo)
       void Promise.resolve().then(() => setSavedItems(demoSaved(saved)));
   }, [data.demo, saved]);
+  useEffect(() => {
+    const syncHash = () => {
+      if (window.location.hash === "#saved-creators") setTab("Saved creators");
+    };
+    window.addEventListener("hashchange", syncHash);
+    const frame = window.requestAnimationFrame(syncHash);
+    return () => { window.removeEventListener("hashchange", syncHash); window.cancelAnimationFrame(frame); };
+  }, []);
   const conversations = data.demo
     ? data.conversations.filter((c) => c.fanId === "alex")
     : data.conversations;
@@ -83,6 +97,12 @@ export function FanAccount({
       >
         {data.demo && <Badge>DEMO ACCOUNT</Badge>}
       </WorkspaceHeading>
+      <nav className="fan-quick-nav" aria-label="Your ReplyPass sections">
+        <button type="button" onClick={() => chooseTab("Messages")}>Messages</button>
+        <Link href="/account/requests">Requests</Link>
+        <Link href="/account/subscriptions">Memberships</Link>
+        <button type="button" onClick={() => chooseTab("Saved creators")}>Saved creators</button>
+      </nav>
       <div
         className="account-tabs"
         role="tablist"
@@ -101,8 +121,7 @@ export function FanAccount({
             role="tab"
             aria-selected={tab === t}
             onClick={() => {
-              setTab(t);
-              setActive("");
+              chooseTab(t);
             }}
           >
             {t}

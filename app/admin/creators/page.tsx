@@ -10,8 +10,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ c
   const creators = selected ? all.filter((c: any) => c.id === selected) : all;
   return <>
     <AdminHeading eyebrow="PEOPLE" title="Creators" description="Profiles publish after email verification. Paid products depend on Stripe eligibility and creator opt-in." />
-    <p className="admin-note">Link copies count copy-button actions over the past seven days; they do not measure visits or purchases.</p>
-    <AdminTable head={["Creator", "Link copies · 7 days", "Payout setup", "Products / activity", "Actions"]}>
+    <p className="admin-note">Seven-day activity counts page views and actions, not unique people. A request start is not a completed charge; use Payments for money states.</p>
+    <AdminTable head={["Creator", "Link copies · 7 days", "Fan journey · 7 days", "Payout setup", "Products / activity", "Actions"]}>
       {creators.map((c: any) => {
         const profile = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles;
         const stripe = Array.isArray(c.creator_stripe_accounts) ? c.creator_stripe_accounts[0] : c.creator_stripe_accounts;
@@ -23,6 +23,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ c
         return <tr key={c.id}>
           <td><strong>{profile?.display_name || `@${c.handle}`}</strong><small>@{c.handle} · {c.verified ? "verified" : "not verified"}</small>{published ? <Link className="admin-public-link" href={publicUrl} target="_blank" rel="noopener noreferrer" aria-label={`View @${c.handle}'s public page in a new tab`}>{publicUrl.replace(/^https?:\/\//, "")} ↗</Link> : <small className="admin-unpublished-link">Public page not live yet</small>}<small><Status tone={c.status === "approved" ? "good" : c.status === "suspended" ? "bad" : "warn"}>{c.status}</Status></small></td>
           <td><strong>{c.linkCopies7d + c.profileLinkCopies7d}</strong><small>Dashboard {c.linkCopies7d} · Public profile {c.profileLinkCopies7d}</small></td>
+          <td><strong>{c.profileViews7d} profile views</strong><small>{c.requestStarts7d} paid request starts · {c.vipJoins7d} active VIP joins</small><small>{c.profileViews7d ? `${Math.round((c.requestStarts7d+c.vipJoins7d)/c.profileViews7d*100)} actions per 100 views` : "No view denominator yet"}</small></td>
           <td><Status tone={stripe?.ready ? "good" : "warn"}>{stripe?.ready ? "Eligible" : "Not eligible"}</Status><small>Stripe transfers and payouts must both be checked.</small></td>
           <td><strong>{products}</strong><small>{replies} completed replies · {vip} active VIP</small></td>
           <td><details className="admin-row-menu"><summary>Manage creator</summary><div className="admin-controls">{["under_review", "rejected", "suspended"].includes(c.status) && <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="approve" label="Approve" confirm={`Approve @${c.handle} after review?`} />}{c.status !== "rejected" && <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="reject" label="Reject" reason variant="danger" />}{c.status === "suspended" ? <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="unsuspend" label="Unsuspend" /> : <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="suspend" label="Suspend" reason variant="danger" confirm={`Suspend @${c.handle}?`} />}{c.verified ? <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="remove_verification" label="Remove check" /> : <AdminAction endpoint={`/api/admin/creators/${c.id}`} action="restore_verification" label="Verify" />}</div></details></td>

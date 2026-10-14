@@ -19,6 +19,9 @@ type AnalyticsEvent =
   | "creator_onboarding_step"
   | "creator_launch_success"
   | "checkout_started"
+  | "request_reserved"
+  | "vip_subscription_active"
+  | "checkout_error"
   | "creator_link_copied";
 
 type MetaPixel = ((command: string, event: string, parameters?: Record<string, unknown>) => void) & {
@@ -103,6 +106,9 @@ export function track(event: AnalyticsEvent, option?: string | number) {
     creator_onboarding_step: { mode: "trackCustom", name: "CreatorOnboardingStep" },
     creator_launch_success: { mode: "track", name: "CompleteRegistration" },
     checkout_started: { mode: "track", name: "InitiateCheckout" },
+    request_reserved: { mode: "trackCustom", name: "RequestReserved" },
+    vip_subscription_active: { mode: "track", name: "Subscribe" },
+    checkout_error: { mode: "trackCustom", name: "CheckoutError" },
     creator_link_copied: { mode: "trackCustom", name: "CreatorLinkCopied" },
   };
   const mapped = metaEvents[event];

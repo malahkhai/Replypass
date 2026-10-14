@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth/session";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { stripeConfig } from "@/lib/stripe/config";
 import { vipAccessEligible } from "@/lib/vip/model";
+import { VipConversion } from "@/components/vip-conversion";
 
 export const metadata = { title: "Your VIP membership", robots: { index: false, follow: false } };
 
@@ -46,6 +47,7 @@ export default async function Page() {
 
   return (
     <main className="vip-success-page">
+      {membership && <VipConversion membershipId={membership.id} />}
       <div className="vip-success-shell">
         <div className={`vip-success-card${membership ? " is-active" : ""}`}>
           <div className="vip-success-mark" aria-hidden="true">

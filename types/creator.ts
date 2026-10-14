@@ -13,6 +13,7 @@ export const categories = [
   "Other",
 ] as const;
 export type Availability = "online" | "away" | "offline";
+export type ProfilePhoto = { url: string; x: number; y: number; scale: number };
 export interface CreatorDraft {
   publicationStatus?: string;
   onboardingComplete?: boolean;
@@ -22,6 +23,7 @@ export interface CreatorDraft {
   displayName: string;
   username: string;
   image: string;
+  profilePhotos?: ProfilePhoto[];
   bio: string;
   categories: string[];
   country: string;
@@ -46,6 +48,7 @@ export interface PublicCreator {
   handle: string;
   bio: string;
   image: string;
+  profilePhotos?: ProfilePhoto[];
   categories: string[];
   country?: string;
   rating: string;

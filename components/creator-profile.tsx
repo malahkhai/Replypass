@@ -200,6 +200,7 @@ export function CreatorProfile({
   authenticated = false,
   initialInteraction,
   vipPlan,
+  vipActivity,
   activeVip = false,
   preview = false,
 }: {
@@ -208,6 +209,7 @@ export function CreatorProfile({
   authenticated?: boolean;
   initialInteraction?: string;
   vipPlan?: VipPlan | null;
+  vipActivity?: { postCount: number; latestPostAt: string | null } | null;
   activeVip?: boolean;
   preview?: boolean;
 }) {
@@ -240,6 +242,9 @@ export function CreatorProfile({
   const hasPublicProof = creator.ratingCount > 0 || hasCompletedChats;
   const firstName = creator.name.split(" ")[0];
   const photoFocusLow = creator.handle.replace(/^@/, "").toLowerCase() === "slthedj";
+  const [heroIndex, setHeroIndex] = useState(0);
+  const profilePhotos = creator.profilePhotos?.length ? creator.profilePhotos : [{ url: creator.image, x: 50, y: photoFocusLow ? 70 : 50, scale: 100 }];
+  const heroPhoto = profilePhotos[Math.min(heroIndex, profilePhotos.length - 1)];
   const titles = {
     message: `Message ${firstName}`,
     live_chat: `Live chat with ${firstName}`,
@@ -284,15 +289,19 @@ export function CreatorProfile({
             className="profile-intro"
             aria-label={`About ${creator.name}`}
           >
-            <div className={`hero-image${photoFocusLow ? " hero-image--low-subject" : ""}`}>
+            <div className="hero-image">
               <Image
-                src={creator.image}
-                alt={`${creator.name} profile photo`}
+                src={heroPhoto.url}
+                alt={`${creator.name} profile photo ${heroIndex + 1} of ${profilePhotos.length}`}
                 fill
                 loading="eager"
-                unoptimized={creator.image.startsWith("http")}
+                unoptimized={heroPhoto.url.startsWith("http")}
                 sizes="(max-width: 760px) 100vw, 480px"
+                style={{ objectPosition: `${heroPhoto.x}% ${heroPhoto.y}%`, transform: `scale(${heroPhoto.scale / 100})` }}
               />
+              {profilePhotos.length > 1 && <div className="hero-photo-controls" role="group" aria-label="Creator photos">
+                {profilePhotos.map((photo, index) => <button key={`${photo.url}-${index}`} type="button" aria-label={`Show photo ${index + 1}`} aria-pressed={index === heroIndex} onClick={() => setHeroIndex(index)} />)}
+              </div>}
               <div className="hero-topline">
                 <Badge className="online-badge">
                   <i className={`status-dot ${creator.availability}`} />{" "}
@@ -439,6 +448,9 @@ export function CreatorProfile({
                   </div>
                   <h2>{vipPlan?.name ?? `${firstName} VIP`}</h2>
                   <p>{vipPlan?.description ?? "Private posts, exclusive updates and VIP inbox status."}</p>
+                  {vipActivity && <p className="vip-activity">{vipActivity.postCount > 0
+                    ? `${vipActivity.postCount} private ${vipActivity.postCount === 1 ? "post" : "posts"} available · Latest ${new Date(vipActivity.latestPostAt!).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}`
+                    : "No private posts published yet. Ask the creator what they plan to share before joining."}</p>}
                   <ul className="vip-benefits">{(vipPlan?.benefits ?? ["Private posts","Exclusive photos","VIP updates","VIP badge"]).map(item=><li key={item}>✓ {item}</li>)}</ul>
                   {preview ? <Button disabled>Join VIP · Preview only</Button> : activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
                 </Card>
