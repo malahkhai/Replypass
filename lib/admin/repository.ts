@@ -90,7 +90,7 @@ export async function adminPayments(mode: "test" | "live" | "unknown" = paymentM
   ]);
   if(fanError||creatorError)throw Error("Payment people unavailable.");
   const fanNames=new Map((fans||[]).map(f=>[f.id,f.display_name]));
-  const creatorNames=new Map((creators||[]).map(c=>[c.id,{name:(c.profiles as unknown as {display_name:string}|null)?.display_name||c.handle,handle:c.handle}]));
+  const creatorNames=new Map((creators||[]).map(c=>{const related=c.profiles as unknown as {display_name:string}|{display_name:string}[]|null;const profile=Array.isArray(related)?related[0]:related;return [c.id,{name:profile?.display_name||c.handle,handle:c.handle}]}));
   const needle=search.trim().toLowerCase();
   return rows.map(p=>({...p,fanName:fanNames.get(p.fan_id)||"Unknown fan",creatorName:creatorNames.get(p.creator_id)?.name||"Unknown creator",creatorHandle:creatorNames.get(p.creator_id)?.handle||""})).filter(p=>!needle||[p.id,p.fan_id,p.creator_id,p.fanName,p.creatorName,p.creatorHandle,p.stripe_payment_intent_id,p.stripe_transfer_id].some(v=>String(v||"").toLowerCase().includes(needle)));
 }
