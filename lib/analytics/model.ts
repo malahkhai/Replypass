@@ -3,7 +3,7 @@ export const GA_ID = "G-C6DL1WLHDM";
 export const CONSENT_KEY = "replypass:analytics-consent:v1";
 export const MARKETING_CONSENT_KEY = "replypass:marketing-consent:v1";
 export const X_CONSENT_KEY = "replypass:x-consent:v1";
-export const X_CREATOR_REGISTRATION_EVENT_ID = "tw-rha5c-rha7y";
+export const X_CREATOR_REGISTRATION_EVENT_ID = "tw-rha5c-rhab8";
 export const META_PIXEL_ID_PATTERN = /^\d{5,20}$/;
 export function analyticsHostAllowed(hostname: string) {
   return hostname === "getreplypass.com" || hostname === "www.getreplypass.com";
