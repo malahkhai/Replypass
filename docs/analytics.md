@@ -4,9 +4,11 @@ GA4 measurement ID: `G-C6DL1WLHDM`. Only `getreplypass.com` and `www.getreplypas
 
 ## Consent
 
-The Google script is absent until analytics is accepted. Meta and X scripts are absent until their separate advertising choices are accepted. Reject optional, accept all and granular choices are available; the footer opens preferences again. Each choice expires after 180 days. Existing GA or Meta consent does not grant X consent. Withdrawal reloads to stop the withdrawn tracker; another tab changing a choice also reloads this tab. Without localStorage, optional tracking remains disabled. Essential authentication storage is unaffected. Google advertising signals remain denied because Google Ads is not configured. This is a small first-party consent interface, not a claim of legal certification. Review the draft privacy policy before commercial launch. A managed CMP can replace this interface later; do not run two banners or duplicate tags.
+The Google script is absent until analytics is accepted. Meta and X scripts are absent until their separate advertising choices are accepted. Reject optional, accept all and granular choices are available; the footer opens preferences again. Inaction never grants consent. Each choice expires after 180 days. Existing GA or Meta consent does not grant X consent. Withdrawal reloads to stop the withdrawn tracker; another tab changing a choice also reloads this tab. Without localStorage, optional tracking remains disabled. Essential authentication storage is unaffected. Google advertising signals remain denied because Google Ads is not configured. This is a small first-party consent interface, not a claim of legal certification. Review the draft privacy policy before commercial launch. A managed CMP can replace this interface later; do not run two banners or duplicate tags.
 
 ## Page map
+
+The creator landing page also records a first-party daily aggregate load count, whether or not optional analytics consent is granted. It stores only day-level totals in the existing shared store, never visitor IDs, cookies, URL parameters or campaign labels. Short-lived security rate limits reduce abuse. The admin overview shows the last seven days; this is an indicative count of loaded pages, not unique visitors or a Meta-attributed number. It starts counting only after deployment and does not backfill earlier ad traffic.
 
 | Route | GA page group |
 |---|---|
@@ -22,7 +24,7 @@ The Google script is absent until analytics is accepted. Meta and X scripts are 
 | Trust pages | terms, privacy, community_guidelines, creator_terms |
 | Unrecognized paths and callbacks | other |
 
-GA page views fire once on route change or consent acceptance; queries, hashes, actual titles, usernames and referrers are excluded. Consented Meta Pixel requests use the browser's current URL so Meta can attribute approved campaign parameters such as its click identifier and UTMs. ReplyPass does not copy URL parameters into custom event fields. Never put names, emails, message text or private identifiers in campaign URLs.
+GA page views fire once on route change or consent acceptance. The real path, hash, actual title, creator handle, referrer, click IDs and arbitrary query parameters are excluded. After GA consent, only slug-form `utm_source` and `utm_medium` (both required) and optional `utm_campaign` are retained on the grouped page URL for acquisition reporting. Values are normalized to lower case and limited to 64 characters; names, emails and arbitrary values must not be used in campaign tags. An untagged ad URL cannot be identified as a Meta campaign in GA. For this creator-acquisition ad, use `https://getreplypass.com/creators?utm_source=meta&utm_medium=paid_social&utm_campaign=grp_lpv_a` as the destination when editing the campaign. Consented Meta Pixel requests use the browser's current URL so Meta can attribute approved campaign parameters such as its click identifier and UTMs. ReplyPass does not copy URL parameters into custom Meta event fields. Never put names, emails, message text or private identifiers in campaign URLs.
 
 ## Implemented events
 

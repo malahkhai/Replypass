@@ -20,6 +20,27 @@ export function pageGroup(path: string) {
   if (/^\/creator\/(dashboard|inbox|requests|subscribers|earnings|analytics|profile|settings|payouts)$/.test(path)) return path.slice(1).replaceAll("/", "_");
   return "other";
 }
+
+// Keep private paths and arbitrary query strings out of GA while preserving
+// deliberately tagged campaign attribution for consented visits.
+export function analyticsPageLocation(path: string, search: string) {
+  const url = new URL(`https://getreplypass.com/${pageGroup(path)}`);
+  const incoming = new URLSearchParams(search);
+  const source = safeCampaignValue(incoming.get("utm_source"));
+  const medium = safeCampaignValue(incoming.get("utm_medium"));
+  if (source && medium) {
+    url.searchParams.set("utm_source", source);
+    url.searchParams.set("utm_medium", medium);
+    const campaign = safeCampaignValue(incoming.get("utm_campaign"));
+    if (campaign) url.searchParams.set("utm_campaign", campaign);
+  }
+  return url.toString();
+}
+
+function safeCampaignValue(value: string | null) {
+  const normalized = value?.trim().toLowerCase();
+  return normalized && /^[a-z0-9][a-z0-9_-]{0,63}$/.test(normalized) ? normalized : null;
+}
 export function readChoice(raw: string | null, now = Date.now()): boolean | null {
   try {
     const value = JSON.parse(raw || "null");

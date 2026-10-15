@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { analyticsAllowed, metaPixelConfigured, track, trackMetaPage } from "@/lib/analytics/client";
-import { CONSENT_KEY, GA_ID, MARKETING_CONSENT_KEY, X_CONSENT_KEY, pageGroup, readChoice } from "@/lib/analytics/model";
+import { analyticsPageLocation, CONSENT_KEY, GA_ID, MARKETING_CONSENT_KEY, X_CONSENT_KEY, pageGroup, readChoice } from "@/lib/analytics/model";
 const denied = { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" };
 let initialized = false;
 export function AnalyticsConsent() {
@@ -34,6 +34,7 @@ export function AnalyticsConsent() {
   useEffect(() => {
     if (!analyticsAllowed()) return;
     const group = pageGroup(pathname);
+    const pageLocation = analyticsPageLocation(pathname, location.search);
     if (!initialized) {
       window.dataLayer = window.dataLayer || [];
       // Google gtag requires an arguments object in the dataLayer queue.
@@ -42,12 +43,12 @@ export function AnalyticsConsent() {
       window.gtag("consent", "default", denied);
       window.gtag("consent", "update", { ...denied, analytics_storage: "granted" });
       window.gtag("js", new Date());
-      window.gtag("config", GA_ID, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, page_location: `https://getreplypass.com/${group}`, page_title: group, page_referrer: "" });
+      window.gtag("config", GA_ID, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, page_location: pageLocation, page_title: group, page_referrer: "" });
       const script = document.createElement("script");
       script.async = true; script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
       document.head.appendChild(script); initialized = true;
     }
-    window.gtag?.("event", "page_view", { send_to: GA_ID, page_location: `https://getreplypass.com/${group}`, page_title: group, page_referrer: "", page_group: group });
+    window.gtag?.("event", "page_view", { send_to: GA_ID, page_location: pageLocation, page_title: group, page_referrer: "", page_group: group });
   }, [pathname, revision]);
   useEffect(() => { trackMetaPage(pathname); }, [pathname, revision]);
   useEffect(() => {
@@ -95,13 +96,12 @@ export function AnalyticsConsent() {
     else {
       window.dispatchEvent(new Event("replypass:x-consent-changed"));
       setRevision(v => v + 1);
-      if (marketing) setTimeout(() => setRevision(v => v + 1), 1500);
     }
   }
   return <>
     <div className="cookie-settings"><button type="button" onClick={() => { setCustomizing(true); setVisible(true); }}>Cookie preferences</button></div>
     {visible && <section className="consent-banner" aria-label="Cookie preferences">
-      <div><strong>A little choice about cookies.</strong><p>Essential storage keeps ReplyPass working. With your permission, Google Analytics helps us improve the product, while Meta and X help us measure advertising campaigns. You can choose either advertiser separately and change your choices anytime. <Link href="/privacy">Privacy details</Link></p></div>
+      <div><strong>Your privacy choices</strong><p>ReplyPass uses essential storage. If you choose, Google Analytics helps us understand visits, and Meta and X help us measure ads. Optional tracking stays off until you decide. <Link href="/privacy">Privacy details</Link></p></div>
       {customizing && <div className="consent-options">
         <label><span><strong>Google Analytics</strong><small>Product usage and performance measurement</small></span><input type="checkbox" checked={analyticsChoice} onChange={event => setAnalyticsChoice(event.target.checked)} /></label>
         {metaPixelConfigured() && <label><span><strong>Meta Pixel &amp; Conversions API</strong><small>Advertising attribution and conversion measurement</small></span><input type="checkbox" checked={marketingChoice} onChange={event => setMarketingChoice(event.target.checked)} /></label>}

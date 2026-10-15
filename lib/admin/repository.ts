@@ -6,6 +6,7 @@ const paymentMode = () => {
   return mode;
 };
 import { serviceDatabase } from "@/lib/stripe/server";
+import { creatorLandingLoadsLast7Days } from "@/lib/analytics/landing-count";
 
 export type AdminMetric = { label:string; value:string; attention?:boolean };
 const money=(cents:number,currency="eur")=>new Intl.NumberFormat("en-GB",{style:"currency",currency:currency.toUpperCase()}).format(cents/100);
@@ -13,6 +14,7 @@ const money=(cents:number,currency="eur")=>new Intl.NumberFormat("en-GB",{style:
 export async function adminOverview(){
   const db=serviceDatabase();
   const mode=paymentMode();
+  const landingLoadsPromise=creatorLandingLoadsLast7Days().catch(()=>null);
   const [profiles,creators,subscriptions,payments,vipPayments,reports,disputes,reconciliation]=await Promise.all([
     db.from("profiles").select("id",{count:"exact",head:true}),
     db.from("creator_profiles").select("id",{count:"exact",head:true}).eq("status","approved"),
@@ -24,6 +26,7 @@ export async function adminOverview(){
     db.from("reconciliation_issues").select("id",{count:"exact",head:true}).in("status",["open","manual_review"]),
   ]);
   if(payments.error||vipPayments.error||subscriptions.error)throw Error("Financial totals unavailable.");
+  const landingLoads=await landingLoadsPromise;
   const rows=payments.data||[];
   const vipRows=vipPayments.data||[];
   const gross=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.gross_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.gross_cents:0),0);
@@ -33,6 +36,7 @@ export async function adminOverview(){
   const transferFailures=rows.filter(p=>p.transfer_state==="failed").length;
   return {metrics:[
     {label:"Total users",value:String(profiles.count||0)}, {label:"Active creators",value:String(creators.count||0)},
+    {label:"Creator landing loads (7 days)",value:landingLoads===null?"Unavailable":String(landingLoads)},
     {label:"Active VIP subscriptions",value:String(subscriptions.data?.length||0)}, {label:"Paid requests",value:String(rows.length)},
     {label:"VIP monthly gross",value:money((subscriptions.data||[]).filter(s=>s.currency==="eur").reduce((n,s)=>n+s.amount_cents,0))},
     {label:"VIP payments",value:String(vipRows.filter(p=>p.status==="paid").length)},
