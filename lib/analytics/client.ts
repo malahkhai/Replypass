@@ -2,6 +2,7 @@
 
 import {
   analyticsHostAllowed,
+  analyticsPageLocation,
   CONSENT_KEY,
   GA_ID,
   MARKETING_CONSENT_KEY,
@@ -91,7 +92,7 @@ export function track(event: AnalyticsEvent, option?: string | number) {
   if (analyticsAllowed()) {
     window.gtag?.("event", event, {
       send_to: GA_ID,
-      page_location: `https://getreplypass.com/${pageGroup(location.pathname)}`,
+      page_location: analyticsPageLocation(location.pathname, location.search),
       page_title: pageGroup(location.pathname), page_referrer: "",
       page_group: pageGroup(location.pathname),
       ...(safeOption !== undefined ? { funnel_detail: safeOption } : {}),

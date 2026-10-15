@@ -1,6 +1,7 @@
 import { MarketingPage } from "@/components/marketing-page";
 import { pageMetadata } from "@/lib/metadata";
 import { getViewer } from "@/lib/auth/session";
+import { CreatorLandingCount } from "@/components/creator-landing-count";
 export const metadata = pageMetadata(
   "Get paid for your attention",
   "/creators",
@@ -8,5 +9,5 @@ export const metadata = pageMetadata(
 );
 export default async function Creators() {
   const viewer = await getViewer();
-  return <MarketingPage forCreators creatorAuthenticated={!!viewer} />;
+  return <><CreatorLandingCount /><MarketingPage forCreators creatorAuthenticated={!!viewer} /></>;
 }
