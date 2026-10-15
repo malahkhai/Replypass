@@ -24,7 +24,7 @@ test("X conversion omits delivery without an email identifier", () => {
 });
 
 test("X CAPI posts the confirmed conversion server-side with the token header", async () => {
-  const conversion = xCreatorConversion("tw-rha5c-rha7y", "profile", "creator@example.com", "2026-10-15T12:34:56.000Z");
+  const conversion = xCreatorConversion("tw-rha5c-rhab8", "profile", "creator@example.com", "2026-10-15T12:34:56.000Z");
   let called = false;
   const response = await postXConversion("test-token", conversion, async (url, options) => {
     called = true;
