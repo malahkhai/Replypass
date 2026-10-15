@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { analyticsAllowed, metaPixelConfigured, track, trackMetaPage } from "@/lib/analytics/client";
-import { CONSENT_KEY, GA_ID, MARKETING_CONSENT_KEY, pageGroup, readChoice } from "@/lib/analytics/model";
+import { CONSENT_KEY, GA_ID, MARKETING_CONSENT_KEY, X_CONSENT_KEY, pageGroup, readChoice } from "@/lib/analytics/model";
 const denied = { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" };
 let initialized = false;
 export function AnalyticsConsent() {
@@ -12,19 +12,22 @@ export function AnalyticsConsent() {
   const [customizing, setCustomizing] = useState(false);
   const [analyticsChoice, setAnalyticsChoice] = useState(false);
   const [marketingChoice, setMarketingChoice] = useState(false);
+  const [xChoice, setXChoice] = useState(false);
   const [revision, setRevision] = useState(0);
   useEffect(() => {
     try {
       const analytics = readChoice(localStorage.getItem(CONSENT_KEY));
       const marketing = metaPixelConfigured() ? readChoice(localStorage.getItem(MARKETING_CONSENT_KEY)) : false;
+      const x = readChoice(localStorage.getItem(X_CONSENT_KEY));
       queueMicrotask(() => {
         setAnalyticsChoice(analytics === true);
         setMarketingChoice(marketing === true);
-        if (analytics === null || marketing === null) setVisible(true);
+        setXChoice(x === true);
+        if (analytics === null || marketing === null || x === null) setVisible(true);
       });
     }
     catch { queueMicrotask(() => setVisible(true)); }
-    const sync = (e: StorageEvent) => { if (e.key === CONSENT_KEY || e.key === MARKETING_CONSENT_KEY) location.reload(); };
+    const sync = (e: StorageEvent) => { if (e.key === CONSENT_KEY || e.key === MARKETING_CONSENT_KEY || e.key === X_CONSENT_KEY) location.reload(); };
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
   }, []);
@@ -50,10 +53,11 @@ export function AnalyticsConsent() {
   useEffect(() => {
     try {
       const allowed = readChoice(localStorage.getItem(MARKETING_CONSENT_KEY)) === true;
+      const xAllowed = readChoice(localStorage.getItem(X_CONSENT_KEY)) === true;
       void fetch("/api/analytics/consent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ allowed }),
+        body: JSON.stringify({ allowed, xAllowed }),
         keepalive: true,
       });
     } catch { /* Server-side conversion tracking remains disabled. */ }
@@ -66,15 +70,16 @@ export function AnalyticsConsent() {
     document.addEventListener("click", click);
     return () => document.removeEventListener("click", click);
   }, []);
-  function choose(analytics: boolean, marketing: boolean) {
+  function choose(analytics: boolean, marketing: boolean, x: boolean) {
     try {
       const at = Date.now();
       localStorage.setItem(CONSENT_KEY, JSON.stringify({ accepted: analytics, at }));
       if (metaPixelConfigured()) localStorage.setItem(MARKETING_CONSENT_KEY, JSON.stringify({ accepted: marketing, at }));
       else localStorage.removeItem(MARKETING_CONSENT_KEY);
+      localStorage.setItem(X_CONSENT_KEY, JSON.stringify({ accepted: x, at }));
     } catch { /* No persistent storage means optional tracking stays disabled. */ }
     setVisible(false);
-    const reloadForWithdrawal = (!analytics && initialized) || (!marketing && Boolean(window.fbq));
+    const reloadForWithdrawal = (!analytics && initialized) || (!marketing && Boolean(window.fbq)) || (!x && Boolean((window as Window & { twq?: unknown }).twq));
     if (!analytics && initialized) {
       Object.assign(window, { [`ga-disable-${GA_ID}`]: true });
       window.gtag?.("consent", "update", denied);
@@ -88,6 +93,7 @@ export function AnalyticsConsent() {
     }
     if (reloadForWithdrawal) location.reload();
     else {
+      window.dispatchEvent(new Event("replypass:x-consent-changed"));
       setRevision(v => v + 1);
       if (marketing) setTimeout(() => setRevision(v => v + 1), 1500);
     }
@@ -95,13 +101,14 @@ export function AnalyticsConsent() {
   return <>
     <div className="cookie-settings"><button type="button" onClick={() => { setCustomizing(true); setVisible(true); }}>Cookie preferences</button></div>
     {visible && <section className="consent-banner" aria-label="Cookie preferences">
-      <div><strong>A little choice about cookies.</strong><p>Essential storage keeps ReplyPass working. With your permission, Google Analytics helps us improve the product{metaPixelConfigured() ? " and Meta Pixel and Conversions API help us measure advertising campaigns" : ""}. Accept all enables both optional categories. You can change your choices anytime. <Link href="/privacy">Privacy details</Link></p></div>
+      <div><strong>A little choice about cookies.</strong><p>Essential storage keeps ReplyPass working. With your permission, Google Analytics helps us improve the product, while Meta and X help us measure advertising campaigns. You can choose either advertiser separately and change your choices anytime. <Link href="/privacy">Privacy details</Link></p></div>
       {customizing && <div className="consent-options">
         <label><span><strong>Google Analytics</strong><small>Product usage and performance measurement</small></span><input type="checkbox" checked={analyticsChoice} onChange={event => setAnalyticsChoice(event.target.checked)} /></label>
         {metaPixelConfigured() && <label><span><strong>Meta Pixel &amp; Conversions API</strong><small>Advertising attribution and conversion measurement</small></span><input type="checkbox" checked={marketingChoice} onChange={event => setMarketingChoice(event.target.checked)} /></label>}
+        <label><span><strong>X Pixel &amp; Conversions API</strong><small>Advertising attribution and conversion measurement</small></span><input type="checkbox" checked={xChoice} onChange={event => setXChoice(event.target.checked)} /></label>
       </div>}
-      {customizing ? <div className="consent-actions"><button type="button" onClick={() => choose(false, false)}>Reject optional</button><button type="button" onClick={() => choose(analyticsChoice, marketingChoice)}>Save choices</button></div> : <>
-        <div className="consent-actions"><button type="button" onClick={() => choose(false, false)}>Reject optional</button><button type="button" onClick={() => choose(true, metaPixelConfigured())}>Accept all</button></div>
+      {customizing ? <div className="consent-actions"><button type="button" onClick={() => choose(false, false, false)}>Reject optional</button><button type="button" onClick={() => choose(analyticsChoice, marketingChoice, xChoice)}>Save choices</button></div> : <>
+        <div className="consent-actions"><button type="button" onClick={() => choose(false, false, false)}>Reject optional</button><button type="button" onClick={() => choose(true, metaPixelConfigured(), true)}>Accept all</button></div>
         <button className="consent-manage" type="button" onClick={() => setCustomizing(true)}>Manage choices</button>
       </>}
     </section>}

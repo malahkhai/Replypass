@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { analyticsHostAllowed, pageGroup, readChoice, validMetaPixelId } from '../lib/analytics/model.ts';
+import { analyticsHostAllowed, pageGroup, readChoice, validMetaPixelId, X_CREATOR_REGISTRATION_EVENT_ID } from '../lib/analytics/model.ts';
 test('analytics masks creator handles and private routes', () => {
  assert.equal(pageGroup('/@someone'), 'creator_profile');
  assert.equal(pageGroup('/creator/inbox/private-id'), 'creator_conversation');
@@ -26,4 +26,7 @@ test('Meta Pixel IDs must be numeric public identifiers', () => {
  assert.equal(validMetaPixelId(undefined), false);
  assert.equal(validMetaPixelId('G-C6DL1WLHDM'), false);
  assert.equal(validMetaPixelId('123<script>'), false);
+});
+test('X creator conversion event belongs to ReplyPass pixel', () => {
+ assert.match(X_CREATOR_REGISTRATION_EVENT_ID, /^tw-rha5c-[A-Za-z0-9_-]+$/);
 });

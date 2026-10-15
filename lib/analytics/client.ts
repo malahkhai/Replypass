@@ -8,6 +8,8 @@ import {
   pageGroup,
   readChoice,
   validMetaPixelId,
+  X_CREATOR_REGISTRATION_EVENT_ID,
+  X_CONSENT_KEY,
 } from "./model";
 
 type AnalyticsEvent =
@@ -38,6 +40,7 @@ declare global {
     gtag?: (...args: unknown[]) => void;
     fbq?: MetaPixel;
     _fbq?: MetaPixel;
+    twq?: (command: string, eventId: string, parameters?: Record<string, unknown>) => void;
   }
 }
 
@@ -113,4 +116,27 @@ export function track(event: AnalyticsEvent, option?: string | number) {
   };
   const mapped = metaEvents[event];
   window.fbq?.(mapped.mode, mapped.name, detail);
+}
+
+export function trackXCreatorRegistration(conversionId: string) {
+  try {
+    if (!analyticsHostAllowed(location.hostname) ||
+        readChoice(localStorage.getItem(X_CONSENT_KEY)) !== true ||
+        !/^[a-f0-9]{64}$/.test(conversionId)) return;
+    window.twq?.("event", X_CREATOR_REGISTRATION_EVENT_ID, { conversion_id: conversionId });
+  } catch { /* Conversion tracking is optional. */ }
+}
+
+export async function syncXCreatorRegistrationConsent() {
+  try {
+    if (!analyticsHostAllowed(location.hostname) ||
+        readChoice(localStorage.getItem(X_CONSENT_KEY)) !== true) return false;
+    const allowed = readChoice(localStorage.getItem(MARKETING_CONSENT_KEY)) === true;
+    const response = await fetch("/api/analytics/consent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ allowed, xAllowed: true }),
+    });
+    return response.ok;
+  } catch { return false; }
 }

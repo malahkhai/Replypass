@@ -10,8 +10,8 @@ export async function POST(request: Request) {
   const viewer = await getViewer();
   if (!viewer || viewer.demo) return new Response(null, { status: 204 });
   try {
-    const { allowed } = await readJson(request);
-    if (typeof allowed !== "boolean") return fail("Invalid consent choice.");
+    const { allowed, xAllowed } = await readJson(request);
+    if (typeof allowed !== "boolean" || typeof xAllowed !== "boolean") return fail("Invalid consent choice.");
     const cookies = Object.fromEntries(
       (request.headers.get("cookie") || "")
         .split(";")
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       {
         profile_id: viewer.id,
         allowed,
+        x_allowed: xAllowed,
         fbp: allowed ? safeCookie(cookies._fbp, "fb.1.") : null,
         fbc: allowed ? safeCookie(cookies._fbc, "fb.1.") : null,
         client_user_agent: allowed

@@ -1,6 +1,6 @@
 "use client";
 import type { FollowerCounts } from "@/lib/creators/socials";
-import { track } from "@/lib/analytics/client";
+import { syncXCreatorRegistrationConsent, track, trackXCreatorRegistration } from "@/lib/analytics/client";
 import { siteConfig } from "@/lib/site";
 
 import Image from "next/image";
@@ -154,9 +154,13 @@ export function CreatorEditor({
     setBusy(true);
     setError("");
     try {
+      const xConsentSaved = !editing && await syncXCreatorRegistrationConsent();
       const r = await fetch("/api/creator/onboard", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-ReplyPass-X-Consent": xConsentSaved ? "granted" : "denied",
+        },
         body: JSON.stringify(draft),
       });
       const data = await r.json();
@@ -169,6 +173,9 @@ export function CreatorEditor({
         window.dispatchEvent(new Event("replypass:change"));
       }
       if (!demo && !editing) track("creator_launch_success");
+      if (!demo && !editing && xConsentSaved && typeof data.xConversionId === "string") {
+        trackXCreatorRegistration(data.xConversionId);
+      }
       router.push("/creator/dashboard");
       router.refresh();
     } catch (e) {

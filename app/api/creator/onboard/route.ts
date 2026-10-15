@@ -1,4 +1,7 @@
 import { tryDeliverCreatorAdminEvents } from "@/lib/notifications/creator-lifecycle";
+import { xCreatorConversionId } from "@/lib/analytics/x-conversion";
+import { reportXCreatorRegistration } from "@/lib/analytics/x-server";
+import { logEvent } from "@/lib/observability/log";
 import { cookies } from "next/headers";
 import { after, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
@@ -34,6 +37,13 @@ export async function POST(request: Request) {
     if (!verifiedAuth.user?.email_confirmed_at) return fail("Verify your email before publishing your profile.", 403);
     const limited = await enforceRateLimit(request, "requestAction", viewer.id);
     if (limited) return limited;
+    const db = serviceDatabase();
+    const { data: previous, error: previousError } = await db.from("creator_profiles")
+      .select("submitted_at")
+      .eq("profile_id", viewer.id)
+      .maybeSingle();
+    if (previousError) throw previousError;
+    const firstLaunch = !previous?.submitted_at;
     const { error } = await supabase.rpc("save_creator_profile_with_audience", { draft });
     if (error)
       return fail(
@@ -42,15 +52,23 @@ export async function POST(request: Request) {
           : "Your profile could not be saved. Check the fields and try again.",
         409,
       );
-    const db = serviceDatabase();
+    const launchedAt = new Date().toISOString();
     const { error: termsError } = await db.from("creator_profiles").update({
-      submitted_at: new Date().toISOString(),
+      submitted_at: launchedAt,
       community_terms_accepted_at: new Date().toISOString(),
       community_terms_version: "2026-09-launch-draft",
     }).eq("profile_id", viewer.id);
     if (termsError) throw termsError;
     after(tryDeliverCreatorAdminEvents);
-    return NextResponse.json({ ok: true });
+    const xConsentGranted = request.headers.get("x-replypass-x-consent") === "granted";
+    if (firstLaunch && xConsentGranted) after(async () => {
+      try { await reportXCreatorRegistration(viewer.id, launchedAt); }
+      catch { logEvent("error", { event: "x_creator_registration", status: "delivery_failed", creator_id: viewer.id }); }
+    });
+    return NextResponse.json({
+      ok: true,
+      ...(firstLaunch ? { xConversionId: xCreatorConversionId(viewer.id) } : {}),
+    });
   } catch {
     return fail("Unable to save. Please try again.");
   }
