@@ -60,7 +60,8 @@ export async function POST(request: Request) {
     }).eq("profile_id", viewer.id);
     if (termsError) throw termsError;
     after(tryDeliverCreatorAdminEvents);
-    if (firstLaunch) after(async () => {
+    const xConsentGranted = request.headers.get("x-replypass-x-consent") === "granted";
+    if (firstLaunch && xConsentGranted) after(async () => {
       try { await reportXCreatorRegistration(viewer.id, launchedAt); }
       catch { logEvent("error", { event: "x_creator_registration", status: "delivery_failed", creator_id: viewer.id }); }
     });

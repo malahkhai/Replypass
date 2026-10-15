@@ -126,3 +126,17 @@ export function trackXCreatorRegistration(conversionId: string) {
     window.twq?.("event", X_CREATOR_REGISTRATION_EVENT_ID, { conversion_id: conversionId });
   } catch { /* Conversion tracking is optional. */ }
 }
+
+export async function syncXCreatorRegistrationConsent() {
+  try {
+    if (!analyticsHostAllowed(location.hostname) ||
+        readChoice(localStorage.getItem(X_CONSENT_KEY)) !== true) return false;
+    const allowed = readChoice(localStorage.getItem(MARKETING_CONSENT_KEY)) === true;
+    const response = await fetch("/api/analytics/consent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ allowed, xAllowed: true }),
+    });
+    return response.ok;
+  } catch { return false; }
+}
