@@ -1,6 +1,6 @@
 "use client";
 import type { FollowerCounts } from "@/lib/creators/socials";
-import { track } from "@/lib/analytics/client";
+import { track, trackXCreatorRegistration } from "@/lib/analytics/client";
 import { siteConfig } from "@/lib/site";
 
 import Image from "next/image";
@@ -169,6 +169,9 @@ export function CreatorEditor({
         window.dispatchEvent(new Event("replypass:change"));
       }
       if (!demo && !editing) track("creator_launch_success");
+      if (!demo && !editing && typeof data.xConversionId === "string") {
+        trackXCreatorRegistration(data.xConversionId);
+      }
       router.push("/creator/dashboard");
       router.refresh();
     } catch (e) {

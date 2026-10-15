@@ -1,4 +1,5 @@
 import { AnalyticsConsent } from "@/components/analytics-consent";
+import { XPixel } from "@/components/x-pixel";
 import type { Metadata, Viewport } from "next";
 import { PageHeader } from "@/components/page-header";
 import "./globals.css";
@@ -61,6 +62,7 @@ export default function RootLayout({
         <PageHeader />
         {children}
         <SiteFooter />
+        <XPixel />
         <AnalyticsConsent />
       </body>
     </html>

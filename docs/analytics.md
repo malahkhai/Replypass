@@ -4,7 +4,7 @@ GA4 measurement ID: `G-C6DL1WLHDM`. Only `getreplypass.com` and `www.getreplypas
 
 ## Consent
 
-The Google script is absent until analytics is accepted. The Meta script is absent until advertising is separately accepted. Reject optional, accept all and granular choices are available; the footer opens preferences again. Each choice expires after 180 days. Existing GA-only consent does not grant Meta consent. Withdrawal removes accessible cookies for the withdrawn provider and reloads; another tab changing either choice also reloads this tab. Without localStorage, optional tracking remains disabled. Essential authentication storage is unaffected. Google advertising signals remain denied because Google Ads is not configured. This is a small first-party consent interface, not a claim of legal certification. Review the draft privacy policy before commercial launch. A managed CMP can replace this interface later; do not run two banners or duplicate tags.
+The Google script is absent until analytics is accepted. Meta and X scripts are absent until their separate advertising choices are accepted. Reject optional, accept all and granular choices are available; the footer opens preferences again. Each choice expires after 180 days. Existing GA or Meta consent does not grant X consent. Withdrawal reloads to stop the withdrawn tracker; another tab changing a choice also reloads this tab. Without localStorage, optional tracking remains disabled. Essential authentication storage is unaffected. Google advertising signals remain denied because Google Ads is not configured. This is a small first-party consent interface, not a claim of legal certification. Review the draft privacy policy before commercial launch. A managed CMP can replace this interface later; do not run two banners or duplicate tags.
 
 ## Page map
 
@@ -64,6 +64,16 @@ Meta account steps:
 4. In Events Manager Test events, open production in a fresh browser, accept Advertising in Cookie preferences and exercise the funnel. Use Meta Pixel Helper to confirm one Pixel and no requests before consent.
 5. Configure the web conversion events used for campaigns. Optimize creator campaigns for `CompleteRegistration`; optimize fan campaigns for `Purchase` only after the server-side event is implemented and verified.
 6. For Conversions API, generate an access token in Events Manager and store it server-only as `META_CONVERSIONS_API_TOKEN`. The implementation reports webhook-confirmed `Purchase` events and records durable delivery attempts in `marketing_conversion_events`.
+
+## X Pixel and Conversions API
+
+Pixel `rha5c` is mounted once in the root layout and uses the supplied base snippet through `next/script` with `afterInteractive`. Because X is an optional advertising tracker, it loads only on the production domain after the visitor explicitly accepts the separate X choice in Cookie preferences. Existing Meta consent does not authorize X. The X base pixel measures site and landing page visits automatically; no manual page-view event is emitted.
+
+Apply `supabase/migrations/202610150001_x_conversion_consent.sql` before deploying the new consent route. The code-defined **Creator registration completed** event uses the public ID `tw-rha5c-rha7y` provided from X Ads Events Manager. Generate a Conversions API token and set `X_PIXEL_TOKEN` server-side. Without the token, browser events can still fire after consent, but no server conversion is sent. Never put the token in a `NEXT_PUBLIC_` variable or in source control.
+
+The creator-registration conversion fires only after the server accepts the creator's first profile launch. The browser Pixel and server API use the same opaque `conversion_id` for deduplication. The server requires the creator's stored X consent and sends a SHA-256 hash of the trimmed, lowercased account email as its identifier. It does not send an unconfirmed signup submission, profile edit or payment as a registration. Failed server deliveries are recorded in `marketing_conversion_events` and logged for operational follow-up.
+
+To verify: visit the production site in a fresh browser and confirm no X request before consent; accept X in Cookie preferences; check Pixel `rha5c` with X Pixel Helper and Events Manager. After the replacement token is set, complete a new creator registration with X consent and confirm one browser event, a successful 200 Conversions API response, and the same `conversion_id` in both channels. Use a fresh account because edits and repeat submissions do not qualify.
 
 ## GA4 setup required
 
