@@ -12,7 +12,7 @@
 | Price changes | Existing authorized requests keep the original price; new requests use the saved price. |
 | VIP | Creator-set monthly price; Mimi's current example is €19/month. Stripe Checkout is intended to allocate 15% to ReplyPass and 85% to the creator. Existing members retain their agreed Stripe Price. Access requires webhook-confirmed active/trialing status and a future paid-through date. VIP does not promise unlimited replies. |
 | Cancellation | Intended default is cancellation at period end through Stripe's customer portal. Verify this live setting and consumer flow. Cancellation is not automatically a refund. |
-| Refunds and payouts | Admin has a Guaranteed Reply refund/reversal path. VIP refunds are not automated through that button. Stripe transfer to a connected account and bank payout are distinct events. No live refund, bank payout or full VIP lifecycle has yet been certified. |
+| Refunds and payouts | Admin has a Guaranteed Reply refund/reversal path. A live €4 refund and €3.40 transfer reversal were verified in Stripe and ReplyPass on 9 October; card credit arrival remains to be confirmed. VIP refunds are not automated through that button. Stripe transfer to a connected account and bank payout are distinct events. No bank payout or full VIP lifecycle has yet been certified. |
 | Contact | The site displays `info@getreplypass.com`; confirm incoming mail reaches a monitored inbox, beyond the previous successful outbound email test. |
 
 Code evidence: `app/terms/page.tsx`, `app/creator-terms/page.tsx`, `lib/stripe/service.ts`, `lib/vip/server.ts`, `lib/vip/webhooks.ts` and `docs/FINAL_OWNER_LAUNCH_STEPS.md`.
