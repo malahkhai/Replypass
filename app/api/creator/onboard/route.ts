@@ -1,4 +1,5 @@
 import { tryDeliverCreatorAdminEvents } from "@/lib/notifications/creator-lifecycle";
+import { sendCreatorPageLiveEmail } from "@/lib/notifications/creator-onboarding";
 import { xCreatorConversionId } from "@/lib/analytics/x-conversion";
 import { reportXCreatorRegistration } from "@/lib/analytics/x-server";
 import { logEvent } from "@/lib/observability/log";
@@ -60,6 +61,10 @@ export async function POST(request: Request) {
     }).eq("profile_id", viewer.id);
     if (termsError) throw termsError;
     after(tryDeliverCreatorAdminEvents);
+    if (firstLaunch) after(async () => {
+      try { await sendCreatorPageLiveEmail(viewer.id); }
+      catch { logEvent("error", { event: "creator_page_live_email", status: "failed", creator_id: viewer.id }); }
+    });
     const xConsentGranted = request.headers.get("x-replypass-x-consent") === "granted";
     if (firstLaunch && xConsentGranted) after(async () => {
       try { await reportXCreatorRegistration(viewer.id, launchedAt); }

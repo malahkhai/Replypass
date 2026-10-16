@@ -1,31 +1,10 @@
 import "server-only";
 import { serviceDatabase } from "@/lib/stripe/server";
 import { captureException, logEvent } from "@/lib/observability/log";
+import { renderEmail, type EmailTemplate } from "./templates";
 
-export type EmailTemplate = "creator_published"|"creator_replies_enabled"|"creator_vip_enabled"|"operational_test"| "request_received"|"creator_request_received"|"request_accepted"|"request_declined"|"request_expired"|"reply_completed"|"voice_ready"|"photo_ready"|"vip_started"|"vip_payment_issue"|"vip_canceled"|"request_nearing_expiry"|"payment_completed"|"vip_member_started"|"transfer_issue";
-type EmailInput = { recipientId: string; to: string; template: EmailTemplate; eventKey: string; link: string };
-
-const copy: Record<EmailTemplate,{subject:string;body:string}> = {
-  creator_published:{subject:"A new ReplyPass creator is live",body:"A creator completed their profile and verified their email. Their public page is live; no routine approval is needed. Review their admin record below."},
-  creator_replies_enabled:{subject:"A creator enabled Guaranteed Replies",body:"A creator has enabled Guaranteed Replies with an eligible live Stripe account. Open their admin record to review or manage the account."},
-  creator_vip_enabled:{subject:"A creator enabled VIP",body:"A creator has enabled VIP with an eligible live Stripe account. Open their admin record to review or manage the account."},
-  operational_test:{subject:"ReplyPass production email test",body:"This is the test notification you requested. No payment or subscription was created."},
-  request_received:{subject:"Your request is secured",body:"Your request has reached the creator."},
-  creator_request_received:{subject:"You have a new paid request",body:"A new secured request is waiting in ReplyPass."},
-  request_accepted:{subject:"Your request was accepted",body:"Your creator has accepted your request."},
-  request_declined:{subject:"Your request was declined",body:"Your payment authorization is being released."},
-  request_expired:{subject:"Your request expired",body:"The request was not completed, so you were not charged."},
-  reply_completed:{subject:"Your reply is ready",body:"Your creator has replied."},
-  voice_ready:{subject:"Your voice note is ready",body:"Your private voice-note delivery is ready."},
-  photo_ready:{subject:"Your photo is ready",body:"Your private photo delivery is ready."},
-  vip_started:{subject:"Welcome to VIP",body:"Your ReplyPass VIP membership is active."},
-  vip_payment_issue:{subject:"Your VIP payment needs attention",body:"Update your payment method to keep VIP access."},
-  vip_canceled:{subject:"Your VIP membership was canceled",body:"Your membership remains available through the period shown in ReplyPass."},
-  request_nearing_expiry:{subject:"A request needs your attention",body:"Open ReplyPass to review the request deadline."},
-  payment_completed:{subject:"An earning was recorded",body:"A completed request has been added to your earnings."},
-  vip_member_started:{subject:"You have a new VIP member",body:"A fan joined your ReplyPass VIP membership."},
-  transfer_issue:{subject:"A transfer needs attention",body:"Your earning is recorded while we review its transfer."},
-};
+export type { EmailTemplate } from "./templates";
+type EmailInput = { recipientId: string; to: string; template: EmailTemplate; eventKey: string; link: string; name?: string };
 
 export async function sendTransactionalEmail(input: EmailInput) {
   const db = serviceDatabase();
@@ -42,8 +21,8 @@ export async function sendTransactionalEmail(input: EmailInput) {
     return { status } as const;
   }
   try {
-    const message=copy[input.template];
-    const response=await fetch(endpoint,{method:"POST",headers:{authorization:`Bearer ${key}`,"content-type":"application/json","Idempotency-Key":input.eventKey},body:JSON.stringify({from,to:input.to,subject:message.subject,text:`${message.body}\n\n${input.link}`}),signal:AbortSignal.timeout(10000)});
+    const message=renderEmail(input.template,input.link,input.name);
+    const response=await fetch(endpoint,{method:"POST",headers:{authorization:`Bearer ${key}`,"content-type":"application/json","Idempotency-Key":input.eventKey},body:JSON.stringify({from,to:input.to,...message}),signal:AbortSignal.timeout(10000)});
     if(!response.ok) throw Error(`provider_${response.status}`);
     const result=await response.json() as {id?:string};
     await db.from("email_delivery_events").upsert({recipient_id:input.recipientId,event_key:input.eventKey,template:input.template,status:"sent",provider_message_id:result.id||null,attempts:1},{onConflict:"event_key"});

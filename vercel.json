@@ -1,1 +1,6 @@
-{}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/cron/creator-onboarding", "schedule": "0 10 * * *" }
+  ]
+}

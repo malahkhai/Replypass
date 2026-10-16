@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     if (body.emailMessages !== undefined) updates.email_messages = Boolean(body.emailMessages);
     if (body.emailPayments !== undefined) updates.email_payments = Boolean(body.emailPayments);
     if (body.emailSubscriptions !== undefined) updates.email_subscriptions = Boolean(body.emailSubscriptions);
+    if (body.emailCreatorOnboarding !== undefined) updates.email_creator_onboarding = body.emailCreatorOnboarding === true;
     if (body.inAppEnabled !== undefined) updates.in_app_enabled = Boolean(body.inAppEnabled);
     if (!Object.keys(updates).length) return fail("No settings to update.");
     const client = await createClient();
