@@ -6,7 +6,7 @@ const paymentMode = () => {
   return mode;
 };
 import { serviceDatabase } from "@/lib/stripe/server";
-import { creatorLandingLoadsLast7Days } from "@/lib/analytics/landing-count";
+import { creatorLandingLoadsLast7Days, creatorLandingCampaignsLast7Days } from "@/lib/analytics/landing-count";
 
 export type AdminMetric = { label:string; value:string; attention?:boolean };
 const money=(cents:number,currency="eur")=>new Intl.NumberFormat("en-GB",{style:"currency",currency:currency.toUpperCase()}).format(cents/100);
@@ -15,9 +15,11 @@ export async function adminOverview(){
   const db=serviceDatabase();
   const mode=paymentMode();
   const landingLoadsPromise=creatorLandingLoadsLast7Days().catch(()=>null);
-  const [profiles,creators,subscriptions,payments,vipPayments,reports,disputes,reconciliation]=await Promise.all([
+  const campaignsPromise=creatorLandingCampaignsLast7Days().catch(()=>[]);
+  const [profiles,creators,legacyFans,subscriptions,payments,vipPayments,reports,disputes,reconciliation]=await Promise.all([
     db.from("profiles").select("id",{count:"exact",head:true}),
     db.from("creator_profiles").select("id",{count:"exact",head:true}).eq("status","approved"),
+    db.from("profiles").select("id",{count:"exact",head:true}).eq("role","fan").eq("legacy_signup",true).is("fan_creator_id",null),
     db.from("subscriptions").select("id,amount_cents,currency").eq("stripe_mode",mode).in("status",["active","trialing"]).gt("current_period_end",new Date().toISOString()),
     db.from("reply_payments").select("gross_cents,fee_cents,creator_cents,payment_state,transfer_state").in("payment_state",["captured","refunded","disputed"]).eq("stripe_mode",mode),
     db.from("subscription_payments").select("gross_cents,fee_cents,creator_cents,status,subscriptions!inner(stripe_mode)").eq("subscriptions.stripe_mode",mode),
@@ -25,8 +27,9 @@ export async function adminOverview(){
     db.from("stripe_disputes").select("id",{count:"exact",head:true}).not("status","in",'(won,lost,warning_closed)'),
     db.from("reconciliation_issues").select("id",{count:"exact",head:true}).in("status",["open","manual_review"]),
   ]);
-  if(payments.error||vipPayments.error||subscriptions.error)throw Error("Financial totals unavailable.");
+  if(payments.error||vipPayments.error||subscriptions.error||legacyFans.error)throw Error("Admin totals unavailable.");
   const landingLoads=await landingLoadsPromise;
+  const campaigns=await campaignsPromise;
   const rows=payments.data||[];
   const vipRows=vipPayments.data||[];
   const gross=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.gross_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.gross_cents:0),0);
@@ -34,8 +37,9 @@ export async function adminOverview(){
   const earnings=rows.reduce((n,p)=>n+(p.payment_state==="captured"?p.creator_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="paid"?p.creator_cents:0),0);
   const refunds=rows.reduce((n,p)=>n+(p.payment_state==="refunded"?p.gross_cents:0),0)+vipRows.reduce((n,p)=>n+(p.status==="refunded"?p.gross_cents:0),0);
   const transferFailures=rows.filter(p=>p.transfer_state==="failed").length;
-  return {metrics:[
+  return {campaigns,metrics:[
     {label:"Total users",value:String(profiles.count||0)}, {label:"Active creators",value:String(creators.count||0)},
+    {label:"Legacy fans without a linked creator",value:String(legacyFans.count||0),attention:!!legacyFans.count},
     {label:"Creator landing loads (7 days)",value:landingLoads===null?"Unavailable":String(landingLoads)},
     {label:"Active VIP subscriptions",value:String(subscriptions.data?.length||0)}, {label:"Paid requests",value:String(rows.length)},
     {label:"VIP monthly gross",value:money((subscriptions.data||[]).filter(s=>s.currency==="eur").reduce((n,s)=>n+s.amount_cents,0))},
@@ -52,13 +56,19 @@ export async function adminOverview(){
 export async function adminUsers(search=""){
   const db=serviceDatabase();
   const [{data:profiles,error},{data:auth}]=await Promise.all([
-    db.from("profiles").select("id,display_name,role,account_status,created_at,suspended_at").order("created_at",{ascending:false}).limit(100),
+    db.from("profiles").select("id,display_name,role,account_status,created_at,suspended_at,signup_intent,fan_creator_id,legacy_signup,signup_utm_source,signup_utm_campaign").order("created_at",{ascending:false}).limit(100),
     db.auth.admin.listUsers({page:1,perPage:100}),
   ]);
   if(error) throw Error("Users unavailable.");
+  const creatorIds=[...new Set((profiles||[]).map(p=>p.fan_creator_id).filter((id):id is string=>typeof id==="string"))];
+  const {data:origins,error:originError}=creatorIds.length
+    ? await db.from("creator_profiles").select("id,handle").in("id",creatorIds)
+    : {data:[],error:null};
+  if(originError) throw Error("Signup origins unavailable.");
+  const handles=new Map((origins||[]).map(c=>[c.id,c.handle]));
   const emails=new Map((auth?.users||[]).map(user=>[user.id,user.email||""]));
   const needle=search.trim().toLowerCase();
-  return (profiles||[]).map(p=>({...p,email:emails.get(p.id)||""})).filter(p=>!needle||[p.id,p.display_name,p.email,p.role].some(v=>String(v).toLowerCase().includes(needle)));
+  return (profiles||[]).map(p=>({...p,email:emails.get(p.id)||"",signupCreatorHandle:p.fan_creator_id?handles.get(p.fan_creator_id)||null:null})).filter(p=>!needle||[p.id,p.display_name,p.email,p.role,p.signupCreatorHandle].some(v=>String(v).toLowerCase().includes(needle)));
 }
 
 export async function adminCreators(){

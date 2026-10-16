@@ -1,5 +1,6 @@
 "use client";
 import { track } from "@/lib/analytics/client";
+import { signupCampaign } from "@/lib/analytics/campaign";
 import Link from "next/link";
 import { isCreatorDestination, signupAllowed } from "@/lib/auth/paths";
 import { authOrigin } from "@/lib/site";
@@ -12,10 +13,12 @@ export function AuthForm({
   mode,
   configured,
   next = "/account",
+  fanCreatorId,
 }: {
   mode: "login" | "signup";
   configured: boolean;
   next?: string;
+  fanCreatorId?: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -58,6 +61,18 @@ export function AuthForm({
     try {
       const email = String(data.get("email")).trim();
       const password = String(data.get("password"));
+      const campaign = mode === "signup" ? signupCampaign() : null;
+      let fanSignupToken: string | null = null;
+      if (mode === "signup" && fanCreatorId) {
+        const ticketResponse = await fetch("/api/auth/fan-signup-ticket", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ creatorId: fanCreatorId }),
+        });
+        if (!ticketResponse.ok) throw Error("This creator link is unavailable. Return to their profile and try again.");
+        const ticket = await ticketResponse.json();
+        if (typeof ticket.token !== "string") throw Error("Could not start fan signup. Please try again.");
+        fanSignupToken = ticket.token;
+      }
       const result =
         mode === "login"
           ? await supabase.auth.signInWithPassword({ email, password })
@@ -65,7 +80,16 @@ export function AuthForm({
               email,
               password,
               options: {
-                data: { display_name: String(data.get("name")).trim() },
+                data: {
+                  display_name: String(data.get("name")).trim(),
+                  signup_intent: fanCreatorId ? "fan" : "creator",
+                  ...(fanSignupToken ? { fan_signup_token: fanSignupToken } : {}),
+                  ...(campaign ? {
+                    signup_utm_source: campaign.source,
+                    signup_utm_medium: campaign.medium,
+                    signup_utm_campaign: campaign.campaign,
+                  } : {}),
+                },
                 emailRedirectTo: `${authOrigin(location.origin)}/auth/callback?next=${encodeURIComponent(next)}`,
               },
             });
@@ -226,7 +250,7 @@ export function AuthForm({
           <>
             New here?{" "}
             <Link href={`/signup?next=${encodeURIComponent(next)}`}>
-              Create a fan account to continue
+              {next === "/creator/apply" ? "Create a creator account" : "Create a fan account to continue"}
             </Link>
           </>
         ) : (

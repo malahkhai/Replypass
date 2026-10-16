@@ -24,7 +24,9 @@ export default async function Signup({
     ? await findCreator(q.next.split("?")[0].slice(1))
     : null;
   const creatorMissing = isCreatorDestination(q.next) && !creator;
-  const creatorApplication = q.next === "/creator/apply";
+  // A generic site signup always starts creator setup. Fan signup is only
+  // rendered with a valid, published creator destination.
+  const creatorApplication = !q.next || q.next === "/creator/apply";
 
   if (!creatorApplication && !creator) {
     return (
@@ -85,7 +87,8 @@ export default async function Signup({
         <AuthForm
           mode="signup"
           configured={!!getSupabaseConfig()}
-          next={safeNext(q.next)}
+          next={creatorApplication ? "/creator/apply" : safeNext(q.next)}
+          fanCreatorId={creatorApplication ? undefined : creator!.id}
         />
       </section>
     </main>

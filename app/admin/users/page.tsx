@@ -8,9 +8,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
   return <>
     <AdminHeading eyebrow="ACCESS" title="Users" description="Find an account, review its status and control access without deleting financial history." />
     <form className="admin-search"><input name="q" defaultValue={q} placeholder="Username, email or user ID" aria-label="Search users" /><button>Search</button></form>
-    <AdminTable head={["User", "Role", "Access", "Joined", "Action"]}>
+    <AdminTable head={["User", "Signup path", "Campaign tag", "Role", "Access", "Joined", "Action"]}>
       {users.map(user => <tr key={user.id}>
         <td><strong>{user.display_name}</strong><small>{user.email || user.id}</small></td>
+        <td>{user.signup_intent === "creator" ? "Creator setup started" : user.signup_intent === "fan" ? `Fan via /${user.signupCreatorHandle || "creator"}` : "Legacy · origin unknown"}</td>
+        <td>{user.signup_utm_source ? `${user.signup_utm_source} / ${user.signup_utm_campaign || "unspecified"}` : "Unknown"}</td>
         <td>{user.role}</td>
         <td><Status tone={user.account_status === "active" ? "good" : "bad"}>{user.account_status}</Status></td>
         <td>{new Date(user.created_at).toLocaleDateString("en-GB")}</td>
