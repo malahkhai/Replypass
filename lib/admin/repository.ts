@@ -60,6 +60,12 @@ export async function adminUsers(search=""){
     db.auth.admin.listUsers({page:1,perPage:100}),
   ]);
   if(error) throw Error("Users unavailable.");
+  const profileIds=(profiles||[]).map(p=>p.id);
+  const {data:creatorPages,error:pageError}=profileIds.length
+    ? await db.from("creator_profiles").select("profile_id,handle,status,onboarding_complete").in("profile_id",profileIds)
+    : {data:[],error:null};
+  if(pageError) throw Error("Creator page statuses unavailable.");
+  const pages=new Map((creatorPages||[]).map(c=>[c.profile_id,c]));
   const creatorIds=[...new Set((profiles||[]).map(p=>p.fan_creator_id).filter((id):id is string=>typeof id==="string"))];
   const {data:origins,error:originError}=creatorIds.length
     ? await db.from("creator_profiles").select("id,handle").in("id",creatorIds)
@@ -67,8 +73,9 @@ export async function adminUsers(search=""){
   if(originError) throw Error("Signup origins unavailable.");
   const handles=new Map((origins||[]).map(c=>[c.id,c.handle]));
   const emails=new Map((auth?.users||[]).map(user=>[user.id,user.email||""]));
+  const verified=new Map((auth?.users||[]).map(user=>[user.id,!!user.email_confirmed_at]));
   const needle=search.trim().toLowerCase();
-  return (profiles||[]).map(p=>({...p,email:emails.get(p.id)||"",signupCreatorHandle:p.fan_creator_id?handles.get(p.fan_creator_id)||null:null})).filter(p=>!needle||[p.id,p.display_name,p.email,p.role,p.signupCreatorHandle].some(v=>String(v).toLowerCase().includes(needle)));
+  return (profiles||[]).map(p=>({...p,email:emails.get(p.id)||"",emailVerified:verified.get(p.id)||false,creatorPage:pages.get(p.id)||null,signupCreatorHandle:p.fan_creator_id?handles.get(p.fan_creator_id)||null:null})).filter(p=>!needle||[p.id,p.display_name,p.email,p.role,p.signupCreatorHandle].some(v=>String(v).toLowerCase().includes(needle)));
 }
 
 export async function adminCreators(){
