@@ -7,10 +7,11 @@ const attentionDestinations: Record<string, string> = {
   "Failed transfers": "/admin/payments",
   "Disputes": "/admin/disputes",
   "Reconciliation issues": "/admin/system/reconciliation",
+  "Legacy fans without a linked creator": "/admin/users",
 };
 
 export default async function Page() {
-  const { metrics } = await adminOverview();
+  const { metrics, campaigns } = await adminOverview();
   const attention = metrics.filter(metric => metric.attention);
   const headline = ["Total users", "Active creators", "Gross payment volume", "Platform share before Stripe fees"];
   const topMetrics = headline.map(label => metrics.find(metric => metric.label === label)).filter(metric => metric !== undefined);
@@ -27,6 +28,11 @@ export default async function Page() {
     <section aria-labelledby="activity-heading">
       <div className="admin-section-heading"><div><h2 id="activity-heading">At a glance</h2><p>Counts and amounts from ReplyPass records. The platform share is before Stripe processing and other costs.</p></div></div>
       <div className="admin-metrics">{topMetrics.map(metric => <article key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong></article>)}</div>
+    </section>
+
+    <section className="admin-section" aria-labelledby="campaign-heading">
+      <div className="admin-section-heading"><div><h2 id="campaign-heading">Creator landing by campaign · 7 days</h2><p>First-party page-load counts from campaign tags, including visitors who decline optional analytics. These are loads, not unique people or verified ad clicks.</p></div></div>
+      <div className="admin-metrics">{campaigns.length ? campaigns.map(row => <article key={`${row.source}:${row.campaign}`}><span>{row.source} · {row.campaign}</span><strong>{row.loads}</strong></article>) : <article><span>No campaign loads recorded yet</span></article>}</div>
     </section>
 
     <section className="admin-link-grid" aria-label="Common admin tasks">

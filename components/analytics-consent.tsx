@@ -23,10 +23,11 @@ export function AnalyticsConsent() {
         setAnalyticsChoice(analytics === true);
         setMarketingChoice(marketing === true);
         setXChoice(x === true);
-        if (analytics === null || marketing === null || x === null) setVisible(true);
+        // First-party landing counts work without optional trackers. Visitors
+        // can opt in through Cookie preferences when they want to.
       });
     }
-    catch { queueMicrotask(() => setVisible(true)); }
+    catch { /* Optional trackers remain off if local storage is unavailable. */ }
     const sync = (e: StorageEvent) => { if (e.key === CONSENT_KEY || e.key === MARKETING_CONSENT_KEY || e.key === X_CONSENT_KEY) location.reload(); };
     window.addEventListener("storage", sync);
     return () => window.removeEventListener("storage", sync);
