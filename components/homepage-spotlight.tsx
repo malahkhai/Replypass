@@ -9,14 +9,14 @@ const stories = [
     alt: "A woman in a black leather jacket standing in a sunlit park",
     label: "STYLE, STORY, POINT OF VIEW",
     prompt: "“What inspired the look that feels most like you?”",
-    note: "A thoughtful question can open a more personal conversation.",
+    note: "Give followers a direct way to ask for a personal reply.",
   },
   {
     image: "/images/home-creator-connection.avif",
     alt: "A woman smiling beneath spring blossoms",
     label: "SMALL MOMENTS, CLOSER CONNECTIONS",
     prompt: "“What’s one little thing that always makes your day?”",
-    note: "Send a note to someone whose work makes you smile.",
+    note: "Turn a small moment of interest into a closer connection.",
   },
 ];
 
@@ -47,7 +47,7 @@ export function HomepageSpotlight() {
           sizes="(max-width: 760px) 100vw, 44vw"
           priority={active === 0}
         />
-        <span className="showcase-label">A LITTLE CLOSER TO YOUR PEOPLE</span>
+        <span className="showcase-label">YOUR PAGE, YOUR CONVERSATIONS</span>
         <span className="spotlight-index">0{active + 1} / 0{stories.length}</span>
       </div>
       <div className="spotlight-story" aria-live="polite">
@@ -60,7 +60,7 @@ export function HomepageSpotlight() {
         </div>
       </div>
       <div className="spotlight-footer">
-        <span className="showcase-link">Start with a creator’s link</span>
+        <span className="showcase-link">A preview of what followers can see</span>
         <div className="spotlight-controls" aria-label="Creator stories">
           {stories.map((item, index) => (
             <button

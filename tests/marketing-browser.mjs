@@ -9,14 +9,17 @@ try {
  await page.addInitScript(() => localStorage.setItem('replypass:analytics-consent:v1', JSON.stringify({accepted:false,at:Date.now()})));
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const base=process.env.TEST_APP_URL || 'http://127.0.0.1:3003';
- for(const route of ['/','/creators']) {
-  const r=await page.goto(base+route);assert.equal(r.status(),200);assert.equal(new URL(page.url()).pathname,route);
-  assert.equal(await page.locator('a[href^="/signup"]').count(),0);
-  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  await page.screenshot({path:path.join(os.tmpdir(),route==='/'?'replypass-home-mobile.png':'replypass-creators-mobile.png'),fullPage:true});
- }
- await page.goto(base+'/');await page.getByRole('link',{name:'I’m a creator'}).click();await page.waitForURL('**/creators');
- await page.goto(base+'/signup');assert.equal(await page.locator('input[name="email"]').count(),0);await page.getByRole('heading',{name:'A connection starts with a creator.'}).waitFor();
+ const home=await page.goto(base+'/');assert.equal(home.status(),200);
+ await page.getByRole('heading',{name:/Access is premium\.\s*Turn it into income\./}).waitFor();
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.screenshot({path:path.join(os.tmpdir(),'replypass-home-mobile.png'),fullPage:true});
+ await page.locator('#creator-link-name').fill('artistdemo');
+ await page.getByRole('button',{name:'Create my page'}).click();
+ assert.equal(new URL(page.url()).searchParams.get('next'),'/creator/apply?username=artistdemo');
+ await page.getByRole('heading',{name:'Create your account.'}).waitFor();
+ await page.goto(base+'/creators?utm_source=meta&utm_medium=paid_social');
+ assert.equal(new URL(page.url()).pathname,'/');
+ assert.equal(new URL(page.url()).searchParams.get('utm_source'),'meta');
  await page.goto(base+'/signup?next=%2F%40unknown_replypass_test');assert.equal(await page.locator('input[name="email"]').count(),0);
  await page.goto(base+'/@stella');
  assert.match(await page.getByRole('link',{name:'Back to @stella profile',exact:true}).getAttribute('href'),/^\/stella/);

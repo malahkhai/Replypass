@@ -68,7 +68,7 @@ export function AnalyticsConsent() {
   }, [pathname, revision]);
   useEffect(() => {
     const click = (event: MouseEvent) => {
-      const link = (event.target as Element)?.closest?.('a[href="/creators"], a[href="/creator/apply"]');
+      const link = (event.target as Element)?.closest?.('a[data-creator-cta], a[href="/creator/apply"]');
       if (link) track("creator_cta_click");
     };
     document.addEventListener("click", click);

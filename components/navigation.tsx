@@ -29,8 +29,8 @@ export function HeaderLinks({ role }: { role: string | null }) {
     : "/login";
   return (
     <nav aria-label="Main navigation">
-      <Link href="/creators" className="creator-link">
-        Become a creator <Icon name="arrow" size={16} />
+      <Link href="/signup?next=%2Fcreator%2Fapply" className="creator-link" data-creator-cta>
+        Create your page <Icon name="arrow" size={16} />
       </Link>
       <Link
         className="login-link"

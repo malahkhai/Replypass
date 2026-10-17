@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getViewer } from "@/lib/auth/session";
-import { safeNext, isCreatorDestination } from "@/lib/auth/paths";
+import { safeNext, isCreatorDestination, isCreatorSetupDestination } from "@/lib/auth/paths";
 export default async function Continue({
   searchParams,
 }: {
@@ -11,7 +11,7 @@ export default async function Continue({
   const next = safeNext((await searchParams).next);
   if (next === "/reset-password") redirect(next);
   redirect(
-    next === "/creator/apply" || isCreatorDestination(next)
+    isCreatorSetupDestination(next) || isCreatorDestination(next)
       ? next
       : viewer.role === "creator" || viewer.role === "admin"
         ? "/creator/dashboard"

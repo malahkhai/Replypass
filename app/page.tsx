@@ -1,11 +1,13 @@
 import { MarketingPage } from "@/components/marketing-page";
 import { pageMetadata } from "@/lib/metadata";
-import { siteConfig } from "@/lib/site";
+import { getViewer } from "@/lib/auth/session";
+import { CreatorLandingCount } from "@/components/creator-landing-count";
 export const metadata = pageMetadata(
-  "Get closer to the people you follow",
+  "Create your page. Get paid for replies",
   "/",
-  siteConfig.description,
+  "Create a personal ReplyPass link, invite followers to request guaranteed replies, and earn on your terms.",
 );
-export default function Home() {
-  return <MarketingPage />;
+export default async function Home() {
+  const viewer = await getViewer();
+  return <><CreatorLandingCount /><MarketingPage creatorAuthenticated={viewer?.role === "creator" || viewer?.role === "admin"} /></>;
 }

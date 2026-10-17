@@ -7,6 +7,7 @@ import { findCreator } from "@/lib/creators/repository";
 import {
   safeNext,
   isCreatorDestination,
+  isCreatorSetupDestination,
 } from "@/lib/auth/paths";
 export const metadata = pageMetadata(
   "Join",
@@ -26,7 +27,7 @@ export default async function Signup({
   const creatorMissing = isCreatorDestination(q.next) && !creator;
   // A generic site signup always starts creator setup. Fan signup is only
   // rendered with a valid, published creator destination.
-  const creatorApplication = !q.next || q.next === "/creator/apply";
+  const creatorApplication = !q.next || isCreatorSetupDestination(q.next);
 
   if (!creatorApplication && !creator) {
     return (
@@ -43,7 +44,7 @@ export default async function Signup({
             Once you join, one account keeps your conversations and memberships
             together across the creators you follow.
           </p>
-          <Link className="button button-primary" href="/creators">
+          <Link className="button button-primary" href="/">
             Become a creator <span aria-hidden="true">↗</span>
           </Link>
           <p className="auth-switch">
@@ -87,7 +88,7 @@ export default async function Signup({
         <AuthForm
           mode="signup"
           configured={!!getSupabaseConfig()}
-          next={creatorApplication ? "/creator/apply" : safeNext(q.next)}
+          next={creatorApplication ? safeNext(q.next || "/creator/apply") : safeNext(q.next)}
           fanCreatorId={creatorApplication ? undefined : creator!.id}
         />
       </section>
