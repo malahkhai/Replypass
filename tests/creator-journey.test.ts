@@ -13,5 +13,10 @@ test('standalone fan signup is blocked while creator setup and creator-context s
  for(const next of [undefined,null,'','/account'])assert.equal(signupAllowed(next),false);
  assert.equal(signupAllowed('/creator/dashboard'),false);
  assert.ok(signupAllowed('/creator/apply'));assert.equal(safeNext('/creator/apply'),'/creator/apply');
+ assert.ok(signupAllowed('/creator/apply?username=alex_123'));
+ assert.equal(safeNext('/creator/apply?username=alex_123'),'/creator/apply?username=alex_123');
+ for (const next of ['/creator/apply?username=ab','/creator/apply?username=bad-name','/creator/apply?username=alex&next=https://evil.test']) {
+  assert.equal(safeNext(next),'/account');assert.equal(signupAllowed(next),false);
+ }
  assert.equal(safeNext('/reset-password'),'/reset-password');
 });

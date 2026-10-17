@@ -27,11 +27,11 @@ export const siteConfig = {
   logo: "replypass",
   domain,
   url: normalizeAppUrl(process.env.NEXT_PUBLIC_APP_URL || `https://${domain}`),
-  title: "ReplyPass — Get closer to the people you follow",
+  title: "ReplyPass — Your link for real conversations",
   description:
-    "Get a guaranteed reply or become a VIP with your favorite creators. No reply, no charge for message requests.",
-  tagline: "A little closer to the people you follow.",
-  creatorProposition: "Get paid for your attention.",
+    "Create your ReplyPass page, share it with your followers, and earn from Guaranteed Replies and VIP memberships on your terms.",
+  tagline: "A closer way to connect with your followers.",
+  creatorProposition: "Get paid to reply to your followers.",
   fanPromise: "No reply = no charge.",
 } as const;
 export function creatorUrl(handle: string) {

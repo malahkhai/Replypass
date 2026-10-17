@@ -6,6 +6,9 @@ getSupabaseConfig();
 stripeConfig();
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  async redirects() {
+    return [{ source: "/creators", destination: "/", permanent: true }];
+  },
   async headers() {
     return [
       {

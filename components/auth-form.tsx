@@ -2,7 +2,7 @@
 import { track } from "@/lib/analytics/client";
 import { signupCampaign } from "@/lib/analytics/campaign";
 import Link from "next/link";
-import { isCreatorDestination, signupAllowed } from "@/lib/auth/paths";
+import { isCreatorDestination, isCreatorSetupDestination, signupAllowed } from "@/lib/auth/paths";
 import { authOrigin } from "@/lib/site";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -37,7 +37,7 @@ export function AuthForm({
       const data = await response.json();
       if (!response.ok) throw Error(data.error);
       router.push(
-        next === "/creator/apply" || isCreatorDestination(next)
+        isCreatorSetupDestination(next) || isCreatorDestination(next)
           ? next
           : data.next,
       );
@@ -104,14 +104,14 @@ export function AuthForm({
         );
         return;
       }
-      track(mode === "login" ? "login" : "signup_submitted", next === "/creator/apply" ? "creator" : "fan");
+      track(mode === "login" ? "login" : "signup_submitted", isCreatorSetupDestination(next) ? "creator" : "fan");
       if (result.data.session) {
         router.push(`/auth/continue?next=${encodeURIComponent(next)}`);
         router.refresh();
       } else {
         setPendingEmail(email);
         setFeedback(
-          next === "/creator/apply"
+          isCreatorSetupDestination(next)
             ? "Check your email to confirm your account, then continue creator setup."
             : "Check your inbox and spam folder to confirm your account. The confirmation link will bring you back to this creator, where you can write your request and continue to payment—even if you open it on another device.",
         );
@@ -244,13 +244,13 @@ export function AuthForm({
         {mode === "login" && !signupAllowed(next) ? (
           <>
             Here for a creator? Open their profile link to join.{" "}
-            <Link href="/creators">Become a creator</Link>
+            <Link href="/">Become a creator</Link>
           </>
         ) : mode === "login" ? (
           <>
             New here?{" "}
             <Link href={`/signup?next=${encodeURIComponent(next)}`}>
-              {next === "/creator/apply" ? "Create a creator account" : "Create a fan account to continue"}
+              {isCreatorSetupDestination(next) ? "Create a creator account" : "Create a fan account to continue"}
             </Link>
           </>
         ) : (
