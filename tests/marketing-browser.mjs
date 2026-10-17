@@ -10,7 +10,7 @@ try {
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const base=process.env.TEST_APP_URL || 'http://127.0.0.1:3003';
  const home=await page.goto(base+'/');assert.equal(home.status(),200);
- await page.getByRole('heading',{name:'Get paid to reply to your followers.'}).waitFor();
+ await page.getByRole('heading',{name:/Access is premium\.\s*Turn it into income\./}).waitFor();
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await page.screenshot({path:path.join(os.tmpdir(),'replypass-home-mobile.png'),fullPage:true});
  await page.locator('#creator-link-name').fill('artistdemo');

@@ -13,8 +13,8 @@ export function MarketingPage({ creatorAuthenticated = false }: { creatorAuthent
       <section className="marketing-hero">
         <div className="marketing-copy">
           <p className="eyebrow">YOUR FOLLOWERS. YOUR TERMS.</p>
-          <h1>Get paid to reply to your followers<span>.</span></h1>
-          <p className="marketing-lead">Create your own ReplyPass link. Followers can request a Guaranteed Reply or join your VIP community. You choose the price, the pace and what you share.</p>
+          <h1><em>Access is premium.</em>Turn it into income<span>.</span></h1>
+          <p className="marketing-lead">Your pay-link in bio for Guaranteed Replies and VIP memberships. Set your price, share your link, and get paid for conversations with your followers.</p>
           <CreatorLinkStarter creatorAuthenticated={creatorAuthenticated} />
           <div className="marketing-actions marketing-actions-secondary"><Link href="#how-it-works">See how it works ↓</Link></div>
           <p className="marketing-note">Your page is free to create. Connect an eligible Stripe account before offering paid replies.</p>
