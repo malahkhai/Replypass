@@ -4062,8 +4062,8 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .creator-link-starter {max-width:600px;margin-top:28px;padding:16px;border:1px solid #dfe2d7;border-radius:22px;background:#f1f2ea}
 .creator-link-starter label {display:block;margin:0 0 10px;font-size:12px;font-weight:650;color:#485344}
 .creator-link-starter-row {display:flex;align-items:center;gap:0;min-height:54px;background:#fff;border:1px solid #dfe2d7;border-radius:14px;overflow:hidden}
-.creator-link-starter-row>span {padding-left:14px;font-size:14px;font-weight:600;white-space:nowrap;color:#252b26}
-.creator-link-starter input {min-width:0;width:100%;flex:1;padding:12px 4px;border:0;outline:0;background:transparent;color:#252b26;font:inherit;font-size:14px}
+.creator-link-starter-row>span {padding-left:14px;font-size:16px;line-height:1.5;font-weight:600;white-space:nowrap;color:#252b26}
+.creator-link-starter input {min-width:0;width:100%;flex:1;margin:0;padding:12px 4px;border:0;outline:0;background:transparent;color:#252b26;font:inherit;font-size:16px;line-height:1.5}
 .creator-link-starter input:focus-visible {outline:2px solid #697b5b;outline-offset:-2px}
 .creator-link-starter-row button {align-self:stretch;border:0;background:#d74d42;color:#fff;padding:0 18px;font:inherit;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
 .creator-link-starter-row button:hover {background:#b83f35}
@@ -4073,7 +4073,7 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .marketing-steps-four h3 {font-size:20px}
 .marketing-fan-view {margin-top:20px}
 @media(max-width:1000px){.marketing-steps-four{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.creator-link-starter{margin-top:22px}.creator-link-starter-row{flex-wrap:wrap}.creator-link-starter-row>span{font-size:13px}.creator-link-starter input{font-size:13px}.creator-link-starter-row button{width:100%;min-height:48px}.marketing-steps-four{grid-template-columns:1fr}}
+@media(max-width:760px){.creator-link-starter{margin-top:22px}.creator-link-starter-row{flex-wrap:wrap}.creator-link-starter-row>span{font-size:16px}.creator-link-starter input{font-size:16px}.creator-link-starter-row button{width:100%;min-height:48px}.marketing-steps-four{grid-template-columns:1fr}}
 @media(max-width:760px){.marketing{padding:0 20px}.marketing-hero{grid-template-columns:1fr;gap:30px;padding:40px 0}.marketing h1{font-size:48px}.marketing-lead{font-size:15px;margin:20px 0}.marketing-actions{gap:18px;margin:24px 0 12px}.marketing-showcase{transform:none;padding:12px;border-radius:26px}.showcase-photo{height:340px}.showcase-message{padding:20px;margin:-16px 8px 0}.marketing-strip{display:block;padding:24px 0}.marketing-strip>div{font-size:15px;margin-top:14px}.marketing-section{padding:50px 0}.marketing h2{font-size:37px}.marketing-steps{grid-template-columns:1fr;gap:12px}.marketing-steps article{padding:24px}.marketing-steps article>span{margin-bottom:18px}.marketing-promise{padding:30px 24px;grid-template-columns:1fr;gap:12px}.marketing-offers{grid-template-columns:1fr 1fr;gap:12px}.marketing-offers article{padding:20px}.marketing-offers h3{font-size:21px}.marketing-offers article:first-child{grid-column:1/-1}.marketing-creator,.marketing-fees,.marketing-faq{grid-template-columns:1fr;gap:30px;padding:45px 0}.marketing-receipt{padding:25px}.marketing-end{padding:40px 22px}.marketing-end h2{font-size:36px}.marketing-faq summary{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.marketing-showcase{transform:none}}
 
@@ -4086,7 +4086,9 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 }
 .spotlight-photo {
   position: relative;
-  height: clamp(360px, 39vw, 490px);
+  min-height: 560px;
+  display: flex;
+  align-items: flex-end;
   overflow: hidden;
   border-radius: 22px;
   isolation: isolate;
@@ -4095,8 +4097,8 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .spotlight-photo::after {
   position: absolute;
   z-index: 1;
-  inset: 48% 0 0;
-  background: linear-gradient(transparent, rgb(20 25 19 / 48%));
+  inset: 0;
+  background: linear-gradient(180deg, rgb(15 20 16 / 8%) 20%, rgb(15 20 16 / 65%) 55%, rgb(15 20 16 / 94%) 100%);
   content: "";
   pointer-events: none;
 }
@@ -4113,52 +4115,36 @@ body:has(.workspace-shell) > .site-footer { display: none; }
   font-size: 9px;
   letter-spacing: .12em;
 }
-.spotlight-index {
-  position: absolute;
+.spotlight-copy {
+  position: relative;
   z-index: 2;
-  right: 17px;
-  bottom: 16px;
+  width: 100%;
+  padding: 180px 28px 30px;
   color: #fff;
-  font-size: 10px;
+}
+.marketing .spotlight-copy h2 {
+  color: #fff;
+  font-size: clamp(32px, 3.3vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -.045em;
   font-weight: 700;
-  letter-spacing: .13em;
 }
-.spotlight-story {
-  margin: 11px 7px 0;
-  padding: 17px 15px 14px;
-  border-radius: 18px;
-  background: #fff;
+.spotlight-copy h2 em, .spotlight-copy h2 span { display: block; }
+.marketing .spotlight-copy p {
+  max-width: 380px;
+  margin: 18px 0 22px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
 }
-.marketing .spotlight-story .eyebrow {
-  display: block;
-  margin: 0 0 8px;
-  color: #8b715e;
-  font-size: 9px;
-  letter-spacing: .15em;
-}
-.marketing .spotlight-prompt {
-  margin: 0;
-  color: #262c25;
-  font-size: clamp(17px, 1.65vw, 20px);
-  line-height: 1.42;
-  letter-spacing: -.035em;
-}
-.marketing .spotlight-note {
-  margin: 5px 0 13px;
-  color: #787d73;
+.spotlight-products { display: flex; flex-wrap: wrap; gap: 8px; }
+.spotlight-products span {
+  padding: 9px 12px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 99px;
   font-size: 11px;
-  line-height: 1.5;
+  font-weight: 600;
 }
-.spotlight-promise {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 11px;
-  border-top: 1px solid #eeeee7;
-  color: #78806f;
-  font-size: 10px;
-}
-.spotlight-promise strong { color: #62744f; font-size: 10px; }
 .spotlight-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 10px 0; }
 .spotlight-footer .showcase-link { min-height: 42px; padding: 5px 8px; font-weight: 650; }
 .spotlight-controls { display: flex; align-items: center; gap: 7px; }
@@ -4191,10 +4177,11 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 }
 @media (max-width: 760px) {
   .marketing-showcase.homepage-spotlight { padding: 10px; border-radius: 25px; }
-  .spotlight-photo { height: min(112vw, 430px); min-height: 300px; border-radius: 18px; }
+  .spotlight-photo { min-height: 490px; border-radius: 18px; }
   .spotlight-photo .showcase-label { top: 12px; left: 12px; font-size: 8px; }
-  .spotlight-story { margin: 9px 5px 0; padding: 15px 13px 12px; }
-  .marketing .spotlight-prompt { font-size: 18px; }
+  .spotlight-copy { padding: 180px 20px 25px; }
+  .marketing .spotlight-copy h2 { font-size: clamp(30px, 8.5vw, 42px); }
+  .spotlight-footer .showcase-link { font-size: 10px; padding-inline: 0; }
   .spotlight-footer { padding-inline: 6px; }
 }
 .vip-benefits{list-style:none;padding:0;margin:18px 0;display:grid;gap:9px;color:#5f6959}.vip-settings-card,.vip-composer,.vip-earnings,.membership-card,.vip-post{border:1px solid #dfe3d8;border-radius:24px;background:#fff;padding:24px;margin:22px 0;display:grid;gap:16px}.vip-settings-card label,.vip-composer{display:grid;gap:7px}.vip-settings-card input,.vip-settings-card textarea,.vip-composer textarea{width:100%;border:1px solid #d8dbd2;border-radius:14px;padding:13px;background:#fff;font:inherit}.vip-composer textarea{min-height:120px}.membership-list,.vip-feed{display:grid;gap:16px;margin-top:28px}.membership-card{grid-template-columns:auto 1fr auto;align-items:start}.membership-card>div,.membership-card span{display:grid;gap:6px}.membership-card img,.vip-post header img{border-radius:50%;object-fit:cover}.vip-post header{display:flex;gap:12px;align-items:center}.vip-post header>div{display:grid;gap:4px}.vip-post-photo{position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:#eef0e8}.vip-post-photo img{object-fit:contain}.vip-photo-unlock{min-height:180px;border:1px dashed #aab49f;border-radius:18px;background:#f3f5ed;font-weight:700}.vip-earnings{margin-top:24px}@media(max-width:640px){.membership-card{grid-template-columns:auto 1fr}.membership-card>.price{grid-column:2}.vip-settings-card,.vip-composer,.vip-post{padding:18px}}

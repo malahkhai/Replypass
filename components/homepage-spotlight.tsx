@@ -7,16 +7,16 @@ const stories = [
   {
     image: "/images/home-creator-style.avif",
     alt: "A woman in a black leather jacket standing in a sunlit park",
-    label: "STYLE, STORY, POINT OF VIEW",
-    prompt: "“What inspired the look that feels most like you?”",
-    note: "Give followers a direct way to ask for a personal reply.",
+    headline: "Access is premium.",
+    payoff: "Turn it into income.",
+    note: "Your pay-link in bio for Guaranteed Replies and VIP memberships. Set your price. Share your link.",
   },
   {
     image: "/images/home-creator-connection.avif",
     alt: "A woman smiling beneath spring blossoms",
-    label: "SMALL MOMENTS, CLOSER CONNECTIONS",
-    prompt: "“What’s one little thing that always makes your day?”",
-    note: "Turn a small moment of interest into a closer connection.",
+    headline: "Your attention has value.",
+    payoff: "Make it your business.",
+    note: "Give followers a way to pay for a personal reply or join your VIP community. All through one link.",
   },
 ];
 
@@ -47,20 +47,18 @@ export function HomepageSpotlight() {
           sizes="(max-width: 760px) 100vw, 44vw"
           priority={active === 0}
         />
-        <span className="showcase-label">YOUR PAGE, YOUR CONVERSATIONS</span>
-        <span className="spotlight-index">0{active + 1} / 0{stories.length}</span>
-      </div>
-      <div className="spotlight-story" aria-live="polite">
-        <span className="eyebrow">{story.label}</span>
-        <p className="spotlight-prompt">{story.prompt}</p>
-        <p className="spotlight-note">{story.note}</p>
-        <div className="spotlight-promise">
-          <span>Guaranteed reply</span>
-          <strong>No reply = no charge.</strong>
+        <span className="showcase-label">YOUR PAY-LINK IN BIO</span>
+        <div className="spotlight-copy" aria-live="off">
+          <h2><em>{story.headline}</em><span>{story.payoff}</span></h2>
+          <p>{story.note}</p>
+          <div className="spotlight-products">
+            <span>Guaranteed Replies</span>
+            <span>VIP memberships</span>
+          </div>
         </div>
       </div>
       <div className="spotlight-footer">
-        <span className="showcase-link">A preview of what followers can see</span>
+        <span className="showcase-link">Your link. Your price. Your terms.</span>
         <div className="spotlight-controls" aria-label="Creator stories">
           {stories.map((item, index) => (
             <button
