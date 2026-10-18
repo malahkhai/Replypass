@@ -15,3 +15,33 @@
 @keyframes heroPhraseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:760px){.studio .hero .rotatingTitle{font-size:clamp(40px,10vw,63px)}.rotatingLine{min-height:2.1em}.fixedLine{font-size:.78em}.compatibility{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.rotatingLine{animation:none}}
+
+/* Studio uses the same restrained line-icon and card language throughout. */
+.page{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+.facts span,.vipLabel{display:inline-flex;align-items:center;gap:7px}
+.facts span:before{content:none}
+.facts svg{color:#f6b29a;stroke-width:2.2}
+.compatibility svg{flex:none;color:#ffb99b}
+.offerIcon{display:grid;place-items:center;color:var(--accent);width:34px;height:34px;flex:none}
+.rowArrow{display:grid;place-items:center;color:#687064}
+.ticker svg{color:var(--accent);flex:none}
+.faq summary svg{flex:none;transition:transform .2s ease}
+.faq details[open] summary svg{transform:rotate(45deg)}
+.vipLabel svg{flex:none}
+.studio .nav{border-radius:16px;box-shadow:0 12px 36px #0b160f26}
+.studio .profile{transform:none;border:1px solid #e5e7e1;border-radius:20px;box-shadow:0 25px 65px #0710084d}
+.studio .portrait{border-radius:13px}
+.studio .linkArt{transform:none;border-radius:20px;border:1px solid #d9dbd0}
+.studio .linkArt strong{border-radius:12px}
+.studio .linkArt>div>span{border-radius:8px}
+.studio .conversation,.studio .vipArt{border-radius:16px}
+.studio .offerGrid article>h3{font-size:clamp(30px,3vw,40px)}
+.page :global(.creator-link-starter-row button){display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.studio .nav{max-width:calc(100% - 40px)}
+@media(max-width:760px){
+  .studio .nav{border-radius:14px}
+  .studio .previewStage{min-height:490px;padding:18px}
+  .studio .profile{width:min(100%,330px)}
+  .studio .hero{padding-bottom:54px}
+  .studio .rotatingLine{display:flex;align-items:flex-end}
+}

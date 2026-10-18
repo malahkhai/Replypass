@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     }
     const mode = stripeConfig()?.mode;
     const { data: members } = mode ? await db.from("subscriptions").select("fan_id").eq("creator_id", creator.id).eq("stripe_mode",mode).in("status", ["active", "trialing"]).gt("current_period_end", new Date().toISOString()) : { data: [] };
-    if (members?.length) await db.from("notifications").insert(members.map((m) => ({ recipient_id: m.fan_id, kind: "subscription", title: `${viewer.displayName} posted a new VIP update 💖`, body: "Open your VIP feed to see it." })));
+    if (members?.length) await db.from("notifications").insert(members.map((m) => ({ recipient_id: m.fan_id, kind: "subscription", title: `${viewer.displayName} posted a new VIP update`, body: "Open your VIP feed to see it." })));
     return Response.json({ ok: true, id: post.id });
   } catch {
     if (orphan) try { await serviceDatabase().storage.from("vip-media").remove([orphan]); } catch {}

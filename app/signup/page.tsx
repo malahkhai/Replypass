@@ -3,6 +3,7 @@ import { siteConfig } from "@/lib/site";
 import { AuthForm } from "@/components/auth-form";
 import Image from "next/image";
 import Link from "next/link";
+import { Icon } from "@/components/icon";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { findCreator } from "@/lib/creators/repository";
 import {
@@ -46,7 +47,7 @@ export default async function Signup({
             together across the creators you follow.
           </p>
           <Link className="button button-primary" href="/">
-            Become a creator <span aria-hidden="true">↗</span>
+            Become a creator <Icon name="arrow" size={16} />
           </Link>
           <p className="auth-switch">
             <Link href="/">Back to ReplyPass</Link>
@@ -66,7 +67,7 @@ export default async function Signup({
       <div className="auth-immersive-shade" aria-hidden="true" />
       <nav className="auth-immersive-nav" aria-label="Signup navigation">
         <Link href="/" className="auth-immersive-brand">replypass<span>.</span></Link>
-        <Link href={`/login?next=${encodeURIComponent(destination)}`} className="auth-immersive-login">Log in <span aria-hidden="true">↗</span></Link>
+        <Link href={`/login?next=${encodeURIComponent(destination)}`} className="auth-immersive-login">Log in <Icon name="arrow" size={16} /></Link>
       </nav>
       <div className="auth-immersive-layout">
         <section className="auth-intro">
