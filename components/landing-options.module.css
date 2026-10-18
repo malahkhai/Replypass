@@ -7,13 +7,13 @@
 @media(max-width:370px){.hero,.section{padding-left:19px;padding-right:19px}.navActions>a:first-child{display:none}.profile{width:270px}.previewStage{padding:20px;min-height:520px}.floatCard{width:155px;padding:16px}.floatCard strong{font-size:21px}.spark{font-size:29px}.page :global(.creator-link-starter-row)>span{font-size:14px}.conversation{padding:21px}.conversation p{max-width:94%}.linkArt strong{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.page *{scroll-behavior:auto!important}}
 
-.studio .hero .rotatingTitle{font-size:clamp(46px,4.8vw,72px);max-width:720px;line-height:1.03}
-.rotatingLine{display:block;min-height:1.12em;color:#fff;font-style:italic;animation:heroPhraseIn .48s ease both}
+.studio .hero .rotatingTitle{font-size:clamp(28px,3.15vw,52px);max-width:720px;line-height:1.08}
+.rotatingLine{display:block;min-height:1.12em;white-space:nowrap;color:#fff;font-style:italic;animation:heroPhraseIn .48s ease both}
 .fixedLine{display:block;max-width:680px;color:#f9eee2;font-size:.79em;font-style:normal;line-height:1.08}
 .compatibility{display:flex;align-items:flex-start;gap:11px;max-width:530px;padding:12px 15px;border-left:3px solid #ee9d79;background:#fff2;font-size:13px;font-weight:600;line-height:1.45!important}
 .compatibility span{color:#ffb99b;font-size:18px;line-height:1}
 @keyframes heroPhraseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:760px){.studio .hero .rotatingTitle{font-size:clamp(40px,10vw,63px)}.rotatingLine{min-height:2.1em}.fixedLine{font-size:.78em}.compatibility{font-size:12px}}
+@media(max-width:760px){.studio .hero .rotatingTitle{font-size:clamp(25px,6.5vw,32px)}.fixedLine{font-size:.88em}.compatibility{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.rotatingLine{animation:none}}
 
 /* Studio uses the same restrained line-icon and card language throughout. */
@@ -43,5 +43,4 @@
   .studio .previewStage{min-height:490px;padding:18px}
   .studio .profile{width:min(100%,330px)}
   .studio .hero{padding-bottom:54px}
-  .studio .rotatingLine{display:flex;align-items:flex-end}
 }
