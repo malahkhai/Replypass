@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Icon } from "@/components/icon";
 
 export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthenticated: boolean }) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthentica
           autoComplete="off"
           aria-describedby="creator-link-hint"
         />
-        <button type="submit">Create my page <span aria-hidden="true">→</span></button>
+        <button type="submit">Create my page <Icon name="arrow" size={16} /></button>
       </div>
       <small id="creator-link-hint" role="status">{error || "You’ll confirm your username during setup. No card needed to create a page."}</small>
     </form>

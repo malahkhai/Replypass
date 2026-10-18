@@ -482,7 +482,7 @@ export function CreatorProfile({
                     ? `${vipActivity.postCount} private ${vipActivity.postCount === 1 ? "post" : "posts"} available · Latest ${new Date(vipActivity.latestPostAt!).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}`
                     : "No private posts published yet. Ask the creator what they plan to share before joining."}</p>}
                   <ul className="vip-benefits">{(vipPlan?.benefits ?? ["Private posts","Exclusive photos","VIP updates","VIP badge"]).map(item=><li key={item}>✓ {item}</li>)}</ul>
-                  {preview ? <Button disabled>Join VIP · Preview only</Button> : activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member 💖 · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
+                  {preview ? <Button disabled>Join VIP · Preview only</Button> : activeVip ? <Link className="button" href={`${creatorPath(creator.handle)}/vip`}>VIP Member · View posts</Link> : creator.demo ? <Button disabled>VIP memberships · Demo</Button> : vipPlan?.enabled ? <VipJoin creatorId={creator.id} handle={creator.handle.replace(/^@/,"")} amountCents={vipPlan.amountCents} currency={vipPlan.currency} authenticated={authenticated}/> : <Button disabled>VIP memberships paused</Button>}
                 </Card>
                 <section
                   className="private-section"

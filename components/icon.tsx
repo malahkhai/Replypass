@@ -16,7 +16,9 @@ export type IconName =
   | "shield"
   | "star"
   | "wallet"
-  | "share";
+  | "share"
+  | "link"
+  | "plus";
 const paths: Record<IconName, React.ReactNode> = {
   heart: (
     <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z" />
@@ -87,6 +89,13 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M12 16V2m-4 4 4-4 4 4M5 10H3v11h18V10h-2" />
     </>
   ),
+  link: (
+    <>
+      <path d="M10 13a5 5 0 0 0 7.1 0l2.5-2.5a5 5 0 0 0-7.1-7.1L10.9 5" />
+      <path d="M14 11a5 5 0 0 0-7.1 0l-2.5 2.5a5 5 0 0 0 7.1 7.1l1.6-1.6" />
+    </>
+  ),
+  plus: <path d="M12 5v14M5 12h14" />,
 };
 export function Icon({
   name,
