@@ -19,7 +19,7 @@ function Start({ children, className = "" }: { children: React.ReactNode; classN
   return <Link href={signup} className={className} data-creator-cta>{children} <Icon name="arrow" size={16} /></Link>;
 }
 
-export function LandingOption({ variant, creatorAuthenticated, showComparison = true }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; showComparison?: boolean }) {
+export function LandingOption({ variant, creatorAuthenticated }: { variant: "studio" | "pop"; creatorAuthenticated: boolean }) {
   const pop = variant === "pop";
   return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio}`}>
     <div className={s.opening}>
@@ -71,6 +71,5 @@ export function LandingOption({ variant, creatorAuthenticated, showComparison = 
     <section className={`${s.section} ${s.fees}`} id="fees"><div><p className={s.eyebrow}>YOUR TIME. YOUR PRICE.</p><h2>Make your<br/>attention count.</h2><p>Creating your page is free. You keep {CREATOR_SHARE_PERCENT}% of each paid reply or VIP payment; ReplyPass’s platform share is {PLATFORM_FEE_PERCENT}%.</p><p className={s.fine}>Stripe payment costs are accounted for separately from this platform split. Payouts require Stripe verification and follow its payout schedule.</p><Start className={s.textLink}>Start your page</Start></div><div className={s.percentage}><strong>{CREATOR_SHARE_PERCENT}<span>%</span></strong><span>YOUR SHARE. YOUR POSSIBILITIES.</span></div></section>
     <section className={`${s.section} ${s.faq}`}><div><p className={s.eyebrow}>GLAD YOU ASKED</p><h2>A few things<br/>to know.</h2></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Icon name="plus" size={18}/></summary><p>{a}</p></details>)}</div></section>
     <section className={s.ending}><p className={s.eyebrow}>YOUR PEOPLE ARE OUT THERE.</p><h2>Give them a way<br/>to get closer.</h2><Start className={s.button}>Claim your ReplyPass link</Start><p>Free to create. Made for you.</p></section>
-    {showComparison && <nav className={s.compare} aria-label="Compare homepage options"><Link href="/">Current homepage · Studio</Link><Link href="/home-options/pop" aria-current={pop ? "page" : undefined}>Option 2 · Pop</Link></nav>}
   </main>;
 }

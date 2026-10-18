@@ -45,11 +45,6 @@ export function SiteFooter() {
         <summary>About &amp; policies</summary>
         <FooterLinks />
       </details>
-      <nav className="footer-home-options" aria-label="Homepage options">
-        <span>Explore our new looks</span>
-        <Link href="/">Current homepage · Studio</Link>
-        <Link href="/home-options/pop">Option 2 · Pop</Link>
-      </nav>
     </footer>
   );
 }
