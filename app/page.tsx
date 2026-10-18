@@ -9,5 +9,5 @@ export const metadata = pageMetadata(
 );
 export default async function Home() {
   const viewer = await getViewer();
-  return <><CreatorLandingCount /><LandingOption variant="studio" creatorAuthenticated={viewer?.role === "creator" || viewer?.role === "admin"} showComparison={false} /></>;
+  return <><CreatorLandingCount /><LandingOption variant="studio" creatorAuthenticated={viewer?.role === "creator" || viewer?.role === "admin"} /></>;
 }
