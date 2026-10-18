@@ -4476,3 +4476,9 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .creator-preview-notice p { max-width:650px; font-size:14px; line-height:1.6; margin:6px 0; }
 .creator-preview-links { display:flex; flex-wrap:wrap; gap:10px; flex-shrink:0; }
 @media(max-width:700px) { .creator-preview-notice { margin:16px; padding:20px; flex-direction:column; align-items:stretch; } .creator-preview-links .button { flex:1; } }
+
+/* Keep the alternative homepage links visible on desktop and mobile. */
+.site-footer { flex-wrap: wrap; }
+.site-footer .footer-home-options { flex-basis:100%; width:100%; border-top:1px solid #e3e6dc; padding-top:12px; gap:4px 22px; }
+.footer-home-options > span { font-size:11px; color:#73796e; margin-right:5px; }
+.site-footer .footer-home-options a { font-size:12px; text-decoration:underline; text-underline-offset:4px; }
