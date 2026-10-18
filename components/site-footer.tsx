@@ -47,7 +47,7 @@ export function SiteFooter() {
       </details>
       <nav className="footer-home-options" aria-label="Homepage options">
         <span>Explore our new looks</span>
-        <Link href="/home-options/studio">Option 1 · Studio ↗</Link>
+        <Link href="/">Current homepage · Studio ↗</Link>
         <Link href="/home-options/pop">Option 2 · Pop ↗</Link>
       </nav>
     </footer>

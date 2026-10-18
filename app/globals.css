@@ -4482,3 +4482,46 @@ body:has(.workspace-shell) > .site-footer { display: none; }
 .site-footer .footer-home-options { flex-basis:100%; width:100%; border-top:1px solid #e3e6dc; padding-top:12px; gap:4px 22px; }
 .footer-home-options > span { font-size:11px; color:#73796e; margin-right:5px; }
 .site-footer .footer-home-options a { font-size:12px; text-decoration:underline; text-underline-offset:4px; }
+
+/* Full-screen signup keeps the existing creator/fan account flow and validation. */
+body:has(.auth-page-immersive) > .site-header { display: none; }
+.auth-page-immersive.auth-page-signup { position:relative; isolation:isolate; display:block; width:100%; max-width:none; min-height:100svh; margin:0; padding:0; overflow:hidden; color:#fff; background:#1c2921; }
+.auth-immersive-image { object-fit:cover; object-position:center 40%; z-index:-2; }
+.auth-immersive-shade { position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,#101b16ed 0%,#142019df 42%,#17251ac2 100%); }
+.auth-immersive-nav { display:flex; align-items:center; justify-content:space-between; gap:20px; max-width:1320px; margin:auto; padding:27px 36px; }
+.auth-immersive-brand { color:#fff; font-size:30px; font-weight:850; letter-spacing:-1.7px; text-decoration:none; }
+.auth-immersive-brand span { color:#ef705b; }
+.auth-immersive-login { display:inline-flex; align-items:center; gap:14px; min-height:44px; border:1px solid #fff9; border-radius:99px; padding:9px 18px; color:#fff; font-size:13px; font-weight:700; text-decoration:none; }
+.auth-immersive-nav a:focus-visible { outline:3px solid #ffb9a7; outline-offset:4px; }
+.auth-immersive-layout { display:grid; grid-template-columns:minmax(360px,440px) minmax(0,1fr); align-items:center; gap:clamp(55px,7vw,130px); max-width:1320px; min-height:calc(100svh - 90px); margin:auto; padding:45px 36px 100px; }
+.auth-page-immersive .auth-card { grid-column:1; grid-row:1; width:100%; max-width:440px; margin:0; border:1px solid #fff8; border-radius:27px; padding:34px; background:#fcfbf7; color:#252b24; box-shadow:0 30px 90px #0005; }
+.auth-page-immersive .auth-card h2 { font-size:30px; line-height:1.1; }
+.auth-page-immersive .auth-card-kicker { color:#a04a40; }
+.auth-page-immersive .auth-intro { grid-column:2; grid-row:1; padding:0; }
+.auth-page-immersive .auth-intro .eyebrow { color:#fbb7a1; font-size:11px; letter-spacing:.18em; }
+.auth-page-immersive .auth-intro h1 { display:block; max-width:730px; margin:22px 0 24px; color:#fff; font-size:clamp(50px,6vw,86px); letter-spacing:-.055em; line-height:1.02; }
+.auth-page-immersive .auth-intro h1 em { color:#f6a085; font-style:italic; }
+.auth-page-immersive .auth-intro .auth-description { max-width:550px; margin:0; color:#fff; font-size:18px; line-height:1.55; }
+.auth-immersive-note { display:inline-block; max-width:520px; margin:30px 0 0; padding:13px 17px; border-left:3px solid #f6a085; background:#fff2; color:#fff; font-size:13px; font-weight:650; line-height:1.5; }
+.auth-page-immersive .auth-benefits { max-width:540px; border-color:#ffffff50; }
+.auth-page-immersive .auth-benefits>div { border-color:#ffffff50; }
+.auth-page-immersive .auth-benefits strong { color:#fff; }
+.auth-page-immersive .auth-benefits p { color:#fff; }
+.auth-page-immersive .auth-benefits>div>span { color:#f6a085; }
+body:has(.auth-page-immersive) > .site-footer { max-width:none; margin:0; padding:28px max(24px,calc((100vw - 1250px)/2)); border-top:0; background:#fcfbf7; }
+@media(max-width:900px){
+  .auth-immersive-layout { grid-template-columns:minmax(300px,420px) minmax(0,1fr); gap:35px; }
+  .auth-page-immersive .auth-intro h1 { font-size:clamp(45px,5.5vw,68px); }
+}
+@media(max-width:760px){
+  .auth-immersive-nav { padding:19px 21px; }
+  .auth-immersive-brand { font-size:26px; }
+  .auth-immersive-layout { display:flex; flex-direction:column; align-items:stretch; gap:23px; min-height:calc(100svh - 75px); padding:28px 20px 68px; }
+  .auth-page-immersive .auth-intro { order:1; }
+  .auth-page-immersive .auth-intro h1 { margin:12px 0 14px; font-size:clamp(41px,10vw,58px); }
+  .auth-page-immersive .auth-intro .auth-description { font-size:15px; }
+  .auth-immersive-note { margin-top:16px; font-size:12px; }
+  .auth-page-immersive .auth-card { order:2; max-width:none; padding:25px 21px; border-radius:22px; }
+  .auth-page-immersive .auth-card h2 { font-size:27px; }
+  .auth-page-immersive .auth-benefits { display:none; }
+}
