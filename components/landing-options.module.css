@@ -77,28 +77,49 @@
 .exampleIntro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:end}
 .exampleIntro .eyebrow{grid-column:1/-1;margin-bottom:-12px!important}
 .exampleIntro>p:last-child{font-size:16px;max-width:490px}
-.creatorCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:44px}
-.creatorCard{display:block;min-width:0;background:#fff;border:1px solid #ddded5;border-radius:19px;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
-.creatorCard:hover{transform:translateY(-3px);box-shadow:0 15px 35px #252b2419}
-.creatorCard:focus-visible{outline-offset:5px}
-.creatorCardPhoto{position:relative;height:260px;overflow:hidden;background:#d4d9cf}
-.creatorCardPhoto img{object-fit:cover;object-position:center 28%}
-.realCreator .creatorCardPhoto img{object-position:center 38%}
-.creatorCardPhoto>span{position:absolute;top:13px;left:13px;z-index:1;background:#fffaf0;padding:8px 10px;border-radius:100px;color:#252b24;font-size:9px;letter-spacing:.1em;font-weight:800}
-.creatorCardBody{padding:23px;display:flex;flex-direction:column;gap:10px;min-height:260px}
-.creatorCardBody>small{font-size:10px;letter-spacing:.11em;color:#68745e;font-weight:750}
-.creatorCardBody h3{font-size:30px}
-.creatorCardBody>p{font-size:13px;line-height:1.5;min-height:38px;color:#5d665b}
-.cardOffers{display:grid;gap:4px;margin-top:auto}
-.cardOffers span{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #e4e5df;font-size:12px}
-.cardOffers strong{white-space:nowrap}
-.cardLink{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:9px;color:#b9473d;font-size:13px;font-weight:750}
-.exampleNote{font-size:12px;color:#5b6659;margin-top:18px!important}
-.useCases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:36px}
-.useCases>div{border-top:1px solid #b9bfb1;padding:18px 12px 0 0}
-.useCases strong{font-size:13px}
-.useCases p{font-size:13px;color:#5f685b;margin-top:10px}
-@media(max-width:1050px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.creatorCards{gap:12px}.creatorCardBody{padding:18px}}
+.creatorJourneys{display:grid;gap:24px;margin-top:48px}
+.creatorJourney{display:grid;grid-template-columns:minmax(280px,.95fr) minmax(0,1.35fr);gap:32px;padding:34px;border:1px solid #d9dbd0;border-radius:24px;background:#f8f8f2;overflow:hidden}
+.journeyCreator{min-width:0;display:flex;flex-direction:column;align-items:center;background:#e2e6db;border-radius:18px;padding:26px 18px 0}
+.journeyHeading{align-self:stretch;max-width:330px;margin:0 auto 18px;width:100%}
+.journeyHeading>span,.journeyNumber{display:block;font-size:10px;font-weight:800;letter-spacing:.13em;color:#667561}
+.journeyHeading h3{font-size:clamp(25px,2.4vw,34px);margin:9px 0 4px}
+.journeyHeading p{font-size:13px;color:#576456}
+.phone{width:min(100%,308px);background:#fff;border:7px solid #262d28;border-bottom:0;border-radius:30px 30px 0 0;overflow:hidden;box-shadow:0 24px 46px #24362c30}
+.phoneTop{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;font-weight:850;letter-spacing:-.06em}
+.brandDot{color:var(--accent)}
+.phoneMenu{font-size:14px;letter-spacing:2px;color:#788276}
+.phonePhoto{height:215px;position:relative;background:#bdc3b5;overflow:hidden}
+.phonePhoto img{object-fit:cover}
+.phonePhoto:after{content:"";position:absolute;inset:40% 0 0;background:linear-gradient(transparent,#121a14a8)}
+.phonePhoto>span{position:absolute;z-index:1;bottom:16px;left:16px;right:16px;color:#fff;font-size:9px;font-weight:800;letter-spacing:.15em}
+.phoneBody{padding:16px 15px 18px}
+.phoneBody>strong{display:block;font-size:23px;letter-spacing:-.06em}
+.phoneBody>small{display:block;color:#6d7969;font-size:10px;margin-top:2px}
+.phoneBody>p{font-size:11px;color:#596459;margin:11px 0 14px!important;line-height:1.4}
+.phoneOffer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #e4e8e0;padding:10px 0;font-size:10px}
+.phoneOffer span{display:inline-flex;align-items:center;gap:6px}
+.phoneOffer svg{color:var(--accent);flex:none}
+.phoneOffer b{white-space:nowrap;font-size:11px}
+.journeyFlow{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-content:center;min-width:0}
+.journeyFlow>div{background:#fff;border:1px solid #e4e6df;border-radius:15px;padding:19px;min-width:0}
+.journeyFlow p{font-size:13px;color:#4e594c;margin:11px 0!important;line-height:1.45}
+.journeyPrice strong{display:block;font-size:23px;letter-spacing:-.045em;line-height:1.15}
+.socialPreview{display:flex;gap:10px;align-items:flex-start;background:#f5f6f2;border-radius:12px;padding:11px;min-width:0;margin-top:17px}
+.socialAvatar{display:grid;place-items:center;flex:none;width:33px;height:33px;border-radius:50%;background:#d8e0d1;font-weight:800}
+.socialPreview>div{min-width:0}
+.socialPreview strong,.socialPreview span,.socialPreview b{display:block;font-size:10px;line-height:1.45}
+.socialPreview strong small{font-weight:400;color:#6f786d}
+.socialPreview b{color:#bd4a3e;overflow-wrap:anywhere;margin-top:4px}
+.chatBubble{width:90%;background:#eff1eb;border-radius:12px 12px 12px 3px;padding:10px 12px;margin-top:13px}
+.chatBubble small{font-size:9px;letter-spacing:.12em;font-weight:800;color:#697764}
+.chatBubble p{margin:3px 0 0!important;color:#283129}
+.chatCreator{margin-left:auto;background:#e7ece3;border-radius:12px 12px 3px 12px}
+.journeyEarnings{display:flex;flex-direction:column;justify-content:center;background:#dfeadd!important}
+.journeyEarnings strong{display:block;font-size:43px;letter-spacing:-.06em;line-height:1.1;margin-top:15px}
+.journeyEarnings p{margin:4px 0 0!important}
+.journeyEarnings p span{display:block;font-size:11px;margin-top:4px;color:#627060}
+.exampleNote{font-size:12px;color:#5b6659;margin-top:20px!important;max-width:1000px}
+@media(max-width:1050px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.creatorJourney{grid-template-columns:minmax(230px,.85fr) minmax(0,1.4fr);gap:18px;padding:20px}.journeyFlow{gap:10px}.journeyFlow>div{padding:14px}}
 @media(max-width:760px){
   .steps{grid-template-columns:1fr;gap:24px;margin-top:35px}
   .steps article{display:grid;grid-template-columns:110px 1fr;column-gap:17px;align-items:start}
@@ -120,11 +141,11 @@
   .exampleIntro{display:block}
   .exampleIntro .eyebrow{margin-bottom:20px!important}
   .exampleIntro>p:last-child{margin-top:19px;font-size:15px}
-  .creatorCards{grid-template-columns:1fr;gap:17px;margin-top:30px}
-  .creatorCardPhoto{height:300px}
-  .creatorCardBody{min-height:0;padding:22px}
-  .creatorCardBody>p{min-height:0}
-  .useCases{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .creatorJourneys{gap:20px;margin-top:30px}
+  .creatorJourney{grid-template-columns:1fr;padding:15px;gap:18px}
+  .journeyCreator{padding:19px 14px 0}
+  .journeyHeading{max-width:308px}
+  .journeyFlow{grid-template-columns:1fr 1fr}
 }
 @media(max-width:430px){.steps article{grid-template-columns:96px 1fr;column-gap:13px}.steps h3{font-size:20px}.stepVisual{border-radius:12px}}
-@media(prefers-reduced-motion:reduce){.creatorCard{transition:none}.creatorCard:hover{transform:none}}
+@media(max-width:540px){.journeyFlow{grid-template-columns:1fr}.journeyFlow>div{padding:18px}.phone{width:min(100%,308px)}}

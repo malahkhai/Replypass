@@ -3,8 +3,7 @@ import Link from "next/link";
 import { CreatorLinkStarter } from "@/components/creator-link-starter";
 import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
-import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT } from "@/lib/payments/fees";
-import { exampleProfiles } from "@/lib/creators/example-profiles";
+import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import s from "./landing-options.module.css";
 
 const signup = "/signup?next=%2Fcreator%2Fapply";
@@ -19,8 +18,44 @@ export type FeaturedCreator = {
   live: boolean;
 };
 
-function euros(cents: number) {
-  return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(cents / 100);
+function euros(cents: number, showCents = false) {
+  return new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR", minimumFractionDigits: showCents ? 2 : 0, maximumFractionDigits: 2 }).format(cents / 100);
+}
+
+type CreatorStory = {
+  name: string;
+  handle: string;
+  kind: string;
+  photo: string;
+  photoPosition?: string;
+  bio: string;
+  messagePriceCents: number | null;
+  vipPriceCents: number | null;
+  social: "Instagram" | "TikTok" | "X";
+  socialHandle: string;
+  fanQuestion: string;
+  creatorReply: string;
+};
+
+function CreatorJourney({ story, index }: { story: CreatorStory; index: number }) {
+  const creatorShare = story.messagePriceCents === null ? null : splitPayment(story.messagePriceCents).creatorCents;
+  const profileUrl = `getreplypass.com/${story.handle}`;
+  return <article className={s.creatorJourney}>
+    <div className={s.journeyCreator}>
+      <div className={s.journeyHeading}><span>0{index + 1} / CREATOR PAGE</span><h3>{story.name}</h3><p>{story.kind}</p></div>
+      <div className={s.phone} aria-label={`${story.name} ReplyPass page preview`}>
+        <div className={s.phoneTop}><span>replypass<span className={s.brandDot}>.</span></span><span className={s.phoneMenu} aria-hidden="true">•••</span></div>
+        <div className={s.phonePhoto}><Image src={story.photo} alt={`${story.name} profile portrait`} fill sizes="(max-width: 760px) 310px, 330px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/><span>A LITTLE CLOSER TO {story.name.split(" ")[0].toUpperCase()}</span></div>
+        <div className={s.phoneBody}><strong>{story.name}</strong><small>{story.kind}</small><p>{story.bio}</p><div className={s.phoneOffer}><span><Icon name="message" size={17}/> Guaranteed Reply</span><b>{story.messagePriceCents === null ? "Your price" : euros(story.messagePriceCents)}</b></div>{story.vipPriceCents !== null && <div className={s.phoneOffer}><span><Icon name="star" size={17}/> VIP membership</span><b>{euros(story.vipPriceCents)}/mo</b></div>}</div>
+      </div>
+    </div>
+    <div className={s.journeyFlow}>
+      <div className={s.journeyPrice}><span className={s.journeyNumber}>01 / SET YOUR PRICE</span><p>Fans know what a personal reply costs before they ask.</p><strong>{story.messagePriceCents === null ? "Set your own price" : `${euros(story.messagePriceCents)} per Guaranteed Reply`}</strong></div>
+      <div className={s.journeySocial}><span className={s.journeyNumber}>02 / SHARE YOUR LINK</span><p>Place it in your {story.social} bio or your existing link-in-bio page.</p><div className={s.socialPreview}><span className={s.socialAvatar}>{story.name.charAt(0)}</span><div><strong>{story.socialHandle} <small>· {story.social} bio preview</small></strong><span>{story.kind} · A little closer to my world</span><b>{profileUrl}</b></div></div></div>
+      <div className={s.journeyConversation}><span className={s.journeyNumber}>03 / REPLY TO A FAN</span><div className={s.chatBubble}><small>FAN ASKS</small><p>{story.fanQuestion}</p></div><div className={`${s.chatBubble} ${s.chatCreator}`}><small>CREATOR REPLIES</small><p>{story.creatorReply}</p></div></div>
+      <div className={s.journeyEarnings}><span className={s.journeyNumber}>04 / EARN FROM THE REPLY</span><strong>{creatorShare === null ? "85%" : euros(creatorShare, true)}</strong><p>{creatorShare === null ? "Creator share of a completed reply" : `Creator share of a completed ${euros(story.messagePriceCents!)} reply`} <span>before Stripe fees and adjustments</span></p></div>
+    </div>
+  </article>;
 }
 
 function StepVisual({ step }: { step: number }) {
@@ -54,6 +89,11 @@ function Start({ children, className = "", href }: { children: React.ReactNode; 
 export function LandingOption({ variant, creatorAuthenticated, featuredCreator }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreator: FeaturedCreator }) {
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
+  const creatorStories: CreatorStory[] = [
+    { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, social: "Instagram", socialHandle: "Mimi_Kiki", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
+    { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1200, vipPriceCents: 900, social: "TikTok", socialHandle: "@lunavale", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home." },
+    { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 800, vipPriceCents: 1500, social: "X", socialHandle: "@nicoreyes", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track." },
+  ];
   return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio}`}>
     <div className={s.opening}>
       {!pop && <Image className={s.backdrop} src="/images/home-creator-connection.avif" alt="" fill sizes="100vw" preload />}
@@ -93,26 +133,9 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
       ].map(([n,title,body], index) => <article key={n}><StepVisual step={index + 1}/><span>{n}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
     </section>
     <section className={`${s.section} ${s.creatorExamples}`} id="examples">
-      <div className={s.exampleIntro}><p className={s.eyebrow}>SEE WHAT A CREATOR PAGE CAN BE</p><h2>One link.<br/>Your kind of creator.</h2><p>Mimi’s page is live. Explore it to see a real Guaranteed Reply and VIP offer. Then browse our fictional music and DJ examples to see how the same page adapts to different creators.</p></div>
-      <div className={s.creatorCards}>
-        <Link className={`${s.creatorCard} ${s.realCreator}`} href="/mimi" aria-label="Visit Mimi_Kiki’s live creator page">
-          <div className={s.creatorCardPhoto}><Image src={featuredCreator.photo} alt={`${featuredCreator.name} on her ReplyPass page`} fill sizes="(max-width: 760px) 88vw, 33vw" style={{ objectPosition: featuredCreator.photoPosition || "center" }} unoptimized={featuredCreator.photo.startsWith("http")}/><span>{featuredCreator.live ? "LIVE CREATOR" : "PUBLIC PROFILE"}</span></div>
-          <div className={s.creatorCardBody}><small>{featuredCreator.categories.length ? featuredCreator.categories.join(" · ").toUpperCase() : "CREATOR"}</small><h3>{featuredCreator.name}</h3><p>getreplypass.com/{featuredCreator.handle.replace(/^@/, "")}</p><div className={s.cardOffers}><span>Guaranteed Reply <strong>{featuredCreator.messagePriceCents !== null ? euros(featuredCreator.messagePriceCents) : "View offer"}</strong></span><span>VIP membership <strong>{featuredCreator.vipPriceCents !== null ? `${euros(featuredCreator.vipPriceCents)}/mo` : "View offer"}</strong></span></div><span className={s.cardLink}>Visit Mimi’s page <Icon name="arrow" size={16}/></span></div>
-        </Link>
-        {exampleProfiles.map(({ slug, label, creator }) => <Link className={s.creatorCard} href={`/examples/${slug}`} key={slug} aria-label={`Explore fictional ${label.toLowerCase()} profile example`}>
-          <div className={s.creatorCardPhoto}><Image src={creator.image} alt={`Illustrative ${label.toLowerCase()} creator portrait`} fill sizes="(max-width: 760px) 88vw, 33vw"/><span>FICTIONAL EXAMPLE</span></div>
-          <div className={s.creatorCardBody}><small>{label.toUpperCase()} · PAGE EXAMPLE</small><h3>{creator.name}</h3><p>{creator.bio}</p><div className={s.cardOffers}><span>Guaranteed Reply <strong>{euros(creator.offerings.find((offer) => offer.kind === "message")!.cents)}</strong></span><span>VIP membership <strong>{euros(creator.vip!.cents)}/mo</strong></span></div><span className={s.cardLink}>Explore example page <Icon name="arrow" size={16}/></span></div>
-        </Link>)}
-      </div>
-      <p className={s.exampleNote}>Mimi is a real creator. Luna and Nico are fictional examples; their portraits, offers and prices are illustrative, and their pages cannot accept payments.</p>
-      <div className={s.useCases} aria-label="Example questions from different creator audiences">
-        {[
-          ["Fashion", "What inspired the look you wore last night?"],
-          ["Fitness", "How did you stay consistent when you began?"],
-          ["Music", "What story is behind your latest song?"],
-          ["DJs", "Which track changed the energy of your set?"],
-        ].map(([type, question]) => <div key={type}><strong>{type}</strong><p>“{question}”</p></div>)}
-      </div>
+      <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>
+      <div className={s.creatorJourneys}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</div>
+      <p className={s.exampleNote}>Mimi’s public offer and price are shown with her permission. The social bio placements and conversations are illustrative; the musician and DJ profiles are design previews. Creator shares are before Stripe fees and adjustments.</p>
     </section>
     <section className={`${s.section} ${s.offers}`} id="offers">
       <p className={s.eyebrow}>TWO WAYS TO EARN</p><h2>Give followers a reason to visit.</h2>
