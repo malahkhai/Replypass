@@ -29,6 +29,7 @@ type CreatorStory = {
   kind: string;
   photo: string;
   photoPosition?: string;
+  phoneScreenshot?: string;
   bio: string;
   messagePriceCents: number | null;
   vipPriceCents: number | null;
@@ -43,10 +44,17 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
   return <article className={s.creatorJourney}>
     <div className={s.journeyCreator}>
       <div className={s.journeyHeading}><span>0{index + 1} / CREATOR PAGE</span><h3>{story.name}</h3><p>{story.kind}</p></div>
-      <div className={s.phone} aria-label={`${story.name} ReplyPass page preview`}>
-        <div className={s.phoneTop}><span>replypass<span className={s.brandDot}>.</span></span><span className={s.phoneMenu} aria-hidden="true">•••</span></div>
-        <div className={s.phonePhoto}><Image src={story.photo} alt={`${story.name} profile portrait`} fill sizes="(max-width: 760px) 310px, 330px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/><span>A LITTLE CLOSER TO {story.name.split(" ")[0].toUpperCase()}</span></div>
-        <div className={s.phoneBody}><strong>{story.name}</strong><small>{story.kind}</small><p>{story.bio}</p><div className={s.phoneOffer}><span><Icon name="message" size={17}/> Guaranteed Reply</span><b>{story.messagePriceCents === null ? "Your price" : euros(story.messagePriceCents)}</b></div>{story.vipPriceCents !== null && <div className={s.phoneOffer}><span><Icon name="star" size={17}/> VIP membership</span><b>{euros(story.vipPriceCents)}/mo</b></div>}</div>
+      <div className={s.iphone} aria-label={`${story.name} ReplyPass page in an iPhone preview`}>
+        <div className={s.iphoneScreen}>
+          <div className={s.iphoneStatus} aria-hidden="true"><span>9:41</span><span className={s.dynamicIsland}/><span className={s.iphoneIndicators}><i/><i/><i/></span></div>
+          {story.phoneScreenshot ? <Image className={s.phoneScreenshot} src={story.phoneScreenshot} alt={`${story.name}'s actual ReplyPass profile`} width={1320} height={2297} sizes="(max-width: 540px) 220px, 300px" unoptimized/> : <div className={s.phonePage}>
+            <div className={s.phonePageHeader}><strong>replypass<span className={s.brandDot}>.</span></strong><span aria-hidden="true"><Icon name="share" size={14}/></span></div>
+            <div className={s.phonePagePhoto}><Image src={story.photo} alt={`${story.name} profile portrait`} fill sizes="(max-width: 540px) 220px, 300px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/><span className={s.phoneAvailability}><i/>Open to requests</span><span className={s.phoneSwipe}>1 / 3 · Swipe</span></div>
+            <div className={s.phonePageIdentity}><div><strong>{story.name}</strong><span>@{story.handle}</span></div><div className={s.phonePageTags}>{story.kind.split(" · ").map((kind) => <span key={kind}>{kind}</span>)}</div><p>{story.bio}</p></div>
+            <div className={s.phonePageActions}><span><Icon name="message" size={14}/> Message {story.messagePriceCents === null ? "" : euros(story.messagePriceCents)}</span>{story.vipPriceCents !== null && <span><Icon name="sparkles" size={14}/> VIP {euros(story.vipPriceCents)}/mo</span>}</div>
+          </div>}
+          {!story.phoneScreenshot && <div className={s.iphoneHome} aria-hidden="true"><span/></div>}
+        </div>
       </div>
     </div>
     <div className={s.journeyFlow}>
@@ -95,7 +103,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
   const creatorStories: CreatorStory[] = [
-    { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
+    { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
     { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1200, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home." },
     { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 800, vipPriceCents: 1500, socialBio: "Sets, sounds and late nights. Ask me about the music on ReplyPass.", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track." },
   ];
