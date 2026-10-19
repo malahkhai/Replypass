@@ -140,7 +140,6 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
     <section className={`${s.section} ${s.creatorExamples}`} id="examples">
       <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>
       <CreatorJourneyCarousel labels={creatorStories.map((story) => story.name)}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</CreatorJourneyCarousel>
-      <p className={s.exampleNote}>Mimi’s public offer and price are shown with her permission. The social bio placements and conversations are illustrative; the musician and DJ profiles are design previews. Creator shares are before Stripe fees and adjustments.</p>
     </section>
     <section className={`${s.section} ${s.offers}`} id="offers">
       <p className={s.eyebrow}>TWO WAYS TO EARN</p><h2>Give followers a reason to visit.</h2>
