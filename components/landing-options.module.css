@@ -98,22 +98,41 @@
 .journeyHeading>span,.journeyNumber{display:block;font-size:10px;font-weight:800;letter-spacing:.13em;color:#667561}
 .journeyHeading h3{font-size:clamp(25px,2.4vw,34px);margin:9px 0 4px}
 .journeyHeading p{font-size:13px;color:#576456}
-.phone{width:min(100%,360px);background:#fff;border:7px solid #262d28;border-radius:30px;overflow:hidden;box-shadow:0 18px 36px #24362c24}
-.phoneTop{height:43px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:15px;font-weight:850;letter-spacing:-.06em}
+.iphone{position:relative;width:min(100%,318px);padding:7px;border:2px solid #414842;border-radius:44px;background:linear-gradient(135deg,#161c19,#343d36 52%,#121815);box-shadow:0 18px 36px #24362c30, inset 0 0 0 1px #626a63}
+.iphone:before,.iphone:after{content:"";position:absolute;width:3px;background:#424b44;border-radius:3px}
+.iphone:before{left:-4px;top:74px;height:44px;box-shadow:0 53px 0 #424b44}
+.iphone:after{right:-4px;top:108px;height:55px}
+.iphoneScreen{overflow:hidden;border-radius:35px;background:#fff}
+.iphoneStatus{height:29px;position:relative;display:flex;align-items:center;justify-content:space-between;padding:0 16px;color:#191d1b;background:#fff;font-size:9px;font-weight:800}
+.dynamicIsland{position:absolute;top:4px;left:50%;transform:translateX(-50%);width:79px;height:20px;border-radius:20px;background:#101311}
+.iphoneIndicators{display:flex;align-items:center;gap:3px}
+.iphoneIndicators i:first-child{width:9px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:skew(-15deg)}
+.iphoneIndicators i:nth-child(2){width:8px;height:8px;border:2px solid currentColor;border-radius:50%}
+.iphoneIndicators i:last-child{width:13px;height:7px;border:1.5px solid currentColor;border-radius:2px;background:linear-gradient(90deg,currentColor 70%,transparent 70%)}
+.iphoneHome{height:18px;display:grid;place-items:center;background:#fff}
+.iphoneHome span{width:86px;height:4px;border-radius:8px;background:#161b18}
+.phoneScreenshot{display:block;width:100%;height:auto}
+.phonePage{background:#fff}
+.phonePageHeader{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:15px;letter-spacing:-.055em}
+.phonePageHeader>span{display:grid;place-items:center;width:25px;height:25px;border:1px solid #e1e5dc;border-radius:50%}
 .brandDot{color:var(--accent)}
-.phoneMenu{font-size:14px;letter-spacing:2px;color:#788276}
-.phonePhoto{height:225px;position:relative;background:#bdc3b5;overflow:hidden}
-.phonePhoto img{object-fit:cover}
-.phonePhoto:after{content:"";position:absolute;inset:40% 0 0;background:linear-gradient(transparent,#121a14a8)}
-.phonePhoto>span{position:absolute;z-index:1;bottom:16px;left:16px;right:16px;color:#fff;font-size:9px;font-weight:800;letter-spacing:.15em}
-.phoneBody{padding:16px 15px 18px}
-.phoneBody>strong{display:block;font-size:23px;letter-spacing:-.06em}
-.phoneBody>small{display:block;color:#6d7969;font-size:10px;margin-top:2px}
-.phoneBody>p{font-size:11px;color:#596459;margin:11px 0 14px!important;line-height:1.4}
-.phoneOffer{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #e4e8e0;padding:10px 0;font-size:10px}
-.phoneOffer span{display:inline-flex;align-items:center;gap:6px}
-.phoneOffer svg{color:var(--accent);flex:none}
-.phoneOffer b{white-space:nowrap;font-size:11px}
+.phonePagePhoto{position:relative;aspect-ratio:1/.95;background:#bdc3b5;overflow:hidden;border-radius:0 0 14px 14px}
+.phonePagePhoto img{object-fit:cover}
+.phonePagePhoto:after{content:"";position:absolute;inset:60% 0 0;background:linear-gradient(transparent,#10171170)}
+.phoneAvailability,.phoneSwipe{position:absolute;z-index:1;border-radius:100px;font-size:9px;font-weight:750}
+.phoneAvailability{top:12px;left:12px;display:flex;align-items:center;gap:5px;padding:6px 9px;background:#fff;color:#232a23}
+.phoneAvailability i{width:6px;height:6px;border-radius:50%;background:#43876a}
+.phoneSwipe{bottom:10px;left:50%;transform:translateX(-50%);padding:5px 8px;white-space:nowrap;background:#2026209c;color:#fff}
+.phonePageIdentity{padding:16px 13px 10px}
+.phonePageIdentity>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:5px}
+.phonePageIdentity strong{font-size:21px;letter-spacing:-.06em;line-height:1.1}
+.phonePageIdentity>div:first-child>span{border:1px solid #809073;border-radius:100px;padding:4px 7px;font-size:9px;white-space:nowrap}
+.phonePageTags{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+.phonePageTags span{border:1px solid #dfe3db;border-radius:100px;padding:4px 7px;font-size:9px}
+.phonePageIdentity p{font-size:10px;color:#4c574d;margin:11px 0 0!important;line-height:1.4}
+.phonePageActions{display:flex;gap:6px;padding:10px;border-top:1px solid #e4e8e0}
+.phonePageActions span{display:flex;align-items:center;justify-content:center;gap:4px;flex:1;min-width:0;padding:9px 3px;border-radius:8px;background:#242b25;color:#fff;font-size:10px;font-weight:800;white-space:nowrap}
+.phonePageActions span+span{background:#e8ede4;color:#344332}
 .journeyFlow{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);grid-template-areas:"price social" "conversation social" "earnings earnings";grid-template-rows:auto auto auto;gap:12px;align-content:center;min-width:0}
 .journeyFlow>div{background:#fff;border:1px solid #e4e6df;border-radius:15px;padding:15px;min-width:0}
 .journeyFlow p{font-size:13px;color:#4e594c;margin:11px 0!important;line-height:1.45}
@@ -179,9 +198,8 @@
   .creatorJourney{grid-template-columns:1fr;padding:15px;gap:14px}
   .journeyCreator{padding:18px 14px}
   .journeyHeading{max-width:310px}
-  .phone{width:min(100%,310px)}
-  .phonePhoto{height:180px}
+  .iphone{width:min(100%,290px)}
   .journeyFlow{grid-template-columns:1fr 1fr;grid-template-areas:"price price" "social social" "conversation earnings";grid-template-rows:auto;align-content:start}
 }
 @media(max-width:430px){.steps article{grid-template-columns:96px 1fr;column-gap:13px}.steps h3{font-size:20px}.stepVisual{border-radius:12px}}
-@media(max-width:540px){.journeyCreator{padding:14px}.journeyHeading{display:none}.journeyFlow{grid-template-columns:1fr;grid-template-areas:"social" "conversation" "earnings";gap:9px}.journeyPrice{display:none}.journeyFlow>div{padding:12px}.journeyFlow p{font-size:12px}.journeyEarnings{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px}.journeyEarnings .journeyNumber{grid-column:1/-1}.journeyEarnings strong{font-size:28px}.journeyEarnings p span{font-size:10px}.chatBubble{width:88%;padding:8px;margin-top:9px}.chatBubble p{font-size:11px}.phone{width:min(100%,260px)}.phoneTop{height:35px;font-size:13px}.phonePhoto{height:125px}.phoneBody{padding:10px 12px}.phoneBody>strong{font-size:19px}.phoneBody>p{margin:6px 0 8px!important;font-size:10px}.phoneOffer{padding:6px 0;font-size:9px}.carouselControls{width:100%;justify-content:flex-end}.instagramStats{gap:4px}.instagramStats span{font-size:9px}}
+@media(max-width:540px){.journeyCreator{padding:14px}.journeyHeading{display:none}.journeyFlow{grid-template-columns:1fr;grid-template-areas:"social" "conversation" "earnings";gap:9px}.journeyPrice{display:none}.journeyFlow>div{padding:12px}.journeyFlow p{font-size:12px}.journeyEarnings{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px}.journeyEarnings .journeyNumber{grid-column:1/-1}.journeyEarnings strong{font-size:28px}.journeyEarnings p span{font-size:10px}.chatBubble{width:88%;padding:8px;margin-top:9px}.chatBubble p{font-size:11px}.iphone{width:min(100%,235px);padding:5px;border-radius:35px}.iphoneScreen{border-radius:28px}.iphoneStatus{height:24px;padding:0 12px;font-size:8px}.dynamicIsland{width:66px;height:17px;top:3px}.iphoneHome{height:15px}.iphoneHome span{width:70px;height:3px}.phonePageHeader{height:30px;font-size:12px}.phonePagePhoto{aspect-ratio:1/.9}.phonePageIdentity{padding:10px}.phonePageIdentity strong{font-size:17px}.phonePageTags{margin-top:8px}.phonePageTags span{font-size:8px;padding:3px 5px}.phonePageIdentity p{font-size:9px;margin-top:7px!important}.phonePageActions{padding:7px}.phonePageActions span{font-size:8px;padding:7px 2px}.carouselControls{width:100%;justify-content:flex-end}.instagramStats{gap:4px}.instagramStats span{font-size:9px}}
