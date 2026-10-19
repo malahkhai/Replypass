@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CreatorLinkStarter } from "@/components/creator-link-starter";
 import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
+import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import s from "./landing-options.module.css";
 
@@ -31,8 +32,7 @@ type CreatorStory = {
   bio: string;
   messagePriceCents: number | null;
   vipPriceCents: number | null;
-  social: "Instagram" | "TikTok" | "X";
-  socialHandle: string;
+  socialBio: string;
   fanQuestion: string;
   creatorReply: string;
 };
@@ -51,7 +51,12 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
     </div>
     <div className={s.journeyFlow}>
       <div className={s.journeyPrice}><span className={s.journeyNumber}>01 / SET YOUR PRICE</span><p>Fans know what a personal reply costs before they ask.</p><strong>{story.messagePriceCents === null ? "Set your own price" : `${euros(story.messagePriceCents)} per Guaranteed Reply`}</strong></div>
-      <div className={s.journeySocial}><span className={s.journeyNumber}>02 / SHARE YOUR LINK</span><p>Place it in your {story.social} bio or your existing link-in-bio page.</p><div className={s.socialPreview}><span className={s.socialAvatar}>{story.name.charAt(0)}</span><div><strong>{story.socialHandle} <small>· {story.social} bio preview</small></strong><span>{story.kind} · A little closer to my world</span><b>{profileUrl}</b></div></div></div>
+      <div className={s.journeySocial}><span className={s.journeyNumber}>02 / PUT YOUR LINK IN BIO</span><p>Give followers a direct way to reach you on Instagram, TikTok, X or your existing link page.</p><div className={s.socialPreview} aria-label={`Instagram bio preview for ${story.name}`}>
+        <div className={s.instagramTop}><span aria-hidden="true">‹</span><strong>your.instagram</strong><span aria-hidden="true">•••</span></div>
+        <div className={s.instagramProfile}><div className={s.instagramAvatar}><Image src={story.photo} alt="" fill sizes="64px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/></div><div className={s.instagramStats}><span><b>—</b> posts</span><span><b>—</b> followers</span><span><b>—</b> following</span></div></div>
+        <div className={s.instagramBio}><strong>{story.name}</strong><small>{story.kind}</small><p>{story.socialBio}</p><div><Icon name="link" size={14}/><span>{profileUrl}</span></div></div>
+        <div className={s.instagramActions}><span>Follow</span><span>Message</span></div>
+      </div></div>
       <div className={s.journeyConversation}><span className={s.journeyNumber}>03 / REPLY TO A FAN</span><div className={s.chatBubble}><small>FAN ASKS</small><p>{story.fanQuestion}</p></div><div className={`${s.chatBubble} ${s.chatCreator}`}><small>CREATOR REPLIES</small><p>{story.creatorReply}</p></div></div>
       <div className={s.journeyEarnings}><span className={s.journeyNumber}>04 / EARN FROM THE REPLY</span><strong>{creatorShare === null ? "85%" : euros(creatorShare, true)}</strong><p>{creatorShare === null ? "Creator share of a completed reply" : `Creator share of a completed ${euros(story.messagePriceCents!)} reply`} <span>before Stripe fees and adjustments</span></p></div>
     </div>
@@ -90,9 +95,9 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
   const creatorStories: CreatorStory[] = [
-    { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, social: "Instagram", socialHandle: "Mimi_Kiki", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
-    { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1200, vipPriceCents: 900, social: "TikTok", socialHandle: "@lunavale", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home." },
-    { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 800, vipPriceCents: 1500, social: "X", socialHandle: "@nicoreyes", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track." },
+    { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
+    { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1200, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home." },
+    { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 800, vipPriceCents: 1500, socialBio: "Sets, sounds and late nights. Ask me about the music on ReplyPass.", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track." },
   ];
   return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio}`}>
     <div className={s.opening}>
@@ -134,7 +139,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
     </section>
     <section className={`${s.section} ${s.creatorExamples}`} id="examples">
       <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>
-      <div className={s.creatorJourneys}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</div>
+      <CreatorJourneyCarousel labels={creatorStories.map((story) => story.name)}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</CreatorJourneyCarousel>
       <p className={s.exampleNote}>Mimi’s public offer and price are shown with her permission. The social bio placements and conversations are illustrative; the musician and DJ profiles are design previews. Creator shares are before Stripe fees and adjustments.</p>
     </section>
     <section className={`${s.section} ${s.offers}`} id="offers">
