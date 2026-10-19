@@ -5,6 +5,7 @@ export const categories = [
   "Model",
   "Athlete",
   "Musician",
+  "DJ",
   "Fitness",
   "Lifestyle",
   "Fashion",
