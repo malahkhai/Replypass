@@ -44,17 +44,17 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
   return <article className={s.creatorJourney}>
     <div className={s.journeyCreator}>
       <div className={s.journeyHeading}><span>0{index + 1} / CREATOR PAGE</span><h3>{story.name}</h3><p>{story.kind}</p></div>
-      <div className={s.iphone} aria-label={`${story.name} ReplyPass page in an iPhone preview`}>
-        <div className={s.iphoneScreen}>
-          <div className={s.iphoneStatus} aria-hidden="true"><span>9:41</span><span className={s.dynamicIsland}/><span className={s.iphoneIndicators}><i/><i/><i/></span></div>
-          {story.phoneScreenshot ? <Image className={s.phoneScreenshot} src={story.phoneScreenshot} alt={`${story.name}'s actual ReplyPass profile`} width={1320} height={2297} sizes="(max-width: 540px) 220px, 300px" unoptimized/> : <div className={s.phonePage}>
+      <div className={`${s.stockPhone} ${story.phoneScreenshot ? s.stockPhoneReal : ""}`} aria-label={`${story.name} ReplyPass page in a phone mockup`}>
+        <div className={s.stockPhoneStatus} aria-hidden="true"><span>9:41</span><span className={s.phoneIndicators}><i/><i/><i/></span></div>
+        <div className={s.stockPhoneScreen}>
+          {story.phoneScreenshot ? <Image className={s.phoneScreenshot} src={story.phoneScreenshot} alt={`${story.name}'s actual ReplyPass profile`} width={1320} height={2297} sizes="(max-width: 540px) 216px, 293px" unoptimized/> : <div className={s.phonePage}>
             <div className={s.phonePageHeader}><strong>replypass<span className={s.brandDot}>.</span></strong><span aria-hidden="true"><Icon name="share" size={14}/></span></div>
             <div className={s.phonePagePhoto}><Image src={story.photo} alt={`${story.name} profile portrait`} fill sizes="(max-width: 540px) 220px, 300px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/><span className={s.phoneAvailability}><i/>Open to requests</span><span className={s.phoneSwipe}>1 / 3 · Swipe</span></div>
             <div className={s.phonePageIdentity}><div><strong>{story.name}</strong><span>@{story.handle}</span></div><div className={s.phonePageTags}>{story.kind.split(" · ").map((kind) => <span key={kind}>{kind}</span>)}</div><p>{story.bio}</p></div>
             <div className={s.phonePageActions}><span><Icon name="message" size={14}/> Message {story.messagePriceCents === null ? "" : euros(story.messagePriceCents)}</span>{story.vipPriceCents !== null && <span><Icon name="sparkles" size={14}/> VIP {euros(story.vipPriceCents)}/mo</span>}</div>
           </div>}
-          {!story.phoneScreenshot && <div className={s.iphoneHome} aria-hidden="true"><span/></div>}
         </div>
+        <Image className={s.stockPhoneFrame} src="/images/magnific-front-phone.webp" alt="" width={758} height={1350} sizes="(max-width: 540px) 235px, 318px" unoptimized aria-hidden="true" />
       </div>
     </div>
     <div className={s.journeyFlow}>
