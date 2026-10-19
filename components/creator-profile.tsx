@@ -335,7 +335,7 @@ export function CreatorProfile({
               <div className="hero-topline">
                 <Badge className="online-badge">
                   <i className={`status-dot ${creator.availability}`} />{" "}
-                  {creator.availability}
+                  {preview ? "Example page" : creator.availability === "online" ? "Open to requests" : creator.availability === "away" ? "Replies may take longer" : "Currently away"}
                 </Badge>
                 <button
                   className="share-button"
@@ -368,15 +368,15 @@ export function CreatorProfile({
                     </span>
                   )}
                 </h1>
-                <CopyCreatorLink
+                {preview ? <span className="handle-copy-button">{creator.handle} · example</span> : <CopyCreatorLink
                   creatorId={creator.id || null}
                   handle={creator.handle}
                   surface="public_profile"
                   className="handle-copy-button"
-                  trackable={!creator.demo && !preview}
+                  trackable={!creator.demo}
                 >
                   {creator.handle}
-                </CopyCreatorLink>
+                </CopyCreatorLink>}
               </div>
               <div className="categories">
                 {creator.categories.map((category) => (
@@ -467,6 +467,7 @@ export function CreatorProfile({
             <p className="payment-promise">
               <Icon name="shield" size={15} /> {siteConfig.fanPromise} Always.
             </p>
+            {messageOffering && <p className="payment-explanation">For a Guaranteed Reply, your card is temporarily authorized when you send a request. You’re charged only if the creator replies before its deadline, shown in your request confirmation. If they decline or the deadline passes, the reservation is released; your bank may take time to remove the hold.</p>}
             {vip && (
               <>
                 <Card className="vip-card">
