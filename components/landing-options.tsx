@@ -5,9 +5,9 @@ import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
-import { SocialPlatformIcon } from "@/components/creator-socials";
+import { HeroCreatorPreview } from "@/components/hero-creator-preview";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
-import { safeSocialUrl, socialPlatforms, type SocialPlatform } from "@/lib/creators/socials";
+import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
 
 const signup = "/signup?next=%2Fcreator%2Fapply";
@@ -16,7 +16,12 @@ export type FeaturedCreator = {
   handle: string;
   photo: string;
   photoPosition?: string;
+  photoScale?: number;
+  photoCount?: number;
   categories: string[];
+  country?: string;
+  availability?: "online" | "away" | "offline";
+  verified?: boolean;
   messagePriceCents: number | null;
   vipPriceCents: number | null;
   live: boolean;
@@ -77,22 +82,6 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
   </article>;
 }
 
-function StepVisual({ step }: { step: number }) {
-  if (step === 1) return <div className={`${s.stepVisual} ${s.stepProfile}`} role="img" aria-label="Example creator profile preview">
-    <div className={s.stepProfilePhoto}><Image src="/images/home-creator-style.avif" alt="" fill sizes="240px" /></div>
-    <div><small>getreplypass.com/yourname</small><strong>Your page, your story</strong><span>Photos · Bio · Social links</span></div>
-  </div>;
-  if (step === 2) return <div className={`${s.stepVisual} ${s.stepSettings}`} role="img" aria-label="Example offer and payout settings">
-    <small>EXAMPLE SETUP</small><div><span>Guaranteed Reply</span><strong>€12</strong></div><div><span>VIP membership</span><strong>€9/mo</strong></div><div className={s.stepPayout}><Icon name="check" size={15} /><span>Connect Stripe for payouts</span></div>
-  </div>;
-  if (step === 3) return <div className={`${s.stepVisual} ${s.stepShare}`} role="img" aria-label="Example link in a social bio">
-    <small>YOUR SOCIAL BIO</small><strong>getreplypass.com/yourname</strong><span>Instagram · TikTok · X</span><em>Also works with Linktree and Link.me</em>
-  </div>;
-  return <div className={`${s.stepVisual} ${s.stepReply}`} role="img" aria-label="Example paid reply flow">
-    <small>EXAMPLE REQUEST</small><span className={s.fanBubble}>What inspired your latest song?</span><span className={s.creatorBubble}>The story started on a train home…</span><strong><Icon name="check" size={14} /> On-time reply · Payment captured</strong>
-  </div>;
-}
-
 const questions = [
   ["Do I need a big following?", "No. ReplyPass is for creators with people who want to connect with them. Start with the community you already have."],
   ["Can I keep my Linktree or Link.me?", "Absolutely. Add your ReplyPass URL as a link on your existing page, or share it directly in your social bio, stories and posts."],
@@ -105,10 +94,11 @@ function Start({ children, className = "", href }: { children: React.ReactNode; 
   return <Link href={href} className={className} data-creator-cta>{children} <Icon name="arrow" size={16} /></Link>;
 }
 
-export function LandingOption({ variant, creatorAuthenticated, featuredCreator }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreator: FeaturedCreator }) {
+export function LandingOption({ variant, creatorAuthenticated, featuredCreators }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreators: FeaturedCreator[] }) {
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
-  const profileSocials = (Object.keys(socialPlatforms) as SocialPlatform[]).filter(platform => safeSocialUrl(platform, featuredCreator.socials?.[platform] || ""));
+  const featuredCreator = featuredCreators[0];
+  const socialCreator = featuredCreators[1] || featuredCreator;
   const creatorStories: CreatorStory[] = [
     { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
     { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1800, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home.", instagram: { handle: "luna.vale.music", posts: "84", followers: "12.6K", following: "510" } },
@@ -138,19 +128,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
         </div>
         <div className={s.previewStage}>
           <div className={s.orbit} aria-hidden="true"/>
-          <div className={s.profile} aria-label={`${featuredCreator.name} ReplyPass profile preview`}>
-            <div className={s.portrait}>
-              <Image src={featuredCreator.photo} alt={`${featuredCreator.name} profile photo`} fill sizes="(max-width: 760px) 80vw, 370px" style={{objectPosition:featuredCreator.photoPosition || "center 35%"}} unoptimized={featuredCreator.photo.startsWith("http")} preload/>
-              <span className={s.previewLabel}>PROFILE PREVIEW</span>
-              <div><p>A LITTLE CLOSER TO {featuredCreator.name.toUpperCase()}</p><h2>{featuredCreator.name}</h2></div>
-            </div>
-            <div className={s.profileBody}>
-              <p>{featuredCreator.bio || "A closer way to connect."}</p>
-              {profileSocials.length > 0 && <div className={s.profileSocials} aria-label="Social icons shown on this profile">{profileSocials.map(platform => <span key={platform} title={socialPlatforms[platform].label}><SocialPlatformIcon platform={platform}/></span>)}</div>}
-              <div className={s.offerRow}><span className={s.offerIcon}><Icon name="message" size={18}/></span><div><strong>Get a Guaranteed Reply</strong><small>A personal reply from {featuredCreator.name}</small></div><b>{featuredCreator.messagePriceCents === null ? "Set your price" : euros(featuredCreator.messagePriceCents)}</b></div>
-              {featuredCreator.vipPriceCents !== null && <div className={s.offerRow}><span className={s.offerIcon}><Icon name="star" size={18}/></span><div><strong>VIP membership</strong><small>Get a little closer</small></div><b>{euros(featuredCreator.vipPriceCents)}/mo</b></div>}
-            </div>
-          </div>
+          <HeroCreatorPreview creators={featuredCreators}/>
           {pop && <><div className={s.floatCard}><span>YOUR ATTENTION HAS VALUE</span><strong>Put a price<br/>on personal.</strong><span className={s.spark}><Icon name="sparkles" size={30}/></span></div><div className={s.floatTag}>Your link. Your rules.</div></>}
         </div>
       </section>
@@ -158,13 +136,30 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
     <section className={`${s.section} ${s.how}`} id="how">
       <LandingSectionEngagement sectionId="how" />
-      <p className={s.eyebrow}>FROM YOUR PAGE TO YOUR FIRST PAID REPLY</p><h2>See how ReplyPass works.</h2>
-      <div className={s.steps}>{[
-        ["01", "Create your free page", "Choose your link and add the photos, bio and social links that make it yours."],
-        ["02", "Set your price and payouts", "Price Guaranteed Replies, add an optional VIP membership, and connect Stripe before accepting payments."],
-        ["03", "Share your link", "Put ReplyPass in your social bio or existing link-in-bio page. Your followers reach your page directly."],
-        ["04", "Reply and earn", "A fan sends a request. Their card is authorized first; an on-time qualifying reply completes the charge."],
-      ].map(([n,title,body], index) => <article key={n}><StepVisual step={index + 1}/><span>{n}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
+      <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
+      <div className={s.howCards}>
+        <article className={s.howCard}>
+          <div className={`${s.howArt} ${s.howPageArt}`}>
+            <span className={s.howArtLabel}>01 · YOUR PAGE</span>
+            <div className={s.howMiniProfile}><div className={s.howMiniPhoto}><Image src={featuredCreator.photo} alt="" fill sizes="(max-width: 760px) 80vw, 360px" style={{ objectPosition: featuredCreator.photoPosition || "center" }} unoptimized={featuredCreator.photo.startsWith("http")}/></div><div><strong>{featuredCreator.name}</strong><span>Guaranteed Reply {featuredCreator.messagePriceCents === null ? "" : euros(featuredCreator.messagePriceCents)}</span></div></div>
+          </div>
+          <span className={s.howIndex}>01 / CREATE</span><h3>Make your page yours.</h3><p>Add your photos, bio and offers. Set your reply price and connect payouts before accepting payments.</p>
+        </article>
+        <article className={s.howCard}>
+          <div className={`${s.howArt} ${s.howSocialArt}`}>
+            <span className={s.howArtLabel}>02 · YOUR SOCIAL BIO</span>
+            <div className={s.howSocialPhone}><div className={s.howSocialHeader}>Instagram <span>•••</span></div><div className={s.howSocialPerson}><div><Image src={socialCreator.photo} alt="" fill sizes="54px" style={{ objectPosition: socialCreator.photoPosition || "center" }} unoptimized={socialCreator.photo.startsWith("http")}/></div><strong>{socialCreator.name}</strong></div><p>Ask me a question on ReplyPass.</p><span className={s.howSocialLink}>getreplypass.com/{socialCreator.handle.replace(/^@/, "")}</span><span className={s.howTap}><Icon name="arrow" size={13}/> Fan taps your link</span></div>
+          </div>
+          <span className={s.howIndex}>02 / SHARE</span><h3>Put your link where fans find you.</h3><p>Add it to Instagram, TikTok, X or an existing Linktree or Link.me page. Your followers open your ReplyPass page directly.</p>
+        </article>
+        <article className={s.howCard}>
+          <div className={`${s.howArt} ${s.howReplyArt}`}>
+            <span className={s.howArtLabel}>03 · THE CONVERSATION</span>
+            <div className={s.howMessages}><span>How do you build the energy in a set?</span><span>I read the room first, then lift the tempo track by track.</span><strong><Icon name="check" size={13}/> Reply sent · Payment captured</strong></div>
+          </div>
+          <span className={s.howIndex}>03 / REPLY & EARN</span><h3>Give a real answer. Get paid.</h3><p>A fan sends a request and their card is authorized. An on-time qualifying reply completes the charge.</p>
+        </article>
+      </div>
     </section>
     <section className={`${s.section} ${s.creatorExamples}`} id="examples">
       <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>

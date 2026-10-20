@@ -228,3 +228,89 @@
   .stepReply>span,.stepReply strong{font-size:12px}
 }
 @media(max-width:430px){.steps article .stepVisual{height:170px}.stepShare strong{font-size:13px}}
+
+/* The homepage card mirrors the compact mobile creator profile. */
+.heroPreviewWrap{width:360px;max-width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative}
+.studio .profile{width:100%;padding:0;overflow:hidden;border-radius:24px;transform:none;background:#fcfbf8}
+.previewBrand{height:45px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:#fcfbf8;color:#252b24}
+.previewBrand strong{font-size:21px;letter-spacing:-.065em}
+.previewBrand strong span{color:#d74d42}
+.previewBrand>span{display:flex;align-items:center;gap:8px;border:1px solid #dfe2da;border-radius:100px;padding:5px 9px;font-size:9px;font-weight:700}
+.studio .portrait{height:250px;border-radius:0 0 18px 18px}
+.studio .portrait:after{background:linear-gradient(transparent 65%,#2224)}
+.previewAvailability,.previewShare,.previewPhotoCount{position:absolute;z-index:2;display:flex;align-items:center;background:#fffaf3ee;color:#242a24}
+.previewAvailability{top:13px;left:13px;gap:6px;padding:7px 10px;border-radius:30px;font-size:10px;font-weight:700}
+.previewAvailability i{width:6px;height:6px;border-radius:50%;background:#8d978a}
+.previewAvailability i.online{background:#43876a}
+.previewShare{top:13px;right:13px;justify-content:center;width:30px;height:30px;border-radius:50%}
+.previewPhotoCount{bottom:10px;left:50%;transform:translateX(-50%);border-radius:30px;padding:5px 9px;white-space:nowrap;background:#202620a8;color:#fff;font-size:9px;font-weight:700}
+.studio .profileBody{padding:14px 16px 11px}
+.previewIdentity{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.previewIdentity h2{display:flex!important;align-items:center;gap:6px;min-width:0;font-size:25px!important;letter-spacing:-.055em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.previewIdentity>span{flex:none;border:1px solid #90a084;border-radius:100px;padding:5px 8px;color:#56704b;font-size:10px}
+.previewVerified{display:grid;place-items:center;flex:none;width:17px;height:17px;border-radius:50%;background:#d74d42;color:#fff}
+.previewCategories{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.previewCategories span{padding:4px 8px;border:1px solid #dfe3db;border-radius:30px;color:#5d6659;font-size:9px}
+.studio .profileBody .previewCountry{display:flex;align-items:center;gap:5px;margin:9px 0 0!important;color:#697165;font-size:10px;text-align:left}
+.previewCountry span{font-size:14px}
+.studio .profileBody .previewBio{margin:12px 0 0!important;font-size:11px;line-height:1.4;text-align:left}
+.profileSocials{justify-content:flex-start;margin:10px 0 0}
+.profileSocials .socialIcon{display:grid;place-items:center;width:29px;height:29px;border:1px solid #e1e4dc;border-radius:50%;background:#fff;color:#252b24;transition:transform .16s ease,box-shadow .16s ease}
+.profileSocials .socialIcon:hover{transform:translateY(-2px);box-shadow:0 3px 12px #0002}
+.profileSocials .socialIcon:focus-visible{outline:2px solid #d74d42;outline-offset:2px}
+.profileSocials .socialIcon svg{width:15px;height:15px}
+.socialIcon.instagram{color:#c53486;border-color:#f0b7d3;background:#fff1f8}
+.socialIcon.tiktok{color:#fff;border-color:#202620;background:#202620}
+.socialIcon.youtube{color:#e62117;border-color:#f1b4ad;background:#fff1ef}
+.socialIcon.twitter{color:#fff;border-color:#1d2227;background:#1d2227}
+.socialIcon.website{color:#426b54;border-color:#cbd9cf;background:#f0f7ef}
+.previewActions{display:flex;gap:7px;padding:10px 12px;border-top:1px solid #e7e9e3;background:#fcfbf8}
+.previewActions>span{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:42px;border-radius:12px;padding:7px 5px;font-size:11px;font-weight:750;white-space:nowrap}
+.previewMessage{flex:1.2;background:#232a22;color:#fff}
+.previewVip{flex:.9;background:#e9eee3;color:#3c4f37}
+.previewVip small{font-size:9px;font-weight:500}
+.previewControls{display:flex;align-items:center;justify-content:center;gap:7px;height:28px}
+.previewControls button{cursor:pointer;font:inherit}
+.previewControls button:not(.previewPause){width:8px;height:8px;padding:0;border:1px solid #fff;border-radius:50%;background:#fff6}
+.previewControls button.previewControlActive{background:#fff}
+.previewControls .previewPause{margin-left:5px;padding:3px 8px;border:1px solid #fff7;border-radius:30px;background:#1d25188c;color:#fff;font-size:9px}
+@media(max-width:760px){.heroPreviewWrap{width:min(100%,330px)}.studio .previewStage{min-height:0;padding:10px 0}.studio .portrait{height:235px}}
+@media(prefers-reduced-motion:reduce){.profileSocials .socialIcon{transition:none}}
+
+/* Three visual chapters make the social-to-reply journey visible at a glance. */
+.howCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:52px}
+.howCard{min-width:0}
+.howArt{position:relative;display:flex;align-items:center;justify-content:center;height:330px;overflow:hidden;border-radius:22px;padding:30px}
+.howArtLabel{position:absolute;z-index:3;top:17px;left:17px;padding:7px 10px;border:1px solid #ffffff7d;border-radius:30px;background:#ffffffd9;color:#293229;font-size:10px;font-weight:800;letter-spacing:.08em}
+.howPageArt{background:#24312b}
+.howPageArt:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 65% 70%,#839e7899,transparent 48%)}
+.howMiniProfile{position:relative;width:min(100%,225px);margin-top:24px;overflow:hidden;border:6px solid #fefdf9;border-radius:18px;background:#fefdf9;box-shadow:0 22px 40px #0005;transform:rotate(-5deg)}
+.howMiniPhoto{position:relative;height:184px;overflow:hidden;border-radius:12px}
+.howMiniPhoto img{object-fit:cover}
+.howMiniProfile>div:last-child{display:grid;gap:5px;padding:11px 7px 6px;color:#253025}
+.howMiniProfile strong{font-size:16px;letter-spacing:-.04em}
+.howMiniProfile span{font-size:10px}
+.howSocialArt{background:linear-gradient(145deg,#dbe8db,#98afa7)}
+.howSocialPhone{position:relative;width:min(100%,245px);margin-top:28px;border:6px solid #202620;border-radius:22px;background:#0d1119;color:#fff;padding:13px 12px 15px;box-shadow:0 22px 36px #223e2b55;transform:rotate(4deg)}
+.howSocialHeader{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff29;padding-bottom:10px;font-size:12px;font-weight:800}
+.howSocialHeader span{letter-spacing:2px}
+.howSocialPerson{display:flex;align-items:center;gap:9px;margin-top:12px}
+.howSocialPerson>div{position:relative;width:46px;height:46px;overflow:hidden;border:2px solid #e65586;border-radius:50%}
+.howSocialPerson img{object-fit:cover}
+.howSocialPerson strong{font-size:13px}
+.howSocialPhone p{font-size:10px;margin:13px 0 8px!important}
+.howSocialLink{display:block;overflow-wrap:anywhere;color:#a9c4f9;font-size:11px;font-weight:800;animation:howLinkGlow 4s ease-in-out infinite}
+.howTap{display:inline-flex;align-items:center;gap:5px;margin-top:13px;border-radius:30px;background:#fff;color:#242a24;padding:6px 9px;font-size:9px;font-weight:800}
+.howReplyArt{background:linear-gradient(145deg,#e5e9da,#c4d6bf)}
+.howMessages{display:grid;gap:12px;width:min(100%,245px);margin-top:20px}
+.howMessages>span{display:block;max-width:88%;border-radius:13px 13px 13px 3px;background:#fff;padding:12px;color:#293129;font-size:12px;line-height:1.35;box-shadow:0 8px 20px #263c1f16}
+.howMessages>span:nth-child(2){justify-self:end;border-radius:13px 13px 3px 13px;background:#d74d42;color:#fff;animation:howReplyAppear 6s ease-in-out infinite}
+.howMessages strong{display:flex;align-items:center;gap:5px;justify-self:end;color:#445e41;font-size:10px;animation:howReplyAppear 6s ease-in-out infinite}
+.howIndex{display:block;margin-top:21px;color:#d74d42;font-size:10px;font-weight:800;letter-spacing:.12em}
+.howCard h3{font-size:clamp(25px,2.4vw,34px);margin:10px 0 12px}
+.howCard>p{max-width:390px;color:#4f594c;font-size:14px}
+@keyframes howLinkGlow{0%,100%{text-shadow:none}50%{text-shadow:0 0 12px #bcd0ff}}
+@keyframes howReplyAppear{0%,18%{opacity:.35;transform:translateY(8px)}35%,85%{opacity:1;transform:translateY(0)}100%{opacity:.35;transform:translateY(8px)}}
+@media(max-width:1050px){.howCards{gap:14px}.howArt{height:280px;padding:20px}.howCard h3{font-size:25px}}
+@media(max-width:760px){.howCards{grid-template-columns:1fr;gap:30px;margin-top:36px}.howArt{height:310px}.howCard>p{max-width:none}.howCard h3{font-size:28px}}
+@media(prefers-reduced-motion:reduce){.howSocialLink,.howMessages>span:nth-child(2),.howMessages strong{animation:none}}
