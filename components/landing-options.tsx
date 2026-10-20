@@ -5,9 +5,9 @@ import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
-import { HeroProfilePreview } from "@/components/hero-profile-preview";
+import { SocialPlatformIcon } from "@/components/creator-socials";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
-import type { SocialPlatform } from "@/lib/creators/socials";
+import { safeSocialUrl, socialPlatforms, type SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
 
 const signup = "/signup?next=%2Fcreator%2Fapply";
@@ -108,6 +108,7 @@ function Start({ children, className = "", href }: { children: React.ReactNode; 
 export function LandingOption({ variant, creatorAuthenticated, featuredCreator }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreator: FeaturedCreator }) {
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
+  const profileSocials = (Object.keys(socialPlatforms) as SocialPlatform[]).filter(platform => safeSocialUrl(platform, featuredCreator.socials?.[platform] || ""));
   const creatorStories: CreatorStory[] = [
     { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
     { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1800, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home.", instagram: { handle: "luna.vale.music", posts: "84", followers: "12.6K", following: "510" } },
@@ -135,7 +136,23 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
           <div className={s.facts}><span><Icon name="check" size={14}/>Free to create</span><span><Icon name="check" size={14}/>Set your prices</span><span><Icon name="check" size={14}/>No card to start</span></div>
           <a className={s.heroSecondary} href="#how">See how it works <span aria-hidden="true">↓</span></a>
         </div>
-        <HeroProfilePreview featuredCreator={featuredCreator} />
+        <div className={s.previewStage}>
+          <div className={s.orbit} aria-hidden="true"/>
+          <div className={s.profile} aria-label={`${featuredCreator.name} ReplyPass profile preview`}>
+            <div className={s.portrait}>
+              <Image src={featuredCreator.photo} alt={`${featuredCreator.name} profile photo`} fill sizes="(max-width: 760px) 80vw, 370px" style={{objectPosition:featuredCreator.photoPosition || "center 35%"}} unoptimized={featuredCreator.photo.startsWith("http")} preload/>
+              <span className={s.previewLabel}>PROFILE PREVIEW</span>
+              <div><p>A LITTLE CLOSER TO {featuredCreator.name.toUpperCase()}</p><h2>{featuredCreator.name}</h2></div>
+            </div>
+            <div className={s.profileBody}>
+              <p>{featuredCreator.bio || "A closer way to connect."}</p>
+              {profileSocials.length > 0 && <div className={s.profileSocials} aria-label="Social icons shown on this profile">{profileSocials.map(platform => <span key={platform} title={socialPlatforms[platform].label}><SocialPlatformIcon platform={platform}/></span>)}</div>}
+              <div className={s.offerRow}><span className={s.offerIcon}><Icon name="message" size={18}/></span><div><strong>Get a Guaranteed Reply</strong><small>A personal reply from {featuredCreator.name}</small></div><b>{featuredCreator.messagePriceCents === null ? "Set your price" : euros(featuredCreator.messagePriceCents)}</b></div>
+              {featuredCreator.vipPriceCents !== null && <div className={s.offerRow}><span className={s.offerIcon}><Icon name="star" size={18}/></span><div><strong>VIP membership</strong><small>Get a little closer</small></div><b>{euros(featuredCreator.vipPriceCents)}/mo</b></div>}
+            </div>
+          </div>
+          {pop && <><div className={s.floatCard}><span>YOUR ATTENTION HAS VALUE</span><strong>Put a price<br/>on personal.</strong><span className={s.spark}><Icon name="sparkles" size={30}/></span></div><div className={s.floatTag}>Your link. Your rules.</div></>}
+        </div>
       </section>
     </div>
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
