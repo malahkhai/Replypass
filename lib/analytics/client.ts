@@ -15,12 +15,18 @@ import {
 
 type AnalyticsEvent =
   | "creator_cta_click"
+  | "how_it_works_engaged"
+  | "featured_creator_viewed"
+  | "creator_use_case_selected"
   | "interaction_select"
   | "login"
   | "signup_submitted"
+  | "signup_started"
+  | "signup_account_created"
   | "creator_onboarding_start"
   | "creator_onboarding_step"
   | "creator_launch_success"
+  | "paid_offer_enabled"
   | "checkout_started"
   | "request_reserved"
   | "vip_subscription_active"
@@ -87,7 +93,7 @@ export function trackMetaPage(pathname: string) {
 }
 
 export function track(event: AnalyticsEvent, option?: string | number) {
-  const allowed = ["fan", "creator", "message", "live_chat", "voice_note", "photo", "video", "vip", "creator_dashboard", "public_profile", 1, 2, 3, 4, 5];
+  const allowed = ["fan", "creator", "message", "live_chat", "voice_note", "photo", "video", "vip", "creator_dashboard", "public_profile", 1, 2, 3, 4, 5, 6, 7];
   const safeOption = allowed.includes(option as string | number) ? option : undefined;
   if (analyticsAllowed()) {
     window.gtag?.("event", event, {
@@ -101,14 +107,17 @@ export function track(event: AnalyticsEvent, option?: string | number) {
   if (!advertisingAllowed()) return;
   initializeMetaPixel();
   const detail = safeOption !== undefined ? { content_category: safeOption } : undefined;
-  const metaEvents: Record<AnalyticsEvent, { mode: "track" | "trackCustom"; name: string }> = {
+  const metaEvents: Partial<Record<AnalyticsEvent, { mode: "track" | "trackCustom"; name: string }>> = {
     creator_cta_click: { mode: "trackCustom", name: "CreatorCTAClick" },
     interaction_select: { mode: "trackCustom", name: "InteractionSelect" },
     login: { mode: "trackCustom", name: "Login" },
     signup_submitted: { mode: "trackCustom", name: "SignupSubmitted" },
+    signup_started: { mode: "trackCustom", name: "SignupStarted" },
+    signup_account_created: { mode: "trackCustom", name: "SignupAccountCreated" },
     creator_onboarding_start: { mode: "track", name: "Lead" },
     creator_onboarding_step: { mode: "trackCustom", name: "CreatorOnboardingStep" },
     creator_launch_success: { mode: "track", name: "CompleteRegistration" },
+    paid_offer_enabled: { mode: "trackCustom", name: "PaidOfferEnabled" },
     checkout_started: { mode: "track", name: "InitiateCheckout" },
     request_reserved: { mode: "trackCustom", name: "RequestReserved" },
     vip_subscription_active: { mode: "track", name: "Subscribe" },
@@ -116,7 +125,7 @@ export function track(event: AnalyticsEvent, option?: string | number) {
     creator_link_copied: { mode: "trackCustom", name: "CreatorLinkCopied" },
   };
   const mapped = metaEvents[event];
-  window.fbq?.(mapped.mode, mapped.name, detail);
+  if (mapped) window.fbq?.(mapped.mode, mapped.name, detail);
 }
 
 export function trackXCreatorRegistration(conversionId: string) {

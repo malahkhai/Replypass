@@ -5,7 +5,7 @@ import Link from "next/link";
 import { isCreatorDestination, isCreatorSetupDestination, signupAllowed } from "@/lib/auth/paths";
 import { authOrigin } from "@/lib/site";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "./ui";
 import { Icon } from "./icon";
@@ -25,6 +25,8 @@ export function AuthForm({
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
+  const signupStarted = useRef(false);
+  const signupIntent = fanCreatorId ? "fan" : "creator";
   async function demo(role: "fan" | "creator") {
     setBusy(true);
     setError("");
@@ -104,7 +106,8 @@ export function AuthForm({
         );
         return;
       }
-      track(mode === "login" ? "login" : "signup_submitted", isCreatorSetupDestination(next) ? "creator" : "fan");
+      track(mode === "login" ? "login" : "signup_submitted", signupIntent);
+      if (mode === "signup" && result.data.user) track("signup_account_created", signupIntent);
       if (result.data.session) {
         router.push(`/auth/continue?next=${encodeURIComponent(next)}`);
         router.refresh();
@@ -158,7 +161,11 @@ export function AuthForm({
         </p>
       )}
       {configured ? (
-        <form onSubmit={submit} className="auth-form">
+        <form onSubmit={submit} className="auth-form" onFocusCapture={() => {
+          if (mode !== "signup" || signupStarted.current) return;
+          signupStarted.current = true;
+          track("signup_started", signupIntent);
+        }}>
           {mode === "signup" && (
             <label>
               Your name
