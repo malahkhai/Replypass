@@ -7,7 +7,7 @@ import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { HeroCreatorPreview } from "@/components/hero-creator-preview";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
-import type { FollowerCounts, SocialPlatform } from "@/lib/creators/socials";
+import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
 
 const signup = "/signup?next=%2Fcreator%2Fapply";
@@ -27,7 +27,6 @@ export type FeaturedCreator = {
   live: boolean;
   bio?: string;
   socials?: Partial<Record<SocialPlatform, string>>;
-  socialFollowers?: FollowerCounts;
 };
 
 function euros(cents: number, showCents = false) {

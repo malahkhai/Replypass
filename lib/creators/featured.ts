@@ -29,7 +29,6 @@ async function toFeatured(creator: PublicCreator): Promise<FeaturedCreator> {
     live: true,
     bio: creator.bio,
     socials: creator.socials,
-    socialFollowers: creator.socialFollowers,
   };
 }
 

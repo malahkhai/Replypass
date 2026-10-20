@@ -254,7 +254,6 @@
 .studio .profileBody .previewCountry{display:flex;align-items:center;gap:5px;margin:9px 0 0!important;color:#697165;font-size:10px;text-align:left}
 .previewCountry span{font-size:14px}
 .studio .profileBody .previewBio{margin:12px 0 0!important;font-size:11px;line-height:1.4;text-align:left}
-.studio .profileBody .previewAudience{margin:9px 0 0!important;color:#657063;font-size:10px;text-align:left}
 .profileSocials{justify-content:flex-start;margin:10px 0 0}
 .profileSocials .socialIcon{display:grid;place-items:center;width:29px;height:29px;border:1px solid #e1e4dc;border-radius:50%;background:#fff;color:#252b24;transition:transform .16s ease,box-shadow .16s ease}
 .profileSocials .socialIcon:hover{transform:translateY(-2px);box-shadow:0 3px 12px #0002}
