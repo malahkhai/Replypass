@@ -311,7 +311,7 @@
 .howCard h3{font-size:clamp(25px,2.4vw,34px);margin:10px 0 12px}
 .howCard>p{max-width:390px;color:#4f594c;font-size:14px}
 @keyframes howLinkGlow{0%,100%{text-shadow:none}50%{text-shadow:0 0 12px #bcd0ff}}
-@keyframes howReplyAppear{0%,18%{opacity:.35;transform:translateY(8px)}35%,85%{opacity:1;transform:translateY(0)}100%{opacity:.35;transform:translateY(8px)}}
+@keyframes howReplyAppear{0%,18%{opacity:1;transform:translateY(5px)}35%,85%{opacity:1;transform:translateY(0)}100%{opacity:1;transform:translateY(5px)}}
 @media(max-width:1050px){.howCards{gap:14px}.howArt{height:280px;padding:20px}.howCard h3{font-size:25px}}
 @media(max-width:760px){.howCards{grid-template-columns:1fr;gap:30px;margin-top:36px}.howArt{height:310px}.howCard>p{max-width:none}.howCard h3{font-size:28px}}
 @media(prefers-reduced-motion:reduce){.howSocialLink,.howMessages>span:nth-child(2),.howMessages strong{animation:none}}
