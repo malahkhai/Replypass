@@ -101,6 +101,7 @@
 .stockPhone{position:relative;width:min(100%,318px);aspect-ratio:758/1220;overflow:hidden;isolation:isolate;filter:drop-shadow(0 18px 18px #24362c30)}
 .stockPhoneReal{aspect-ratio:758/1350}
 .stockPhoneScreen{position:absolute;z-index:1;top:6.4%;left:4%;width:92%;overflow:hidden;border-radius:0 0 22px 22px;background:#fff}
+.stockPhoneReal .stockPhoneScreen{aspect-ratio:1320/2260}
 .stockPhoneFrame{position:absolute;z-index:2;top:0;left:0;display:block;width:100%;height:auto;mix-blend-mode:multiply;pointer-events:none}
 .stockPhoneStatus{position:absolute;z-index:3;top:2.65%;left:7%;right:7%;display:flex;align-items:center;justify-content:space-between;color:#1a1f1c;font-size:9px;font-weight:800;pointer-events:none}
 .phoneIndicators{display:flex;align-items:center;gap:3px}
