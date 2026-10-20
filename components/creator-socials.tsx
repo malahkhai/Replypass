@@ -1,6 +1,6 @@
 import { socialAudience, type FollowerCounts, type SocialPlatform } from "@/lib/creators/socials";
 
-function SocialPlatformIcon({ platform }: { platform: SocialPlatform }) {
+export function SocialPlatformIcon({ platform }: { platform: SocialPlatform }) {
   const paths: Record<SocialPlatform, React.ReactNode> = {
     instagram: <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" /></>,
     tiktok: <path d="M14 3v11.1a4.3 4.3 0 1 1-4.3-4.3M14 3c.6 3.2 2.7 5.2 6 5.4" />,

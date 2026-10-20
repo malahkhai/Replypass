@@ -202,45 +202,13 @@
 @media(max-width:430px){.steps article{grid-template-columns:96px 1fr;column-gap:13px}.steps h3{font-size:20px}.stepVisual{border-radius:12px}}
 @media(max-width:540px){.journeyCreator{padding:14px}.journeyHeading{display:none}.journeyFlow{grid-template-columns:1fr;grid-template-areas:"social" "conversation" "earnings";gap:9px}.journeyPrice{display:none}.journeyFlow>div{padding:12px}.journeyFlow p{font-size:12px}.journeyEarnings{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px}.journeyEarnings .journeyNumber{grid-column:1/-1}.journeyEarnings strong{font-size:28px}.journeyEarnings p span{font-size:10px}.chatBubble{width:88%;padding:8px;margin-top:9px}.chatBubble p{font-size:11px}.stockPhone{width:min(100%,265px)}.stockPhoneStatus{font-size:8px}.phoneIndicators i:first-child{width:7px;height:6px}.phoneIndicators i:nth-child(2){width:7px;height:7px}.phoneIndicators i:last-child{width:11px;height:6px}.phonePageHeader{height:30px;font-size:12px}.phonePagePhoto{aspect-ratio:1/.9}.phonePageIdentity{padding:10px}.phonePageIdentity strong{font-size:17px}.phonePageTags{margin-top:8px}.phonePageTags span{font-size:8px;padding:3px 5px}.phonePageIdentity p{font-size:9px;margin-top:7px!important}.phonePageActions{padding:7px}.phonePageActions span{font-size:8px;padding:7px 2px}.carouselControls{width:100%;justify-content:flex-end}.instagramStats{gap:4px}.instagramStats span{font-size:9px}}
 
-/* A real creator-page preview leads the mobile hero; its visible offer is the point of the story. */
-.heroShowcase{width:min(100%,460px);justify-self:center;align-self:center;color:#252b24}
-.heroShowcaseTabs{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
-.heroShowcaseTabs button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:100px;padding:8px 16px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-.heroShowcaseTabs button[aria-pressed="true"]{background:#fff;color:#252b24}
-.heroShowcaseTabs button:focus-visible{outline:3px solid #ffb99b;outline-offset:3px}
-.heroProfileCard{background:#fff;color:#252b24;border-radius:25px;overflow:hidden;box-shadow:0 26px 65px #0710085c;animation:heroPhraseIn .35s ease both}
-.heroProfileNav{display:flex;justify-content:space-between;align-items:center;padding:11px 17px;gap:10px}
-.heroProfileNav strong{font-size:19px;letter-spacing:-.065em}
-.heroProfileNav strong span{color:#d74d42}
-.heroProfileNav>span{display:flex;align-items:center;gap:6px;border:1px solid #d9dbd3;border-radius:100px;padding:6px 10px;font-size:10px;font-weight:700}
-.heroProfilePhoto{height:280px;position:relative;overflow:hidden;background:#e5e7de}
-.heroProfilePhoto img{object-fit:cover}
-.heroProfilePhoto:after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(transparent,#0008);pointer-events:none}
-.heroAvailability{position:absolute;top:14px;left:14px;z-index:1;display:flex;align-items:center;gap:6px;border-radius:100px;background:#fffef1ee;padding:7px 10px;font-size:10px;font-weight:700}
-.heroAvailability i{width:7px;height:7px;border-radius:50%;background:#3d8b65}
-.heroPhotoCaption{position:absolute;bottom:14px;left:16px;z-index:1;color:#fff;font-size:9px;font-weight:800;letter-spacing:.13em;text-shadow:0 1px 5px #0008}
-.heroProfileDetails{padding:16px 18px 10px}
-.heroProfileName{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.heroProfileName strong{font-size:26px;letter-spacing:-.055em}
-.heroProfileName>span{border:1px solid #d8ded1;border-radius:100px;padding:5px 9px;font-size:10px;color:#526b44}
-.heroProfileCategories{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
-.heroProfileCategories span{border:1px solid #e2e4dd;border-radius:100px;padding:4px 7px;font-size:9px}
-.heroProfileDetails p{font-size:11px;line-height:1.4;margin-top:10px!important}
-.heroSocials{display:flex;align-items:center;gap:7px;margin-top:10px;min-height:28px}
-.heroSocials a,.heroSocials span{display:grid;place-items:center;width:27px;height:27px;border:1px solid #e1e4dc;border-radius:50%;color:#252b24}
-.heroSocials svg{width:15px;height:15px}
-.heroProfileOffers{display:flex;gap:7px;padding:10px 14px 14px;border-top:1px solid #e7e9e2}
-.heroProfileOffers>span{display:flex;justify-content:center;align-items:center;gap:5px;border-radius:10px;padding:10px 8px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap}
-.heroMessageOffer{flex:1;background:#252b24;color:#fff}
-.heroVipOffer{background:#e8ebdf;color:#394934}
-.heroProfileUrl{text-align:center;font-size:12px;font-weight:700;letter-spacing:.015em;margin-top:13px!important;color:#fff}
-.pop .heroShowcaseTabs button{border-color:#35204577;background:#fff9ee88;color:#352045}
-.pop .heroShowcaseTabs button[aria-pressed="true"]{background:#352045;color:#fff}
-.pop .heroProfileUrl{color:#352045}
+/* Keep the original profile card; update only its creator details. */
+.profileSocials{display:flex;justify-content:center;gap:7px;margin:-5px 0 11px}
+.profileSocials span{display:grid;place-items:center;width:26px;height:26px;border:1px solid #e1e4dc;border-radius:50%}
+.profileSocials svg{width:14px;height:14px}
+.offerRow b{margin-left:auto;white-space:nowrap;font-size:12px}
 @media(max-width:760px){
-  .heroShowcase{order:-1;width:min(100%,410px)}
-  .hero{gap:35px}
-  .heroProfilePhoto{height:260px}
+  .studio .previewStage{order:-1}
   .steps{gap:30px}
   .steps article{display:grid;grid-template-columns:1fr;gap:0;border:1px solid #dcdfd5;border-radius:18px;overflow:hidden;padding:0;background:#fffdf7}
   .steps article .stepVisual{grid-row:auto;width:100%;height:180px;border:0;border-bottom:1px solid #dcdfd5;border-radius:0;padding:18px 22px;gap:9px}
@@ -259,13 +227,4 @@
   .stepShare span,.stepShare em{font-size:12px}
   .stepReply>span,.stepReply strong{font-size:12px}
 }
-@media(max-width:430px){
-  .hero{padding-top:67px}
-  .heroShowcase{width:min(100%,335px)}
-  .heroProfilePhoto{height:220px}
-  .heroProfileDetails{padding-top:12px}
-  .heroProfileOffers>span{font-size:10px}
-  .steps article .stepVisual{height:170px}
-  .stepShare strong{font-size:13px}
-}
-@media(prefers-reduced-motion:reduce){.heroProfileCard{animation:none}}
+@media(max-width:430px){.steps article .stepVisual{height:170px}.stepShare strong{font-size:13px}}
