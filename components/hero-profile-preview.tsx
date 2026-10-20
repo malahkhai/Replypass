@@ -60,7 +60,7 @@ export function HeroProfilePreview({ featuredCreator }: { featuredCreator: Featu
   const creator = selected === "mimi" ? mimi : dj;
   const actualSocials = (Object.keys(socialPlatforms) as SocialPlatform[]).flatMap(platform => {
     const href = safeSocialUrl(platform, creator.socials?.[platform] || "");
-    return href ? [{ platform, href }] : [];
+    return href ? [platform] : [];
   });
   return <div className={s.heroShowcase} aria-label="ReplyPass creator profile preview">
     <div className={s.heroShowcaseTabs} role="group" aria-label="Choose a profile preview">
@@ -78,7 +78,7 @@ export function HeroProfilePreview({ featuredCreator }: { featuredCreator: Featu
         <div className={s.heroProfileName}><strong>{creator.name}</strong><span>@{creator.handle}</span></div>
         <div className={s.heroProfileCategories}>{creator.categories.map(category => <span key={category}>{category}</span>)}</div>
         <p>{creator.bio}</p>
-        {actualSocials.length > 0 ? <div className={s.heroSocials} aria-label={`${creator.name} social links`}>{actualSocials.map(({ platform, href }) => <a key={platform} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${creator.name} on ${socialPlatforms[platform].label}`}><SocialIcon platform={platform}/></a>)}</div> : <div className={s.heroSocials} aria-label="Social platforms your page can display">{(["instagram", "tiktok", "twitter"] as const).map(platform => <span key={platform} title={socialPlatforms[platform].label}><SocialIcon platform={platform}/></span>)}</div>}
+        <div className={s.heroSocials} aria-label="Social icons on a ReplyPass profile">{(actualSocials.length > 0 ? actualSocials : ["instagram", "tiktok", "twitter"] as const).map(platform => <span key={platform} title={socialPlatforms[platform].label}><SocialIcon platform={platform}/></span>)}</div>
       </div>
       <div className={s.heroProfileOffers}>
         <span className={s.heroMessageOffer}><Icon name="message" size={17}/>{creator.priceCents === null ? "Set your reply price" : `Get a Guaranteed Reply · ${price(creator.priceCents)}`}</span>
