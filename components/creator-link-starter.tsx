@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icon } from "@/components/icon";
+import { track } from "@/lib/analytics/client";
 
 export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthenticated: boolean }) {
   const router = useRouter();
@@ -17,6 +18,7 @@ export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthentica
       return;
     }
     const next = `/creator/apply${normalized ? `?username=${normalized}` : ""}`;
+    track("creator_cta_click", "creator");
     router.push(creatorAuthenticated ? next : `/signup?next=${encodeURIComponent(next)}`);
   }
 

@@ -4,7 +4,7 @@ import { syncXCreatorRegistrationConsent, track, trackXCreatorRegistration } fro
 import { siteConfig } from "@/lib/site";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { categories, type CreatorDraft } from "@/types/creator";
 import { blankCreator, catalog } from "@/lib/creators/catalog";
@@ -39,6 +39,12 @@ export function CreatorEditor({
     initial.image.startsWith("data:") ? initial.image : "",
   );
   const router = useRouter();
+  const onboardingTracked = useRef(false);
+  useEffect(() => {
+    if (demo || editing || onboardingTracked.current) return;
+    onboardingTracked.current = true;
+    track("creator_onboarding_start");
+  }, [demo, editing]);
   function patch<K extends keyof CreatorDraft>(key: K, value: CreatorDraft[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
   }
@@ -173,6 +179,10 @@ export function CreatorEditor({
         window.dispatchEvent(new Event("replypass:change"));
       }
       if (!demo && !editing) track("creator_launch_success");
+      if (!demo) for (const kind of ["message", "vip"] as const) {
+        if (draft.pricing.some((price) => price.kind === kind && price.enabled) &&
+            !initial.pricing.some((price) => price.kind === kind && price.enabled)) track("paid_offer_enabled", kind);
+      }
       if (!demo && !editing && xConsentSaved && typeof data.xConversionId === "string") {
         trackXCreatorRegistration(data.xConversionId);
       }

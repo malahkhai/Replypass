@@ -4,6 +4,7 @@ import { CreatorLinkStarter } from "@/components/creator-link-starter";
 import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
+import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import s from "./landing-options.module.css";
 
@@ -36,6 +37,7 @@ type CreatorStory = {
   socialBio: string;
   fanQuestion: string;
   creatorReply: string;
+  instagram?: { handle: string; posts: string; followers: string; following: string };
 };
 
 function CreatorJourney({ story, index }: { story: CreatorStory; index: number }) {
@@ -60,8 +62,8 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
     <div className={s.journeyFlow}>
       <div className={s.journeyPrice}><span className={s.journeyNumber}>01 / SET YOUR PRICE</span><p>Fans know what a personal reply costs before they ask.</p><strong>{story.messagePriceCents === null ? "Set your own price" : `${euros(story.messagePriceCents)} per Guaranteed Reply`}</strong></div>
       <div className={s.journeySocial}><span className={s.journeyNumber}>02 / PUT YOUR LINK IN BIO</span><p>Give followers a direct way to reach you on Instagram, TikTok, X or your existing link page.</p><div className={s.socialPreview} aria-label={`Instagram bio preview for ${story.name}`}>
-        <div className={s.instagramTop}><span aria-hidden="true">‹</span><strong>your.instagram</strong><span aria-hidden="true">•••</span></div>
-        <div className={s.instagramProfile}><div className={s.instagramAvatar}><Image src={story.photo} alt="" fill sizes="64px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/></div><div className={s.instagramStats}><span><b>—</b> posts</span><span><b>—</b> followers</span><span><b>—</b> following</span></div></div>
+        <div className={s.instagramTop}><span aria-hidden="true">‹</span><strong>{story.instagram?.handle ?? "your.instagram"}</strong><span aria-hidden="true">•••</span></div>
+        <div className={s.instagramProfile}><div className={s.instagramAvatar}><Image src={story.photo} alt="" fill sizes="64px" style={{ objectPosition: story.photoPosition || "center 32%" }} unoptimized={story.photo.startsWith("http")}/></div><div className={s.instagramStats}><span><b>{story.instagram?.posts ?? "—"}</b> posts</span><span><b>{story.instagram?.followers ?? "—"}</b> followers</span><span><b>{story.instagram?.following ?? "—"}</b> following</span></div></div>
         <div className={s.instagramBio}><strong>{story.name}</strong><small>{story.kind}</small><p>{story.socialBio}</p><div><Icon name="link" size={14}/><span>{profileUrl}</span></div></div>
         <div className={s.instagramActions}><span>Follow</span><span>Message</span></div>
       </div></div>
@@ -104,8 +106,12 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
   const creatorStories: CreatorStory[] = [
     { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
-    { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1200, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home." },
-    { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 800, vipPriceCents: 1500, socialBio: "Sets, sounds and late nights. Ask me about the music on ReplyPass.", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track." },
+    { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1800, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home.", instagram: { handle: "luna.vale.music", posts: "84", followers: "12.6K", following: "510" } },
+    { name: "Nico Reyes", handle: "nicoreyes", kind: "DJ", photo: "/images/demo-dj.webp", bio: "Sets, sounds, and late nights.", messagePriceCents: 2000, vipPriceCents: 1500, socialBio: "Sets, sounds and late nights. Ask me about the music on ReplyPass.", fanQuestion: "How do you build the energy in a set?", creatorReply: "I read the room first, then lift the tempo track by track.", instagram: { handle: "nico.reyes.music", posts: "247", followers: "18.2K", following: "643" } },
+    { name: "Nia Solis", handle: "niasolis", kind: "Beauty", photo: "/images/creator-examples/beauty-portrait.avif", photoPosition: "center 26%", bio: "Simple beauty routines that feel like you.", messagePriceCents: 1800, vipPriceCents: 1200, socialBio: "Beauty, routines and the little details. Ask me on ReplyPass.", fanQuestion: "What is your five-minute everyday makeup routine?", creatorReply: "I start with moisturizer, skin tint and cream blush. Those three do most of the work.", instagram: { handle: "nia.solis.beauty", posts: "186", followers: "24.3K", following: "721" } },
+    { name: "Zara Mensah", handle: "zaramensah", kind: "Beauty · Style", photo: "/images/creator-examples/beauty-style.avif", photoPosition: "center 28%", bio: "The looks, products and stories behind my style.", messagePriceCents: 2200, vipPriceCents: 1900, socialBio: "Beauty and style, one look at a time. Ask me on ReplyPass.", fanQuestion: "How did you put together the red-and-black look?", creatorReply: "I started with the red dress, then kept the layers and accessories dark and simple.", instagram: { handle: "zara.mensah.style", posts: "312", followers: "31.8K", following: "892" } },
+    { name: "Theo Martin", handle: "theomartin", kind: "Fitness", photo: "/images/creator-examples/fitness.avif", photoPosition: "center 32%", bio: "Training habits built for real life.", messagePriceCents: 2500, vipPriceCents: 1900, socialBio: "Training, consistency and finding your pace. Ask me on ReplyPass.", fanQuestion: "How do you stay consistent when work gets busy?", creatorReply: "I plan three short sessions in advance and treat them like appointments.", instagram: { handle: "theo.martin.fit", posts: "149", followers: "16.7K", following: "438" } },
+    { name: "Sophie Lane", handle: "sophielane", kind: "Lifestyle", photo: "/images/creator-examples/lifestyle.jpg", photoPosition: "center 28%", bio: "Everyday stories, filming days and little wins.", messagePriceCents: 1600, vipPriceCents: 1400, socialBio: "Life behind the camera. Ask me anything on ReplyPass.", fanQuestion: "How do you make time for filming around work?", creatorReply: "I batch two ideas on Sunday and film them in short windows during the week.", instagram: { handle: "sophie.lane.life", posts: "203", followers: "9,840", following: "566" } },
   ];
   return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio}`}>
     <div className={s.opening}>
@@ -137,6 +143,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreator }
     </div>
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
     <section className={`${s.section} ${s.how}`} id="how">
+      <LandingSectionEngagement sectionId="how" />
       <p className={s.eyebrow}>FROM YOUR PAGE TO YOUR FIRST PAID REPLY</p><h2>See how ReplyPass works.</h2>
       <div className={s.steps}>{[
         ["01", "Create your free page", "Choose your link and add the photos, bio and social links that make it yours."],
