@@ -6,7 +6,7 @@ import type { FeaturedCreator } from "@/components/landing-options";
 import { SocialPlatformIcon } from "@/components/creator-socials";
 import { Icon } from "@/components/icon";
 import { creatorCountry } from "@/lib/creators/countries";
-import { safeSocialUrl, socialPlatforms, type SocialPlatform } from "@/lib/creators/socials";
+import { socialAudience } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
 
 function price(cents: number) {
@@ -27,10 +27,7 @@ export function HeroCreatorPreview({ creators }: { creators: FeaturedCreator[] }
 
   const creator = creators[index] || creators[0];
   const country = creatorCountry(creator.country);
-  const links = (Object.keys(socialPlatforms) as SocialPlatform[]).flatMap((platform) => {
-    const href = safeSocialUrl(platform, creator.socials?.[platform] || "");
-    return href ? [{ platform, href, label: socialPlatforms[platform].label }] : [];
-  });
+  const { links, total, counted } = socialAudience(creator.socials || {}, creator.socialFollowers || {});
   const availability = creator.availability === "away" ? "Replies may take longer" : creator.availability === "offline" ? "Currently away" : "Open to requests";
 
   return <div className={s.heroPreviewWrap}>
@@ -47,6 +44,7 @@ export function HeroCreatorPreview({ creators }: { creators: FeaturedCreator[] }
         <div className={s.previewCategories}>{creator.categories.map((category) => <span key={category}>{category}</span>)}</div>
         {country && <p className={s.previewCountry}><span aria-hidden="true">{country.flag}</span> Country: {country.name}</p>}
         {creator.bio && <p className={s.previewBio}>{creator.bio}</p>}
+        {counted > 0 && <p className={s.previewAudience}>{new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(total)} followers across {counted} {counted === 1 ? "account" : "accounts"}</p>}
         {links.length > 0 && <nav className={s.profileSocials} aria-label={`${creator.name} social profiles`}>
           {links.map(({ platform, href, label }) => <a key={platform} className={`${s.socialIcon} ${s[platform]}`} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} for ${creator.name} (opens in a new tab)`}><SocialPlatformIcon platform={platform}/></a>)}
         </nav>}
