@@ -14,6 +14,7 @@ export async function getFeaturedMimi(): Promise<FeaturedCreator> {
     messagePriceCents: null,
     vipPriceCents: null,
     live: false,
+    bio: "A little closer to Mimi.",
   };
 
   let vipPriceCents: number | null = null;
@@ -33,5 +34,7 @@ export async function getFeaturedMimi(): Promise<FeaturedCreator> {
     messagePriceCents: creator.offerings.find((offer) => offer.kind === "message")?.cents ?? null,
     vipPriceCents,
     live: true,
+    bio: creator.bio,
+    socials: creator.socials,
   };
 }
