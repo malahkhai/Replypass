@@ -2,6 +2,35 @@ import "server-only";
 import type { FeaturedCreator } from "@/components/landing-options";
 import { getVipPlan } from "@/lib/vip/server";
 import { findCreator } from "./repository";
+import type { PublicCreator } from "@/types/creator";
+
+async function toFeatured(creator: PublicCreator): Promise<FeaturedCreator> {
+  let vipPriceCents: number | null = null;
+  if (creator.payoutReady) {
+    try {
+      const plan = await getVipPlan(creator.id);
+      if (plan?.enabled) vipPriceCents = plan.amountCents;
+    } catch { /* A VIP lookup failure should not break the homepage. */ }
+  }
+  const firstPhoto = creator.profilePhotos?.[0];
+  return {
+    name: creator.name,
+    handle: creator.handle,
+    photo: firstPhoto?.url || creator.image || "/images/mimi-feature.webp",
+    photoPosition: firstPhoto ? `${firstPhoto.x}% ${firstPhoto.y}%` : "center",
+    photoScale: firstPhoto?.scale || 100,
+    photoCount: creator.profilePhotos?.length || 1,
+    categories: creator.categories,
+    country: creator.country,
+    availability: creator.availability,
+    verified: creator.verified,
+    messagePriceCents: creator.offerings.find((offer) => offer.kind === "message")?.cents ?? null,
+    vipPriceCents,
+    live: true,
+    bio: creator.bio,
+    socials: creator.socials,
+  };
+}
 
 /** The saved portrait keeps the page useful when profile data is briefly unavailable. */
 export async function getFeaturedMimi(): Promise<FeaturedCreator> {
@@ -17,24 +46,12 @@ export async function getFeaturedMimi(): Promise<FeaturedCreator> {
     bio: "A little closer to Mimi.",
   };
 
-  let vipPriceCents: number | null = null;
-  if (creator.payoutReady) {
-    try {
-      const plan = await getVipPlan(creator.id);
-      if (plan?.enabled) vipPriceCents = plan.amountCents;
-    } catch { /* A VIP lookup failure should not break the homepage. */ }
-  }
-  const firstPhoto = creator.profilePhotos?.[0];
-  return {
-    name: creator.name,
-    handle: creator.handle,
-    photo: firstPhoto?.url || creator.image || "/images/mimi-feature.webp",
-    photoPosition: firstPhoto ? `${firstPhoto.x}% ${firstPhoto.y}%` : "center",
-    categories: creator.categories,
-    messagePriceCents: creator.offerings.find((offer) => offer.kind === "message")?.cents ?? null,
-    vipPriceCents,
-    live: true,
-    bio: creator.bio,
-    socials: creator.socials,
-  };
+  return toFeatured(creator);
+}
+
+/** Keep the rotating homepage limited to real, approved public creators. */
+export async function getFeaturedCreators(): Promise<FeaturedCreator[]> {
+  const [mimi, sl] = await Promise.all([getFeaturedMimi(), findCreator("slthedj").catch(() => null)]);
+  if (!sl?.payoutReady || !sl.offerings.some((offering) => offering.kind === "message")) return [mimi];
+  return [mimi, await toFeatured(sl)];
 }
