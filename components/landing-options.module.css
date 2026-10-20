@@ -280,37 +280,12 @@
 /* Three visual chapters make the social-to-reply journey visible at a glance. */
 .howCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:52px}
 .howCard{min-width:0}
-.howArt{position:relative;display:flex;align-items:center;justify-content:center;height:330px;overflow:hidden;border-radius:22px;padding:30px}
-.howArtLabel{position:absolute;z-index:3;top:17px;left:17px;padding:7px 10px;border:1px solid #ffffff7d;border-radius:30px;background:#ffffffd9;color:#293229;font-size:10px;font-weight:800;letter-spacing:.08em}
-.howPageArt{background:#24312b}
-.howPageArt:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 65% 70%,#839e7899,transparent 48%)}
-.howMiniProfile{position:relative;width:min(100%,225px);margin-top:24px;overflow:hidden;border:6px solid #fefdf9;border-radius:18px;background:#fefdf9;box-shadow:0 22px 40px #0005;transform:rotate(-5deg)}
-.howMiniPhoto{position:relative;height:184px;overflow:hidden;border-radius:12px}
-.howMiniPhoto img{object-fit:cover}
-.howMiniProfile>div:last-child{display:grid;gap:5px;padding:11px 7px 6px;color:#253025}
-.howMiniProfile strong{font-size:16px;letter-spacing:-.04em}
-.howMiniProfile span{font-size:10px}
-.howSocialArt{background:linear-gradient(145deg,#dbe8db,#98afa7)}
-.howSocialPhone{position:relative;width:min(100%,245px);margin-top:28px;border:6px solid #202620;border-radius:22px;background:#0d1119;color:#fff;padding:13px 12px 15px;box-shadow:0 22px 36px #223e2b55;transform:rotate(4deg)}
-.howSocialHeader{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff29;padding-bottom:10px;font-size:12px;font-weight:800}
-.howSocialHeader span{letter-spacing:2px}
-.howSocialPerson{display:flex;align-items:center;gap:9px;margin-top:12px}
-.howSocialPerson>div{position:relative;width:46px;height:46px;overflow:hidden;border:2px solid #e65586;border-radius:50%}
-.howSocialPerson img{object-fit:cover}
-.howSocialPerson strong{font-size:13px}
-.howSocialPhone p{font-size:10px;margin:13px 0 8px!important}
-.howSocialLink{display:block;overflow-wrap:anywhere;color:#a9c4f9;font-size:11px;font-weight:800;animation:howLinkGlow 4s ease-in-out infinite}
-.howTap{display:inline-flex;align-items:center;gap:5px;margin-top:13px;border-radius:30px;background:#fff;color:#242a24;padding:6px 9px;font-size:9px;font-weight:800}
-.howReplyArt{background:linear-gradient(145deg,#e5e9da,#c4d6bf)}
-.howMessages{display:grid;gap:12px;width:min(100%,245px);margin-top:20px}
-.howMessages>span{display:block;max-width:88%;border-radius:13px 13px 13px 3px;background:#fff;padding:12px;color:#293129;font-size:12px;line-height:1.35;box-shadow:0 8px 20px #263c1f16}
-.howMessages>span:nth-child(2){justify-self:end;border-radius:13px 13px 3px 13px;background:#d74d42;color:#fff;animation:howReplyAppear 6s ease-in-out infinite}
-.howMessages strong{display:flex;align-items:center;gap:5px;justify-self:end;color:#445e41;font-size:10px;animation:howReplyAppear 6s ease-in-out infinite}
+.howMedia{position:relative;width:100%;aspect-ratio:9/7;overflow:hidden;border-radius:22px;background:#e8eee5}
+.howMedia video{display:block;width:100%;height:100%;object-fit:cover}
+.howMediaControl{position:absolute;right:12px;bottom:12px;z-index:2;padding:7px 11px;border:1px solid #ffffff8c;border-radius:20px;background:#202b22bd;color:#fff;font:700 11px Arial,sans-serif;cursor:pointer}
+.howMediaControl:focus-visible{outline:3px solid #d95348;outline-offset:2px}
 .howIndex{display:block;margin-top:21px;color:#d74d42;font-size:10px;font-weight:800;letter-spacing:.12em}
 .howCard h3{font-size:clamp(25px,2.4vw,34px);margin:10px 0 12px}
 .howCard>p{max-width:390px;color:#4f594c;font-size:14px}
-@keyframes howLinkGlow{0%,100%{text-shadow:none}50%{text-shadow:0 0 12px #bcd0ff}}
-@keyframes howReplyAppear{0%,18%{opacity:1;transform:translateY(5px)}35%,85%{opacity:1;transform:translateY(0)}100%{opacity:1;transform:translateY(5px)}}
-@media(max-width:1050px){.howCards{gap:14px}.howArt{height:280px;padding:20px}.howCard h3{font-size:25px}}
-@media(max-width:760px){.howCards{grid-template-columns:1fr;gap:30px;margin-top:36px}.howArt{height:310px}.howCard>p{max-width:none}.howCard h3{font-size:28px}}
-@media(prefers-reduced-motion:reduce){.howSocialLink,.howMessages>span:nth-child(2),.howMessages strong{animation:none}}
+@media(max-width:1050px){.howCards{gap:14px}.howCard h3{font-size:25px}}
+@media(max-width:760px){.howCards{grid-template-columns:1fr;gap:30px;margin-top:36px}.howCard>p{max-width:none}.howCard h3{font-size:28px}}

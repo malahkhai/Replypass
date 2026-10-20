@@ -6,6 +6,7 @@ import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { HeroCreatorPreview } from "@/components/hero-creator-preview";
+import { HomeMotionVideo } from "@/components/home-motion-video";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
@@ -98,7 +99,6 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
   const featuredCreator = featuredCreators[0];
-  const socialCreator = featuredCreators[1] || featuredCreator;
   const creatorStories: CreatorStory[] = [
     { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
     { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1800, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home.", instagram: { handle: "luna.vale.music", posts: "84", followers: "12.6K", following: "510" } },
@@ -139,25 +139,16 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
       <div className={s.howCards}>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howPageArt}`}>
-            <span className={s.howArtLabel}>01 · YOUR PAGE</span>
-            <div className={s.howMiniProfile}><div className={s.howMiniPhoto}><Image src={featuredCreator.photo} alt="" fill sizes="(max-width: 760px) 80vw, 360px" style={{ objectPosition: featuredCreator.photoPosition || "center" }} unoptimized={featuredCreator.photo.startsWith("http")}/></div><div><strong>{featuredCreator.name}</strong><span>Guaranteed Reply {featuredCreator.messagePriceCents === null ? "" : euros(featuredCreator.messagePriceCents)}</span></div></div>
-          </div>
+          <HomeMotionVideo asset="creator-page" label="creator page" />
           <span className={s.howIndex}>01 / CREATE</span><h3>Make your page yours.</h3><p>Add your photos, bio and offers. Set your reply price and connect payouts before accepting payments.</p>
         </article>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howSocialArt}`}>
-            <span className={s.howArtLabel}>02 · YOUR SOCIAL BIO</span>
-            <div className={s.howSocialPhone}><div className={s.howSocialHeader}>Instagram <span>•••</span></div><div className={s.howSocialPerson}><div><Image src={socialCreator.photo} alt="" fill sizes="54px" style={{ objectPosition: socialCreator.photoPosition || "center" }} unoptimized={socialCreator.photo.startsWith("http")}/></div><strong>{socialCreator.name}</strong></div><p>Ask me a question on ReplyPass.</p><span className={s.howSocialLink}>getreplypass.com/{socialCreator.handle.replace(/^@/, "")}</span><span className={s.howTap}><Icon name="arrow" size={13}/> Fan taps your link</span></div>
-          </div>
+          <HomeMotionVideo asset="social-to-reply" label="fan journey" />
           <span className={s.howIndex}>02 / SHARE</span><h3>Put your link where fans find you.</h3><p>Add it to Instagram, TikTok, X or an existing Linktree or Link.me page. Your followers open your ReplyPass page directly.</p>
         </article>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howReplyArt}`}>
-            <span className={s.howArtLabel}>03 · THE CONVERSATION</span>
-            <div className={s.howMessages}><span>How do you build the energy in a set?</span><span>I read the room first, then lift the tempo track by track.</span><strong><Icon name="check" size={13}/> Reply sent · Payment captured</strong></div>
-          </div>
-          <span className={s.howIndex}>03 / REPLY & EARN</span><h3>Give a real answer. Get paid.</h3><p>A fan sends a request and their card is authorized. An on-time qualifying reply completes the charge.</p>
+          <HomeMotionVideo asset="creator-earnings" label="earnings" />
+          <span className={s.howIndex}>03 / EARN</span><h3>See each reply become earnings.</h3><p>A fan’s card is authorized when they ask. After your on-time qualifying reply, track what you earned and when Stripe transfers it to your payout balance.</p>
         </article>
       </div>
     </section>
