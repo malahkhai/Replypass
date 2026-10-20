@@ -6,7 +6,6 @@ import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { HeroCreatorPreview } from "@/components/hero-creator-preview";
-import { HomeMotionVideo } from "@/components/home-motion-video";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
@@ -139,15 +138,37 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
       <div className={s.howCards}>
         <article className={s.howCard}>
-          <HomeMotionVideo asset="creator-page" label="creator page" />
+          <div className={`${s.howVisual} ${s.howProfileVisual}`}>
+            <div className={`${s.stockPhone} ${s.stockPhoneReal} ${s.howPhone}`} aria-label="Mimi_Kiki's actual ReplyPass page in a mobile view">
+              <div className={s.stockPhoneStatus} aria-hidden="true"><span>9:41</span><span className={s.phoneIndicators}><i/><i/><i/></span></div>
+              <div className={s.stockPhoneScreen}><Image className={s.phoneScreenshot} src="/images/mimi-profile-mobile.jpg" alt="Mimi_Kiki's ReplyPass profile, with a €4 message and €19 monthly VIP offer" width={1320} height={2297} sizes="(max-width: 760px) 230px, 250px" unoptimized /></div>
+              <Image className={s.stockPhoneFrame} src="/images/magnific-front-phone.webp" alt="" width={758} height={1350} sizes="(max-width: 760px) 230px, 250px" unoptimized aria-hidden="true" />
+            </div>
+          </div>
           <span className={s.howIndex}>01 / CREATE</span><h3>Make your page yours.</h3><p>Add your photos, bio and offers. Set your reply price and connect payouts before accepting payments.</p>
         </article>
         <article className={s.howCard}>
-          <HomeMotionVideo asset="social-to-reply" label="fan journey" />
+          <div className={`${s.howVisual} ${s.howSocialVisual}`}>
+            <div className={s.howInstagram} aria-label="Instagram-style bio showing a creator's ReplyPass link">
+              <div className={s.howInstagramTop}><span aria-hidden="true">‹</span><strong>mimi.kiki</strong><span aria-hidden="true">•••</span></div>
+              <div className={s.howInstagramIdentity}><div className={s.howInstagramAvatar}><Image src="/images/mimi-feature.webp" alt="" fill sizes="72px" /></div><div><strong>Mimi_Kiki</strong><span>Creator · Model · Athlete</span></div></div>
+              <p>Ask me a question on ReplyPass.<br/>Personal replies, on my terms.</p>
+              <div className={s.howInstagramLink}><Icon name="link" size={16}/><span>getreplypass.com/mimi</span></div>
+              <div className={s.howInstagramActions}><span>Follow</span><span>Message</span></div>
+            </div>
+          </div>
           <span className={s.howIndex}>02 / SHARE</span><h3>Put your link where fans find you.</h3><p>Add it to Instagram, TikTok, X or an existing Linktree or Link.me page. Your followers open your ReplyPass page directly.</p>
         </article>
         <article className={s.howCard}>
-          <HomeMotionVideo asset="creator-earnings" label="earnings" />
+          <div className={`${s.howVisual} ${s.howEarningsVisual}`}>
+            <div className={s.howEarningsPanel} aria-label="Example creator earnings: €38.25 earned, €12.75 at Stripe, and €25.50 sent by Stripe">
+              <div className={s.howEarningsTop}><strong>replypass<span>.</span></strong><small>YOUR MONEY</small></div>
+              <div className={s.howEarningsBody}><span>From completed replies</span><strong>€38.25</strong><small>Total earned</small>
+                <div className={s.howEarningsRows}><div><span><i/>At Stripe</span><strong>€12.75</strong></div><div><span><i className={s.howSent}/>Sent by Stripe</span><strong>€25.50</strong></div></div>
+                <p>Track each reply from earnings to bank payout.</p>
+              </div>
+            </div>
+          </div>
           <span className={s.howIndex}>03 / EARN</span><h3>See each reply become earnings.</h3><p>A fan’s card is authorized when they ask. After your on-time qualifying reply, track what you earned and when Stripe transfers it to your payout balance.</p>
         </article>
       </div>
