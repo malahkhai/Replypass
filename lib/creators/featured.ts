@@ -49,9 +49,7 @@ export async function getFeaturedMimi(): Promise<FeaturedCreator> {
   return toFeatured(creator);
 }
 
-/** Keep the rotating homepage limited to real, approved public creators. */
+/** Mimi is the only creator featured in the homepage hero. */
 export async function getFeaturedCreators(): Promise<FeaturedCreator[]> {
-  const [mimi, sl] = await Promise.all([getFeaturedMimi(), findCreator("slthedj").catch(() => null)]);
-  if (!sl?.payoutReady || !sl.offerings.some((offering) => offering.kind === "message")) return [mimi];
-  return [mimi, await toFeatured(sl)];
+  return [await getFeaturedMimi()];
 }
