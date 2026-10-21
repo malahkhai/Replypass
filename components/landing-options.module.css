@@ -277,51 +277,16 @@
 @media(max-width:760px){.heroPreviewWrap{width:min(100%,330px)}.studio .previewStage{min-height:0;padding:10px 0}.studio .portrait{height:235px}}
 @media(prefers-reduced-motion:reduce){.profileSocials .socialIcon{transition:none}}
 
-/* Keep this product walkthrough quieter than the hero and creator stories. */
-.how{padding-top:72px;padding-bottom:76px}
-.how h2{font-size:clamp(32px,3.4vw,46px)}
-.how .eyebrow{margin-bottom:14px!important}
-.howCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:30px}
-.howCard{min-width:0}
-.howVisual{position:relative;display:grid;place-items:center;width:100%;height:250px;overflow:hidden;border-radius:16px}
-.howProfileVisual{background:radial-gradient(circle at 50% 80%,#bccdb9,#dfe7db 58%,#eaf0e8)}
-.howPhone{width:115px}
-.howSocialVisual{background:linear-gradient(145deg,#e7ebe2,#cad8ca)}
-.howInstagram{width:min(84%,300px);border:1px solid #2e3440;border-radius:16px;background:#10141d;color:#fff;padding:14px;box-shadow:0 12px 25px #26372920}
-.howInstagramTop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
-.howInstagramTop>span:first-child{font-size:25px;line-height:15px;font-weight:300}
-.howInstagramTop>span:last-child{letter-spacing:.12em}
-.howInstagramIdentity{display:flex;align-items:center;gap:10px;margin-top:14px}
-.howInstagramAvatar{position:relative;flex:0 0 44px;width:44px;height:44px;overflow:hidden;border:2px solid #e65689;border-radius:50%}
-.howInstagramAvatar img{object-fit:cover;object-position:center 28%}
-.howInstagramIdentity>div:last-child{display:grid;gap:5px;min-width:0}
-.howInstagramIdentity strong{font-size:13px}
-.howInstagramIdentity span{color:#bdc3ca;font-size:9px}
-.howInstagram p{margin:12px 0 9px;color:#f0f1f3;font-size:11px;line-height:1.4}
-.howInstagramLink{display:flex;align-items:center;gap:6px;color:#a6c1ff;font-size:11px;font-weight:750;overflow-wrap:anywhere}
-.howInstagramLink svg{flex:none}
-.howInstagramActions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:13px}
-.howInstagramActions span{border-radius:6px;padding:6px 4px;text-align:center;background:#315ce4;font-size:10px;font-weight:750}
-.howInstagramActions span:last-child{background:#30353f}
-.howEarningsVisual{background:linear-gradient(155deg,#e9eee6,#d3e1d1)}
-.howEarningsPanel{width:min(84%,300px);overflow:hidden;border:1px solid #d6dfd4;border-radius:16px;background:#fffefa;box-shadow:0 12px 25px #26372920;transform:scale(.86)}
-.howEarningsTop{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#243129;color:#fff;padding:10px 13px}
-.howEarningsTop strong{font-size:15px;letter-spacing:-.055em}
-.howEarningsTop strong span{color:#dc5146}
-.howEarningsTop small{font-size:8px;font-weight:800;letter-spacing:.1em}
-.howEarningsBody{padding:15px}
-.howEarningsBody>span{color:#687567;font-size:10px}
-.howEarningsBody>strong{display:block;margin:4px 0 0;color:#263128;font-size:32px;letter-spacing:-.06em;line-height:1}
-.howEarningsBody>small{display:block;margin-top:4px;color:#5e6d5c;font-size:10px}
-.howEarningsRows{display:grid;gap:6px;margin-top:14px}
-.howEarningsRows>div{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #e0e6dd;border-radius:8px;background:#f8faf6;padding:8px 9px}
-.howEarningsRows span{display:flex;align-items:center;gap:6px;color:#4b594c;font-size:10px}
-.howEarningsRows strong{color:#263128;font-size:12px}
-.howEarningsRows i{display:block;width:6px;height:6px;border-radius:50%;background:#a8bfa3}
-.howEarningsRows .howSent{background:#d95348}
-.howEarningsBody p{margin:10px 0 0;color:#5e6d5c;font-size:9px;line-height:1.4}
-.howIndex{display:block;margin-top:15px;color:#d74d42;font-size:9px;font-weight:800;letter-spacing:.12em}
-.howCard h3{font-size:clamp(20px,2vw,24px);margin:7px 0 8px;line-height:1.13}
-.howCard>p{max-width:390px;color:#4f594c;font-size:12px;line-height:1.45}
-@media(max-width:1050px){.howCards{gap:14px}}
-@media(max-width:760px){.how{padding-top:56px;padding-bottom:58px}.how h2{font-size:clamp(30px,8vw,38px)}.howCards{grid-template-columns:1fr;gap:28px;margin-top:26px}.howVisual{height:280px}.howPhone{width:130px}.howCard>p{max-width:none}.howCard h3{font-size:22px}}
+/* A short text-only walkthrough keeps the message clear on desktop and mobile. */
+.how{padding-top:66px;padding-bottom:70px}
+.how h2{font-size:clamp(32px,3.2vw,42px)}
+.how .eyebrow{margin-bottom:12px!important}
+.howCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;margin-top:32px}
+.howCard{min-width:0;border-top:1px solid #bfc5b8;padding-top:18px}
+.howIndex{display:block;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.12em}
+.howCard h3{font-size:clamp(20px,2vw,24px);margin:12px 0 12px;line-height:1.15}
+.howCard>p{max-width:390px;color:#4f594c;font-size:14px;line-height:1.55}
+.howCard .howPlatforms{margin-top:14px;color:var(--ink);font-size:13px;font-weight:700}
+.howCard .howMath{margin-top:14px;color:var(--ink);font-size:clamp(17px,1.8vw,22px);font-weight:800;letter-spacing:-.035em}
+.howCard .howFine{margin-top:8px;font-size:11px}
+@media(max-width:760px){.how{padding-top:52px;padding-bottom:56px}.how h2{font-size:clamp(30px,8vw,38px)}.howCards{grid-template-columns:1fr;gap:28px;margin-top:26px}.howCard h3{font-size:22px}.howCard>p{max-width:none}}
