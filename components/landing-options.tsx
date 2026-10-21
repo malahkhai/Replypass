@@ -136,6 +136,10 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       </section>
     </div>
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
+    <section id="bio" className={`${s.section} ${s.share}`}>
+      <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
+      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
+    </section>
     <section className={`${s.section} ${s.how}`} id="how">
       <LandingSectionEngagement sectionId="how" />
       <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
@@ -169,10 +173,6 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
         <article><div className={s.conversation}><span>EXAMPLE CONVERSATION</span><p>I love your work. What helped you get started?</p><p>Let’s talk about it. Here’s what I wish I’d known…</p><small>FAN SENDS REQUEST → CREATOR REPLIES → CHARGE COMPLETES</small></div><h3>Guaranteed Replies.</h3><p>Set a price for a personal reply. The fan’s card is temporarily authorized when they ask; you earn after a qualifying reply before the deadline. A decline or missed deadline releases the hold.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></article>
         <article><div className={s.vipArt}><Image src="/images/home-creator-style.avif" alt="" fill sizes="(max-width: 760px) 90vw, 45vw"/><div><span>THE INNER CIRCLE</span><strong>A little more you.</strong><span className={s.vipLabel}><Icon name="star" size={14}/>VIP MEMBERSHIP</span></div></div><h3>VIP memberships.</h3><p>Offer private posts and updates to subscribers at a monthly price you choose. Show fans exactly what is included; memberships renew until canceled.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></article>
       </div>
-    </section>
-    <section id="bio" className={`${s.section} ${s.share}`}>
-      <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
-      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
     </section>
     <section className={`${s.section} ${s.fees}`} id="fees"><div><p className={s.eyebrow}>FREE TO START. CLEAR ABOUT FEES.</p><h2>Set your price.<br/>Keep your share.</h2><p>Creating your page is free. Your creator share is {CREATOR_SHARE_PERCENT}% of each completed paid reply or VIP payment; ReplyPass’s platform share is {PLATFORM_FEE_PERCENT}%.</p><p className={s.fine}>The {CREATOR_SHARE_PERCENT}% is before Stripe processing costs, refunds and other applicable adjustments. Your dashboard shows your earnings and payout status. Bank arrival follows Stripe’s schedule and requires verification.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></div><div className={s.percentage}><strong>{CREATOR_SHARE_PERCENT}<span>%</span></strong><span>CREATOR SHARE BEFORE STRIPE FEES</span></div></section>
     <section className={`${s.section} ${s.faq}`}><div><p className={s.eyebrow}>GLAD YOU ASKED</p><h2>A few things<br/>to know.</h2></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Icon name="plus" size={18}/></summary><p>{a}</p></details>)}</div></section>
