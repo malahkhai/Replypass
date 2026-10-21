@@ -22,9 +22,9 @@ export function BioPlacementPreview() {
     <div className={s.tabs} role="tablist" aria-label="Social bio profiles">
       {(Object.keys(profiles) as Platform[]).map((platform) => <button key={platform} type="button" role="tab" id={`bio-placement-${platform.toLowerCase().replace(/[^a-z]/g, "")}`} aria-selected={selected === platform} aria-controls="bio-placement-panel" className={selected === platform ? s.active : ""} onClick={() => setSelected(platform)}>{platform}</button>)}
     </div>
-    <div id="bio-placement-panel" role="tabpanel" aria-labelledby={`bio-placement-${selected.toLowerCase().replace(/[^a-z]/g, "")}`} className={s.panel}>
-      <div className={`${s.canvas} ${selected === "Link.me" ? s.linkmeCanvas : ""}`} style={{ aspectRatio: `1320 / ${profile.height}` }}>
-        <Image src={profile.image} alt={`${selected} bio profile`} width={1320} height={profile.height} sizes="(max-width: 760px) calc(100vw - 48px), 540px" className={s.screenshot} priority={selected === "Instagram"} />
+    <div id="bio-placement-panel" role="tabpanel" aria-labelledby={`bio-placement-${selected.toLowerCase().replace(/[^a-z]/g, "")}`} className={`${s.panel} ${selected === "TikTok" ? s.tiktokPanel : ""}`}>
+      <div className={`${s.canvas} ${selected === "TikTok" ? s.tiktokCanvas : ""} ${selected === "Link.me" ? s.linkmeCanvas : ""}`} style={{ aspectRatio: `1320 / ${profile.height}` }}>
+        <Image key={selected} src={profile.image} alt={`${selected} bio profile`} width={1320} height={profile.height} sizes="(max-width: 760px) calc(100vw - 48px), 540px" className={s.screenshot} priority={selected === "Instagram"} />
         <span className={`${s.replyPassLink} ${profile.placement}`}>getreplypass.com/yourname</span>
       </div>
     </div>
