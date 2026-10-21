@@ -10,14 +10,12 @@ export function SocialPlatformIcon({ platform }: { platform: SocialPlatform }) {
   };
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[platform]}</svg>;
 }
-export function CreatorSocials({ socials, counts, updatedAt }: {
+export function CreatorSocials({ socials, counts }: {
   socials: Partial<Record<SocialPlatform, string>>;
   counts?: FollowerCounts;
-  updatedAt?: string | null;
 }) {
   const { links, total, counted } = socialAudience(socials, counts);
   if (!links.length) return null;
-  const date = updatedAt && Number.isFinite(Date.parse(updatedAt)) ? new Date(updatedAt) : null;
   return <section className="creator-socials" aria-label="Social links and audience">
     {counted > 0 && <div className="creator-audience">
       <strong>{new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(total)}</strong>
@@ -28,6 +26,5 @@ export function CreatorSocials({ socials, counts, updatedAt }: {
         <SocialPlatformIcon platform={link.platform} />
       </a>)}
     </nav>
-    {counted > 0 && <p className="creator-audience-note">Creator-provided counts{date && <> · Updated <time dateTime={date.toISOString()}>{date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}</time></>}. Audiences may overlap.</p>}
   </section>;
 }
