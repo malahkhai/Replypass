@@ -291,3 +291,5 @@
 .howAmount{color:var(--ink);font-size:18px;font-weight:800;white-space:nowrap}
 .howCard .howFine{margin-top:8px;font-size:11px}
 @media(max-width:760px){.how{padding-top:52px;padding-bottom:56px}.how h2{font-size:clamp(30px,8vw,38px)}.howCards{grid-template-columns:1fr;gap:28px;margin-top:26px}.howCard h3{font-size:22px}.howCard>p{max-width:none}}
+.bioSection{display:flex;justify-content:center;padding-top:64px;padding-bottom:64px}
+@media(max-width:760px){.bioSection{padding-top:40px;padding-bottom:40px}}
