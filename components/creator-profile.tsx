@@ -390,7 +390,7 @@ export function CreatorProfile({
                 </p>
               )}
               <p className="bio">{creator.bio}</p>
-              <CreatorSocials socials={creator.socials} counts={creator.socialFollowers} updatedAt={creator.socialFollowersUpdatedAt} />
+              <CreatorSocials socials={creator.socials} counts={creator.socialFollowers} />
               {hasPublicProof && (
                 <>
                   <div className="stats">
