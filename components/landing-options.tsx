@@ -97,8 +97,10 @@ function Start({ children, className = "", href }: { children: React.ReactNode; 
 export function LandingOption({ variant, creatorAuthenticated, featuredCreators }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreators: FeaturedCreator[] }) {
   const pop = variant === "pop";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
+  const exampleCompletedReplies = 20;
+  const exampleReplyPriceCents = 1500;
+  const exampleCreatorShareEuros = exampleCompletedReplies * splitPayment(exampleReplyPriceCents).creatorCents / 100;
   const featuredCreator = featuredCreators[0];
-  const socialCreator = featuredCreators[1] || featuredCreator;
   const creatorStories: CreatorStory[] = [
     { name: featuredCreator.name, handle: featuredCreator.handle.replace(/^@/, ""), kind: featuredCreator.categories.length ? featuredCreator.categories.join(" · ") : "Creator", photo: featuredCreator.photo, photoPosition: featuredCreator.photoPosition, phoneScreenshot: featuredCreator.handle.replace(/^@/, "") === "mimi" && featuredCreator.messagePriceCents === 400 && featuredCreator.vipPriceCents === 1900 ? "/images/mimi-profile-mobile.jpg" : undefined, bio: "A closer place to ask, connect, and keep up with me.", messagePriceCents: featuredCreator.messagePriceCents, vipPriceCents: featuredCreator.vipPriceCents, socialBio: "Ask me a question on ReplyPass. Personal replies, on my terms.", fanQuestion: "What helps you feel ready before a shoot?", creatorReply: "I plan the look, then make space for the moment to happen." },
     { name: "Luna Vale", handle: "lunavale", kind: "Musician", photo: "/images/demo-musician.webp", bio: "Songs in progress and the stories behind them.", messagePriceCents: 1800, vipPriceCents: 900, socialBio: "Music and the stories behind it. Ask me directly on ReplyPass.", fanQuestion: "What inspired your latest song?", creatorReply: "It started with a melody I wrote on the train home.", instagram: { handle: "luna.vale.music", posts: "84", followers: "12.6K", following: "510" } },
@@ -134,30 +136,30 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       </section>
     </div>
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
+    <section id="bio" className={`${s.section} ${s.share}`}>
+      <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
+      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
+    </section>
     <section className={`${s.section} ${s.how}`} id="how">
       <LandingSectionEngagement sectionId="how" />
       <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
       <div className={s.howCards}>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howPageArt}`}>
-            <span className={s.howArtLabel}>01 · YOUR PAGE</span>
-            <div className={s.howMiniProfile}><div className={s.howMiniPhoto}><Image src={featuredCreator.photo} alt="" fill sizes="(max-width: 760px) 80vw, 360px" style={{ objectPosition: featuredCreator.photoPosition || "center" }} unoptimized={featuredCreator.photo.startsWith("http")}/></div><div><strong>{featuredCreator.name}</strong><span>Guaranteed Reply {featuredCreator.messagePriceCents === null ? "" : euros(featuredCreator.messagePriceCents)}</span></div></div>
-          </div>
-          <span className={s.howIndex}>01 / CREATE</span><h3>Make your page yours.</h3><p>Add your photos, bio and offers. Set your reply price and connect payouts before accepting payments.</p>
+          <span className={s.howIndex}>01 / CREATE</span>
+          <h3>Make your free profile.</h3>
+          <p>Choose your ReplyPass link, add photos and a bio, then set your Replying price. Creating your page is <strong className={s.howHighlight}>Free</strong>; connect Stripe when you’re ready to accept paid requests.</p>
         </article>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howSocialArt}`}>
-            <span className={s.howArtLabel}>02 · YOUR SOCIAL BIO</span>
-            <div className={s.howSocialPhone}><div className={s.howSocialHeader}>Instagram <span>•••</span></div><div className={s.howSocialPerson}><div><Image src={socialCreator.photo} alt="" fill sizes="54px" style={{ objectPosition: socialCreator.photoPosition || "center" }} unoptimized={socialCreator.photo.startsWith("http")}/></div><strong>{socialCreator.name}</strong></div><p>Ask me a question on ReplyPass.</p><span className={s.howSocialLink}>getreplypass.com/{socialCreator.handle.replace(/^@/, "")}</span><span className={s.howTap}><Icon name="arrow" size={13}/> Fan taps your link</span></div>
-          </div>
-          <span className={s.howIndex}>02 / SHARE</span><h3>Put your link where fans find you.</h3><p>Add it to Instagram, TikTok, X or an existing Linktree or Link.me page. Your followers open your ReplyPass page directly.</p>
+          <span className={s.howIndex}>02 / SHARE</span>
+          <h3>Put your link where fans find you.</h3>
+          <p>Add your ReplyPass link to any social platform bio or to the link page you already use.</p>
+          <p className={s.howPlatforms}><span>Instagram</span> · <span>TikTok</span> · <span>X</span> · <span>YouTube</span> · <span>Linktree</span> · <span>Link.me</span></p>
         </article>
         <article className={s.howCard}>
-          <div className={`${s.howArt} ${s.howReplyArt}`}>
-            <span className={s.howArtLabel}>03 · THE CONVERSATION</span>
-            <div className={s.howMessages}><span>How do you build the energy in a set?</span><span>I read the room first, then lift the tempo track by track.</span><strong><Icon name="check" size={13}/> Reply sent · Payment captured</strong></div>
-          </div>
-          <span className={s.howIndex}>03 / REPLY & EARN</span><h3>Give a real answer. Get paid.</h3><p>A fan sends a request and their card is authorized. An on-time qualifying reply completes the charge.</p>
+          <span className={s.howIndex}>03 / EARN</span>
+          <h3>Reply and earn.</h3>
+          <p>If {exampleCompletedReplies} fans each request a €{exampleReplyPriceCents / 100} Guaranteed Reply and you complete all {exampleCompletedReplies}, your {CREATOR_SHARE_PERCENT}% creator share is: <strong className={s.howAmount}>€{exampleCreatorShareEuros}</strong></p>
+          <p className={s.howFine}>Before Stripe processing fees, refunds and other adjustments.</p>
         </article>
       </div>
     </section>
@@ -171,10 +173,6 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
         <article><div className={s.conversation}><span>EXAMPLE CONVERSATION</span><p>I love your work. What helped you get started?</p><p>Let’s talk about it. Here’s what I wish I’d known…</p><small>FAN SENDS REQUEST → CREATOR REPLIES → CHARGE COMPLETES</small></div><h3>Guaranteed Replies.</h3><p>Set a price for a personal reply. The fan’s card is temporarily authorized when they ask; you earn after a qualifying reply before the deadline. A decline or missed deadline releases the hold.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></article>
         <article><div className={s.vipArt}><Image src="/images/home-creator-style.avif" alt="" fill sizes="(max-width: 760px) 90vw, 45vw"/><div><span>THE INNER CIRCLE</span><strong>A little more you.</strong><span className={s.vipLabel}><Icon name="star" size={14}/>VIP MEMBERSHIP</span></div></div><h3>VIP memberships.</h3><p>Offer private posts and updates to subscribers at a monthly price you choose. Show fans exactly what is included; memberships renew until canceled.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></article>
       </div>
-    </section>
-    <section className={`${s.section} ${s.share}`}>
-      <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
-      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
     </section>
     <section className={`${s.section} ${s.fees}`} id="fees"><div><p className={s.eyebrow}>FREE TO START. CLEAR ABOUT FEES.</p><h2>Set your price.<br/>Keep your share.</h2><p>Creating your page is free. Your creator share is {CREATOR_SHARE_PERCENT}% of each completed paid reply or VIP payment; ReplyPass’s platform share is {PLATFORM_FEE_PERCENT}%.</p><p className={s.fine}>The {CREATOR_SHARE_PERCENT}% is before Stripe processing costs, refunds and other applicable adjustments. Your dashboard shows your earnings and payout status. Bank arrival follows Stripe’s schedule and requires verification.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></div><div className={s.percentage}><strong>{CREATOR_SHARE_PERCENT}<span>%</span></strong><span>CREATOR SHARE BEFORE STRIPE FEES</span></div></section>
     <section className={`${s.section} ${s.faq}`}><div><p className={s.eyebrow}>GLAD YOU ASKED</p><h2>A few things<br/>to know.</h2></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Icon name="plus" size={18}/></summary><p>{a}</p></details>)}</div></section>
