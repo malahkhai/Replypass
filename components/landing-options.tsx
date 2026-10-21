@@ -171,7 +171,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
         <article><div className={s.vipArt}><Image src="/images/home-creator-style.avif" alt="" fill sizes="(max-width: 760px) 90vw, 45vw"/><div><span>THE INNER CIRCLE</span><strong>A little more you.</strong><span className={s.vipLabel}><Icon name="star" size={14}/>VIP MEMBERSHIP</span></div></div><h3>VIP memberships.</h3><p>Offer private posts and updates to subscribers at a monthly price you choose. Show fans exactly what is included; memberships renew until canceled.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></article>
       </div>
     </section>
-    <section className={`${s.section} ${s.share}`}>
+    <section id="bio" className={`${s.section} ${s.share}`}>
       <BioPlacementPreview />
       <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, YouTube, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
     </section>
