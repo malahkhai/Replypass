@@ -6,6 +6,7 @@ import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { HeroCreatorPreview } from "@/components/hero-creator-preview";
+import { BioPlacementPreview } from "@/components/bio-placement-preview";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
@@ -171,8 +172,8 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       </div>
     </section>
     <section className={`${s.section} ${s.share}`}>
-      <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
-      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
+      <BioPlacementPreview />
+      <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, YouTube, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
     </section>
     <section className={`${s.section} ${s.fees}`} id="fees"><div><p className={s.eyebrow}>FREE TO START. CLEAR ABOUT FEES.</p><h2>Set your price.<br/>Keep your share.</h2><p>Creating your page is free. Your creator share is {CREATOR_SHARE_PERCENT}% of each completed paid reply or VIP payment; ReplyPass’s platform share is {PLATFORM_FEE_PERCENT}%.</p><p className={s.fine}>The {CREATOR_SHARE_PERCENT}% is before Stripe processing costs, refunds and other applicable adjustments. Your dashboard shows your earnings and payout status. Bank arrival follows Stripe’s schedule and requires verification.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></div><div className={s.percentage}><strong>{CREATOR_SHARE_PERCENT}<span>%</span></strong><span>CREATOR SHARE BEFORE STRIPE FEES</span></div></section>
     <section className={`${s.section} ${s.faq}`}><div><p className={s.eyebrow}>GLAD YOU ASKED</p><h2>A few things<br/>to know.</h2></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Icon name="plus" size={18}/></summary><p>{a}</p></details>)}</div></section>
