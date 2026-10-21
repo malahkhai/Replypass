@@ -143,19 +143,18 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
         <article className={s.howCard}>
           <span className={s.howIndex}>01 / CREATE</span>
           <h3>Make your free profile.</h3>
-          <p>Choose your ReplyPass link, add photos and a bio, then set your Guaranteed Reply price. Creating your page is free; connect Stripe when you’re ready to accept paid requests.</p>
+          <p>Choose your ReplyPass link, add photos and a bio, then set your Replying price. Creating your page is <strong className={s.howHighlight}>Free</strong>; connect Stripe when you’re ready to accept paid requests.</p>
         </article>
         <article className={s.howCard}>
           <span className={s.howIndex}>02 / SHARE</span>
           <h3>Put your link where fans find you.</h3>
-          <p>Add your ReplyPass link to a social bio or to the link page you already use.</p>
-          <p className={s.howPlatforms}>Instagram · TikTok · X · YouTube · Linktree · Link.me</p>
+          <p>Add your ReplyPass link to any social platform bio or to the link page you already use.</p>
+          <p className={s.howPlatforms}><span>Instagram</span> · <span>TikTok</span> · <span>X</span> · <span>YouTube</span> · <span>Linktree</span> · <span>Link.me</span></p>
         </article>
         <article className={s.howCard}>
           <span className={s.howIndex}>03 / EARN</span>
           <h3>Reply and earn.</h3>
-          <p>If 20 fans each request a €15 Guaranteed Reply and you complete all 20, your {CREATOR_SHARE_PERCENT}% creator share is:</p>
-          <p className={s.howMath}>{exampleCompletedReplies} × €{exampleReplyPriceCents / 100} × {CREATOR_SHARE_PERCENT}% = €{exampleCreatorShareEuros}</p>
+          <p>If {exampleCompletedReplies} fans each request a €{exampleReplyPriceCents / 100} Guaranteed Reply and you complete all {exampleCompletedReplies}, your {CREATOR_SHARE_PERCENT}% creator share is: <strong className={s.howAmount}>€{exampleCreatorShareEuros}</strong></p>
           <p className={s.howFine}>Before Stripe processing fees, refunds and other adjustments.</p>
         </article>
       </div>

@@ -287,6 +287,7 @@
 .howCard h3{font-size:clamp(20px,2vw,24px);margin:12px 0 12px;line-height:1.15}
 .howCard>p{max-width:390px;color:#4f594c;font-size:14px;line-height:1.55}
 .howCard .howPlatforms{margin-top:14px;color:var(--ink);font-size:13px;font-weight:700}
-.howCard .howMath{margin-top:14px;color:var(--ink);font-size:clamp(17px,1.8vw,22px);font-weight:800;letter-spacing:-.035em}
+.howHighlight,.howPlatforms span{color:var(--accent);font-weight:800}
+.howAmount{color:var(--ink);font-size:18px;font-weight:800;white-space:nowrap}
 .howCard .howFine{margin-top:8px;font-size:11px}
 @media(max-width:760px){.how{padding-top:52px;padding-bottom:56px}.how h2{font-size:clamp(30px,8vw,38px)}.howCards{grid-template-columns:1fr;gap:28px;margin-top:26px}.howCard h3{font-size:22px}.howCard>p{max-width:none}}
