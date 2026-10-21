@@ -99,8 +99,8 @@
 .journeyHeading>span,.journeyNumber{display:block;font-size:10px;font-weight:800;letter-spacing:.13em;color:#667561}
 .journeyHeading h3{font-size:clamp(25px,2.4vw,34px);margin:9px 0 4px}
 .journeyHeading p{font-size:13px;color:#576456}
-.stockPhone{position:relative;width:min(100%,318px);aspect-ratio:758/1220;overflow:hidden;isolation:isolate;background:#fff;filter:drop-shadow(0 18px 18px #24362c30)}
-.stockPhoneReal{aspect-ratio:758/1350}
+.stockPhone{position:relative;width:min(100%,318px);aspect-ratio:758/1220;overflow:hidden;border-radius:42px 42px 0 0;isolation:isolate;background:#fff;filter:drop-shadow(0 18px 18px #24362c30)}
+.stockPhoneReal{aspect-ratio:758/1350;border-radius:42px}
 .stockPhoneScreen{position:absolute;z-index:1;top:6.4%;left:4%;width:92%;overflow:hidden;border-radius:0 0 22px 22px;background:#fff}
 .stockPhoneReal .stockPhoneScreen{aspect-ratio:1320/2260}
 .stockPhoneFrame{position:absolute;z-index:2;top:0;left:0;box-sizing:border-box;width:100%;height:110.66%;border:7px solid #1b1d1d;border-radius:42px;box-shadow:inset 0 0 0 2px #aeb1b0,0 0 0 2px #aeb1b0;pointer-events:none}
