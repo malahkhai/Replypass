@@ -10,9 +10,9 @@
 .replyPassLink{position:absolute;display:flex;align-items:center;white-space:nowrap;overflow:hidden;font-size:clamp(10px,1.2vw,15px);font-weight:650;line-height:1.2;letter-spacing:0;z-index:1}
 .instagram{top:76.2%;left:3.3%;width:92%;height:7.4%;padding-left:5.5%;background:#0b1019;color:#8cb1fb}
 .tiktok{top:25.4%;left:3%;width:80%;height:2.7%;background:#fff;color:#171a18}
-.x{top:67.7%;left:40%;width:44%;height:8%;background:#000;color:#2a9af5}
+.x{top:67.7%;left:40%;width:58%;height:8%;background:#000;color:#2a9af5}
 .youtube{top:57.8%;left:3.3%;width:78%;height:7.4%;background:#111;color:#f5f5f5}
-.linkmeCanvas{transform:translateY(-28%)}
-.linkme{top:85.2%;left:3.3%;width:93%;height:8.4%;justify-content:center;border-radius:100px;background:#fff;color:#23252c;font-weight:750}
+.linkmeCanvas{transform:translateY(-35%)}
+.linkme{top:82%;left:3.3%;width:93%;height:12%;justify-content:center;border-radius:100px;background:#fff;color:#23252c;font-weight:750}
 @media(max-width:760px){.preview{order:2}.tabs button{font-size:10px;padding:8px 11px}.panel{height:290px}.replyPassLink{font-size:clamp(9px,2.8vw,12px)}}
 @media(max-width:390px){.panel{height:265px}.tabs{gap:4px}.tabs button{padding-inline:9px;font-size:9px}}
