@@ -65,7 +65,7 @@ function CreatorJourney({ story, index }: { story: CreatorStory; index: number }
             <div className={s.phonePageActions}><span><Icon name="message" size={14}/> Message {story.messagePriceCents === null ? "" : euros(story.messagePriceCents)}</span>{story.vipPriceCents !== null && <span><Icon name="sparkles" size={14}/> VIP {euros(story.vipPriceCents)}/mo</span>}</div>
           </div>}
         </div>
-        <Image className={s.stockPhoneFrame} src="/images/magnific-front-phone.webp" alt="" width={758} height={1350} sizes="(max-width: 540px) 235px, 318px" unoptimized aria-hidden="true" />
+        <div className={s.stockPhoneFrame} aria-hidden="true" />
       </div>
     </div>
     <div className={s.journeyFlow}>

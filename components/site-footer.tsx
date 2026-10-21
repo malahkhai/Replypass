@@ -28,7 +28,6 @@ function FooterLinks() {
     <nav className="footer-legal" aria-label="Legal and community">
       <Link href="/">About ReplyPass</Link>
       {trustLinks.map(([href, label]) => <Link key={href} href={href}>{label}</Link>)}
-      <a href="https://www.magnific.com" target="_blank" rel="noopener noreferrer">Designed by Magnific</a>
     </nav>
     <nav className="footer-social" aria-label="ReplyPass social profiles">
       {socialLinks.map(([href, label]) => (
