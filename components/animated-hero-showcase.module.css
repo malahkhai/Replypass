@@ -238,7 +238,7 @@
   color:#697260;
 }
 .sceneBody {
-  padding:20px;
+  padding:20px 20px 14px;
 }
 .kicker {
   font-size:8px;
@@ -250,7 +250,7 @@
   font-size:25px;
   line-height:1.15;
   letter-spacing:-.8px;
-  margin:9px 0 12px;
+  margin:9px 0 20px;
 }
 .fanBubble,.replyBubble {
   background:#edefe6;
@@ -341,10 +341,10 @@
   font-size:9px;
   color:#c7d0bf;
 }
-.vipIntro {
+.showcase .vipIntro {
   font-size:12px;
   line-height:1.5;
-  margin-top:0!important;
+  margin:0;
 }
 .privatePost {
   background:#edece2;
@@ -505,7 +505,7 @@
     padding:6px 8px;
   }
   .sceneBody {
-    padding:19px;
+    padding:19px 19px 13px;
   }
   .halo {
     inset:5% 0 15%;
@@ -528,11 +528,11 @@
     width:calc(100% - 20px);
   }
   .sceneBody {
-    padding:16px;
+    padding:16px 16px 10px;
   }
   .showcase .sceneBody h3 {
     font-size:22px;
-    margin-bottom:12px;
+    margin-bottom:20px;
   }
   .receipt {
     padding:16px 0;
