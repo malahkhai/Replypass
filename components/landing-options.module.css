@@ -297,3 +297,32 @@
 /* Keep the product sequence contained, with copy first on mobile. */
 .studio .animatedStage,.pop .animatedStage{padding:16px 0;min-height:0;width:100%;max-width:470px;order:0}
 @media(max-width:760px){.studio .animatedStage,.pop .animatedStage{order:0;padding:12px 0 0;max-width:390px}}
+
+/* The /new experiment changes only the hero, keeping the shared sections below. */
+.centered .opening{background:var(--paper);color:var(--ink)}
+.centered .opening:after{content:none}
+.centered .nav{box-shadow:none;border:1px solid #252b2415;background:var(--paper)}
+.centered .hero{display:block;min-height:0;max-width:900px;padding:96px 24px 84px;text-align:center}
+.centered .heroCopy{max-width:760px;margin-inline:auto}
+.centered .hero .eyebrow{font-size:10px;margin-bottom:24px!important}
+.centered .hero .centeredTitle{max-width:none;font-size:clamp(48px,6.4vw,88px);line-height:.99;letter-spacing:-.065em;font-weight:800}
+.centered .lead{max-width:540px;margin:26px auto 30px!important;font-size:15px;line-height:1.6}
+.centered :global(.creator-link-starter){max-width:410px;margin:0 auto}
+.centered :global(.creator-link-starter label){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.centered :global(.creator-link-starter-row){display:flex;flex-direction:column;gap:10px;padding:0;background:transparent;border-radius:0}
+.centered :global(.creator-link-starter-field){width:100%;display:flex;align-items:center;justify-content:center;padding:0 24px;border:1px solid #252b2426;border-radius:100px;background:#fff;min-height:48px}
+.centered :global(.creator-link-starter-field)>span{font-size:13px;color:#657062}
+.centered :global(.creator-link-starter-field input){flex:0 1 100px;width:100px;font-size:13px;font-weight:650;color:var(--ink);height:46px}
+.centered :global(.creator-link-starter-field input)::placeholder{color:var(--ink);opacity:1}
+.centered :global(.creator-link-starter-field):focus-within{outline:2px solid var(--accent);outline-offset:3px}
+.centered :global(.creator-link-starter-row button){width:100%;flex-basis:auto;margin:0;border-radius:100px;min-height:48px;font-size:13px;padding:13px 24px}
+.centered :global(.creator-link-starter small):empty{display:none}
+.centered .heroSecondary{font-size:12px;margin-top:12px;padding:6px 0;gap:6px}
+.centered .centeredReassurance{font-size:11px;color:#657062;margin-top:14px}
+@media(max-width:760px){
+  .centered .hero{padding:72px 20px 64px}
+  .centered .hero .centeredTitle{font-size:clamp(34px,10.2vw,64px)}
+  .centered .hero .eyebrow{font-size:8px;letter-spacing:.12em}
+  .centered .lead{font-size:14px;max-width:440px;margin:24px auto 26px!important}
+  .centered :global(.creator-link-starter){max-width:380px}
+}

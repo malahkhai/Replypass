@@ -94,8 +94,9 @@ function Start({ children, className = "", href }: { children: React.ReactNode; 
   return <Link href={href} className={className} data-creator-cta>{children} <Icon name="arrow" size={16} /></Link>;
 }
 
-export function LandingOption({ variant, creatorAuthenticated, featuredCreators }: { variant: "studio" | "pop"; creatorAuthenticated: boolean; featuredCreators: FeaturedCreator[] }) {
+export function LandingOption({ variant, creatorAuthenticated, featuredCreators }: { variant: "studio" | "pop" | "centered"; creatorAuthenticated: boolean; featuredCreators: FeaturedCreator[] }) {
   const pop = variant === "pop";
+  const centered = variant === "centered";
   const startHref = creatorAuthenticated ? "/creator/apply" : signup;
   const exampleCompletedReplies = 20;
   const exampleReplyPriceCents = 1500;
@@ -110,9 +111,9 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
     { name: "Theo Martin", handle: "theomartin", kind: "Fitness", photo: "/images/creator-examples/fitness.avif", photoPosition: "center 32%", bio: "Training habits built for real life.", messagePriceCents: 2500, vipPriceCents: 1900, socialBio: "Training, consistency and finding your pace. Ask me on ReplyPass.", fanQuestion: "How do you stay consistent when work gets busy?", creatorReply: "I plan three short sessions in advance and treat them like appointments.", instagram: { handle: "theo.martin.fit", posts: "149", followers: "16.7K", following: "438" } },
     { name: "Sophie Lane", handle: "sophielane", kind: "Lifestyle", photo: "/images/creator-examples/lifestyle.jpg", photoPosition: "center 28%", bio: "Everyday stories, filming days and little wins.", messagePriceCents: 1600, vipPriceCents: 1400, socialBio: "Life behind the camera. Ask me anything on ReplyPass.", fanQuestion: "How do you make time for filming around work?", creatorReply: "I batch two ideas on Sunday and film them in short windows during the week.", instagram: { handle: "sophie.lane.life", posts: "203", followers: "9,840", following: "566" } },
   ];
-  return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio}`}>
+  return <main id="main" className={`${s.page} ${pop ? s.pop : s.studio} ${centered ? s.centered : ""}`}>
     <div className={s.opening}>
-      {!pop && <Image className={s.backdrop} src="/images/home-creator-connection.avif" alt="" fill sizes="100vw" preload />}
+      {!pop && !centered && <Image className={s.backdrop} src="/images/home-creator-connection.avif" alt="" fill sizes="100vw" preload />}
       <nav className={s.nav} aria-label="Main navigation">
         <Link href="/" className={s.brand}>replypass<span>.</span></Link>
         <div className={s.navSections}><a href="#offers">What you can offer</a><a href="#how">How it works</a><a href="#fees">Your earnings</a></div>
@@ -121,16 +122,17 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <section className={s.hero}>
         <div className={s.heroCopy}>
           <p className={s.eyebrow}>{pop ? "BIG PERSONALITY. CLOSER CONNECTIONS." : "GET PAID FOR THE REPLIES YOUR FOLLOWERS WANT."}</p>
-          {pop ? <h1>Your people.<br/>Your world.<br/><em>Your pay-link.</em></h1> : <RotatingHeroTitle />}
-          <p className={s.lead}>{pop ? "Turn ‘I wish we could talk’ into your next connection. Paid replies and VIP memberships, all in one link that’s completely you." : "Create a free page, set your price for Guaranteed Replies, and offer an optional VIP membership. Share your link anywhere your audience follows you."}</p>
-          {!pop && <p className={s.compatibility}><Icon name="link" size={18} /> Already use Link.me or Linktree? Add your ReplyPass link there, or share it directly.</p>}
-          <CreatorLinkStarter creatorAuthenticated={creatorAuthenticated}/>
-          <div className={s.facts}><span><Icon name="check" size={14}/>Free to create</span><span><Icon name="check" size={14}/>Set your prices</span><span><Icon name="check" size={14}/>No card to start</span></div>
+          {centered ? <h1 className={s.centeredTitle}>Get paid for<br/>replies. With your<br/>pay-link in bio.</h1> : pop ? <h1>Your people.<br/>Your world.<br/><em>Your pay-link.</em></h1> : <RotatingHeroTitle />}
+          <p className={s.lead}>{centered ? "Make a free page, set a price for Guaranteed Replies, optionally add a VIP membership, then share the link with your audience. Already use Link.me or Linktree? Add it there." : pop ? "Turn ‘I wish we could talk’ into your next connection. Paid replies and VIP memberships, all in one link that’s completely you." : "Create a free page, set your price for Guaranteed Replies, and offer an optional VIP membership. Share your link anywhere your audience follows you."}</p>
+          {!pop && !centered && <p className={s.compatibility}><Icon name="link" size={18} /> Already use Link.me or Linktree? Add your ReplyPass link there, or share it directly.</p>}
+          <CreatorLinkStarter creatorAuthenticated={creatorAuthenticated} layout={centered ? "stacked" : "inline"}/>
+          {!centered && <div className={s.facts}><span><Icon name="check" size={14}/>Free to create</span><span><Icon name="check" size={14}/>Set your prices</span><span><Icon name="check" size={14}/>No card to start</span></div>}
           <a className={s.heroSecondary} href="#how">See how it works <span aria-hidden="true">↓</span></a>
+          {centered && <p className={s.centeredReassurance}>Free to create · No card needed to start</p>}
         </div>
-        <div className={`${s.previewStage} ${s.animatedStage}`}>
+        {!centered && <div className={`${s.previewStage} ${s.animatedStage}`}>
           <AnimatedHeroShowcase creators={creatorStories.slice(0, 3).filter(story => story.messagePriceCents !== null).map((story) => ({ ...story, bio: story.handle === featuredCreator.handle.replace(/^@/, "") ? featuredCreator.bio || story.bio : story.bio, illustrative: story.handle !== featuredCreator.handle.replace(/^@/, "") }))}/>
-        </div>
+        </div>}
       </section>
     </div>
     {pop && <div className={s.ticker}><span>CREATORS</span><Icon name="star" size={18}/><span>ARTISTS</span><Icon name="star" size={18}/><span>ATHLETES</span><Icon name="star" size={18}/><span>EXPERTS</span><Icon name="star" size={18}/><span>YOU</span></div>}
