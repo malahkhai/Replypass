@@ -4520,5 +4520,5 @@ body:has(.auth-page-immersive) > .site-footer { max-width:none; margin:0; paddin
 }
 .example-profile-notice{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px max(24px,calc((100vw - 1180px)/2));background:#f0eee6;border-bottom:1px solid #dedfd6;color:#252b24}
 .example-profile-notice>div{display:grid;gap:3px}.example-profile-notice strong{font-size:14px}.example-profile-notice span{font-size:12px}.example-profile-notice a{display:inline-flex;gap:9px;align-items:center;background:#d74d42;color:#fff;border-radius:100px;padding:10px 16px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
-.payment-explanation{font-size:12px;line-height:1.55;color:#596458;margin:8px 0 22px;padding:13px 15px;border-left:3px solid #9caf91;background:#f2f4ed}
+.payment-explanation{font-size:12px;line-height:1.55;color:#596458;margin:8px 0 22px;padding:13px 15px;background:#f2f4ed}
 @media(max-width:760px){.example-profile-notice{align-items:flex-start;flex-direction:column;padding:15px 20px}.example-profile-notice a{min-height:44px}}

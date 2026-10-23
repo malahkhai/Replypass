@@ -10,7 +10,7 @@
 .studio .hero .rotatingTitle{font-size:clamp(28px,3.15vw,52px);max-width:720px;line-height:1.08}
 .rotatingLine{display:block;min-height:1.12em;white-space:nowrap;color:#fff;font-style:italic;animation:heroPhraseIn .48s ease both}
 .fixedLine{display:block;max-width:680px;color:#f9eee2;font-size:.79em;font-style:normal;line-height:1.08}
-.compatibility{display:flex;align-items:flex-start;gap:11px;max-width:530px;padding:12px 15px;border-left:3px solid #ee9d79;background:#fff2;font-size:13px;font-weight:600;line-height:1.45!important}
+.compatibility{display:flex;align-items:flex-start;gap:11px;max-width:530px;padding:12px 15px;background:#fff2;font-size:13px;font-weight:600;line-height:1.45!important}
 .compatibility span{color:#ffb99b;font-size:18px;line-height:1}
 @keyframes heroPhraseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:760px){.studio .hero .rotatingTitle{font-size:clamp(25px,6.5vw,32px)}.fixedLine{font-size:.88em}.compatibility{font-size:12px}}
