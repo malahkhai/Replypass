@@ -293,3 +293,7 @@
 .howAmount{color:var(--ink);font-size:18px;font-weight:800;white-space:nowrap}
 .howCard .howFine{margin-top:8px;font-size:11px}
 @media(max-width:760px){.how{padding-top:52px;padding-bottom:56px}.how h2{font-size:clamp(30px,8vw,38px)}.howCards{grid-template-columns:1fr;gap:28px;margin-top:26px}.howCard h3{font-size:22px}.howCard>p{max-width:none}}
+
+/* Keep the product sequence contained, with copy first on mobile. */
+.studio .animatedStage,.pop .animatedStage{padding:16px 0;min-height:0;width:100%;max-width:470px;order:0}
+@media(max-width:760px){.studio .animatedStage,.pop .animatedStage{order:0;padding:12px 0 0;max-width:390px}}

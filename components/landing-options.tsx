@@ -5,7 +5,7 @@ import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
-import { HeroCreatorPreview } from "@/components/hero-creator-preview";
+import { AnimatedHeroShowcase } from "@/components/animated-hero-showcase";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
 import type { SocialPlatform } from "@/lib/creators/socials";
 import s from "./landing-options.module.css";
@@ -128,10 +128,8 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
           <div className={s.facts}><span><Icon name="check" size={14}/>Free to create</span><span><Icon name="check" size={14}/>Set your prices</span><span><Icon name="check" size={14}/>No card to start</span></div>
           <a className={s.heroSecondary} href="#how">See how it works <span aria-hidden="true">↓</span></a>
         </div>
-        <div className={s.previewStage}>
-          <div className={s.orbit} aria-hidden="true"/>
-          <HeroCreatorPreview creators={featuredCreators}/>
-          {pop && <><div className={s.floatCard}><span>YOUR ATTENTION HAS VALUE</span><strong>Put a price<br/>on personal.</strong><span className={s.spark}><Icon name="sparkles" size={30}/></span></div><div className={s.floatTag}>Your link. Your rules.</div></>}
+        <div className={`${s.previewStage} ${s.animatedStage}`}>
+          <AnimatedHeroShowcase creators={creatorStories.slice(0, 3).filter(story => story.messagePriceCents !== null).map((story) => ({ ...story, bio: story.handle === featuredCreator.handle.replace(/^@/, "") ? featuredCreator.bio || story.bio : story.bio, illustrative: story.handle !== featuredCreator.handle.replace(/^@/, "") }))}/>
         </div>
       </section>
     </div>
