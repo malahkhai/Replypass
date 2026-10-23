@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Icon } from "@/components/icon";
 import { track } from "@/lib/analytics/client";
 
-export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthenticated: boolean }) {
+export function CreatorLinkStarter({ creatorAuthenticated, layout = "inline" }: { creatorAuthenticated: boolean; layout?: "inline" | "stacked" }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
@@ -22,10 +22,7 @@ export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthentica
     router.push(creatorAuthenticated ? next : `/signup?next=${encodeURIComponent(next)}`);
   }
 
-  return (
-    <form className="creator-link-starter" onSubmit={start}>
-      <label htmlFor="creator-link-name">Your ReplyPass link could look like this</label>
-      <div className="creator-link-starter-row">
+  const field = <>
         <span>getreplypass.com/</span>
         <input
           id="creator-link-name"
@@ -36,9 +33,16 @@ export function CreatorLinkStarter({ creatorAuthenticated }: { creatorAuthentica
           autoComplete="off"
           aria-describedby="creator-link-hint"
         />
-        <button type="submit">Create my page <Icon name="arrow" size={16} /></button>
+  </>;
+
+  return (
+    <form className={`creator-link-starter creator-link-starter-${layout}`} onSubmit={start}>
+      <label htmlFor="creator-link-name">Your ReplyPass link could look like this</label>
+      <div className="creator-link-starter-row">
+        {layout === "stacked" ? <div className="creator-link-starter-field">{field}</div> : field}
+        <button type="submit">{layout === "stacked" ? "Create your page" : "Create my page"} <Icon name="arrow" size={16} /></button>
       </div>
-      <small id="creator-link-hint" role="status">{error || "You’ll confirm your username during setup. No card needed to create a page."}</small>
+      <small id="creator-link-hint" role="status">{error || (layout === "stacked" ? "" : "You’ll confirm your username during setup. No card needed to create a page.")}</small>
     </form>
   );
 }

@@ -2,7 +2,7 @@
 export const reservedCreatorNames = new Set([
   "admin", "account", "api", "auth", "creator", "creators", "login", "signup",
   "vip", "notifications", "privacy", "terms", "og", "replypass", "support",
-  "about", "help", "settings", "sitemap", "robots", "legal",
+  "new", "about", "help", "settings", "sitemap", "robots", "legal",
 ]);
 export function creatorPath(handle: string) {
   const username = handle.replace(/^@/, "");

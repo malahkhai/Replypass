@@ -14,7 +14,7 @@ test("clean creator routes retain legacy interaction and campaign parameters", (
   assert.equal(pageGroup("/login"), "login");
 });
 test("static pages cannot be claimed or mistaken for new creator destinations", () => {
-  for (const name of ["vip","creators","privacy","terms","notifications","api","auth"]) {
+  for (const name of ["new","vip","creators","privacy","terms","notifications","api","auth"]) {
     assert.equal(validUsername(name), false);
     assert.equal(isCreatorProfilePath(`/${name}`), false);
     assert.equal(creatorPath(name), `/@${name}`);

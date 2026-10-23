@@ -8,6 +8,12 @@ test('analytics masks creator handles and private routes', () => {
  assert.equal(pageGroup('/creator/dashboard'), 'creator_dashboard');
  assert.equal(pageGroup('/unexpected/private'), 'other');
 });
+test('landing experiment is distinct from home and creator profiles', () => {
+ assert.equal(pageGroup('/'), 'home');
+ assert.equal(pageGroup('/new'), 'home_new');
+ assert.equal(analyticsPageLocation('/new','?token=private'), 'https://getreplypass.com/home_new');
+ assert.equal(pageGroup('/@new'), 'creator_profile');
+});
 test('analytics keeps only safe campaign tags on grouped page URLs', () => {
  assert.equal(analyticsPageLocation('/creators','?utm_source=Meta&utm_medium=Paid_Social&utm_campaign=GRP-LPV-A&fbclid=secret'),
   'https://getreplypass.com/creator_landing?utm_source=meta&utm_medium=paid_social&utm_campaign=grp-lpv-a');
