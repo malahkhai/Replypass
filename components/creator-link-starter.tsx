@@ -26,6 +26,7 @@ export function CreatorLinkStarter({ creatorAuthenticated, layout = "inline" }: 
         <span>getreplypass.com/</span>
         <input
           id="creator-link-name"
+          aria-label="Your ReplyPass link could look like this"
           value={username}
           onChange={(event) => { setUsername(event.target.value.toLowerCase().replace(/^@/, "")); setError(""); }}
           placeholder="yourname"
@@ -39,7 +40,7 @@ export function CreatorLinkStarter({ creatorAuthenticated, layout = "inline" }: 
     <form className={`creator-link-starter creator-link-starter-${layout}`} onSubmit={start}>
       <label htmlFor="creator-link-name">Your ReplyPass link could look like this</label>
       <div className="creator-link-starter-row">
-        {layout === "stacked" ? <div className="creator-link-starter-field">{field}</div> : field}
+        {layout === "stacked" ? <label className="creator-link-starter-field" htmlFor="creator-link-name">{field}</label> : field}
         <button type="submit">{layout === "stacked" ? "Create your page" : "Create my page"} <Icon name="arrow" size={16} /></button>
       </div>
       <small id="creator-link-hint" role="status">{error || (layout === "stacked" ? "" : "You’ll confirm your username during setup. No card needed to create a page.")}</small>
