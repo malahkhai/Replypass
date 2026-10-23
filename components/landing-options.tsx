@@ -4,6 +4,7 @@ import { CreatorLinkStarter } from "@/components/creator-link-starter";
 import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
+import { CompactLandingSections } from "@/components/compact-landing-sections";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { AnimatedHeroShowcase } from "@/components/animated-hero-showcase";
 import { CREATOR_SHARE_PERCENT, PLATFORM_FEE_PERCENT, splitPayment } from "@/lib/payments/fees";
@@ -167,6 +168,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>
       <CreatorJourneyCarousel labels={creatorStories.map((story) => story.name)}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</CreatorJourneyCarousel>
     </section>
+    {centered ? <CompactLandingSections/> : <>
     <section className={`${s.section} ${s.offers}`} id="offers">
       <p className={s.eyebrow}>TWO WAYS TO EARN</p><h2>Give followers a reason to visit.</h2>
       <div className={s.offerGrid}>
@@ -175,6 +177,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       </div>
     </section>
     <section className={`${s.section} ${s.fees}`} id="fees"><div><p className={s.eyebrow}>FREE TO START. CLEAR ABOUT FEES.</p><h2>Set your price.<br/>Keep your share.</h2><p>Creating your page is free. Your creator share is {CREATOR_SHARE_PERCENT}% of each completed paid reply or VIP payment; ReplyPass’s platform share is {PLATFORM_FEE_PERCENT}%.</p><p className={s.fine}>The {CREATOR_SHARE_PERCENT}% is before Stripe processing costs, refunds and other applicable adjustments. Your dashboard shows your earnings and payout status. Bank arrival follows Stripe’s schedule and requires verification.</p><Start href={startHref} className={s.textLink}>Create your free page</Start></div><div className={s.percentage}><strong>{CREATOR_SHARE_PERCENT}<span>%</span></strong><span>CREATOR SHARE BEFORE STRIPE FEES</span></div></section>
+    </>}
     <section className={`${s.section} ${s.faq}`}><div><p className={s.eyebrow}>GLAD YOU ASKED</p><h2>A few things<br/>to know.</h2></div><div>{questions.map(([q,a])=><details key={q}><summary>{q}<Icon name="plus" size={18}/></summary><p>{a}</p></details>)}</div></section>
     <section className={s.ending}><p className={s.eyebrow}>YOUR PAGE CAN START TODAY.</p><h2>Give your followers a way<br/>to reach you.</h2><Start href={startHref} className={s.button}>Create your free page</Start><p>Free to create · Set your own prices · No card needed to start</p></section>
   </main>;

@@ -298,7 +298,7 @@
 .studio .animatedStage,.pop .animatedStage{padding:16px 0;min-height:0;width:100%;max-width:470px;order:0}
 @media(max-width:760px){.studio .animatedStage,.pop .animatedStage{order:0;padding:12px 0 0;max-width:390px}}
 
-/* The /new experiment changes only the hero, keeping the shared sections below. */
+/* The centered hero for the /new landing page. */
 .centered .opening{background:var(--paper);color:var(--ink)}
 .centered .opening:after{content:none}
 .centered .nav{box-shadow:none;border:1px solid #252b2415;background:var(--paper)}
