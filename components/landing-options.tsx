@@ -122,7 +122,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <section className={s.hero}>
         <div className={s.heroCopy}>
           <p className={s.eyebrow}>{pop ? "BIG PERSONALITY. CLOSER CONNECTIONS." : "GET PAID FOR THE REPLIES YOUR FOLLOWERS WANT."}</p>
-          {centered ? <h1 className={s.centeredTitle}>Get paid for<br/>replies. With your<br/>pay-link in bio.</h1> : pop ? <h1>Your people.<br/>Your world.<br/><em>Your pay-link.</em></h1> : <RotatingHeroTitle />}
+          {centered ? <h1 className={s.centeredTitle}>Get <span className={s.heroHighlight}>paid for<br/>replies</span>. With your<br/>pay-link in bio.</h1> : pop ? <h1>Your people.<br/>Your world.<br/><em>Your pay-link.</em></h1> : <RotatingHeroTitle />}
           <p className={s.lead}>{centered ? "Make a free page, set a price for Guaranteed Replies, optionally add a VIP membership, then share the link with your audience. Already use Link.me or Linktree? Add it there." : pop ? "Turn ‘I wish we could talk’ into your next connection. Paid replies and VIP memberships, all in one link that’s completely you." : "Create a free page, set your price for Guaranteed Replies, and offer an optional VIP membership. Share your link anywhere your audience follows you."}</p>
           {!pop && !centered && <p className={s.compatibility}><Icon name="link" size={18} /> Already use Link.me or Linktree? Add your ReplyPass link there, or share it directly.</p>}
           <CreatorLinkStarter creatorAuthenticated={creatorAuthenticated} layout={centered ? "stacked" : "inline"}/>
