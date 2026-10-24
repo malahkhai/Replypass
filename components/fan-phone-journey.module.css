@@ -96,3 +96,32 @@
 .replyDraft p{font-size:12px;line-height:1.55}
 .notification,.composer{background:#fcfbf8}
 @media(max-width:760px){.journeys{display:block;margin-top:24px}.roleJourney[data-hidden=true]{display:none}.roleTabs{display:flex}.roleControls{min-height:0}.roleHeading h3{font-size:26px}}
+/* One shared timeline, with a static inbox until the fan sends a request. */
+.sharedControls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:28px;max-width:780px}
+.sharedControls>span{font-size:11px;font-weight:750;letter-spacing:.1em;margin-right:8px;color:#65725c}
+.sharedControls button{padding:9px 14px;min-height:38px;border:1px solid #cbd0c3;border-radius:24px;background:var(--paper);color:var(--ink);font:inherit;font-size:12px;font-weight:650;cursor:pointer}
+.sharedControls button:disabled{opacity:.35;cursor:default}
+.sharedControls p{flex-basis:100%;font-size:13px;color:#65725c;line-height:1.5;margin-top:8px;min-height:40px}
+.roleJourney{scroll-margin-top:150px}
+.pending .body{padding-top:36px}
+.sentIcon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:22px;border-radius:50%;background:#e3ebdc;color:#4e7351}
+.body .pendingCopy{font-size:12px;margin-bottom:20px;line-height:1.5;color:#6c7565}
+.gmail{background:#fff}
+.gmailHeader{display:flex;align-items:center;gap:10px;padding:16px;font-size:20px;color:#5f6368}
+.gmailHeader strong{font-weight:500}
+.gmailSearch{display:flex;align-items:center;gap:16px;margin:0 12px;padding:10px 12px;border-radius:24px;background:#edf3fc;color:#5f6368;font-size:11px}
+.gmailSearch>span:nth-child(2){flex:1}.mailAccount{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#6e8063;color:#fff;font-weight:700}
+.mailFolder{padding:20px 16px 10px;color:#777;font-size:9px;font-weight:650;letter-spacing:.08em}
+.mailRow,.newEmail{display:flex;align-items:flex-start;gap:9px;padding:13px 14px;min-width:0;width:100%;text-align:left;font-family:inherit;color:#333;border:0;background:#fff}
+.senderIcon{display:grid;place-items:center;flex:none;width:31px;height:31px;border-radius:50%;font-size:13px;color:#53634b}
+.mailRow>div,.newEmail>span:nth-child(2){flex:1;min-width:0}
+.mailRow strong,.newEmail strong{display:flex;justify-content:space-between;gap:6px;font-size:11px;font-weight:650}
+.mailRow small,.newEmail small{font-size:8px;white-space:nowrap;font-weight:400;color:#777}
+.mailRow b,.newEmail b{display:block;font-size:10px;font-weight:500;margin-top:3px}
+.mailRow p,.newEmail>span:nth-child(2)>span{display:block;font-size:9px;color:#777;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.newEmail{position:relative;background:#eaf1fc;cursor:pointer;border-radius:0 14px 14px 0;animation:emailArrives .55s ease both}
+.newEmail .senderIcon{background:var(--ink);color:white;font-size:18px;font-weight:800}.newEmail i{position:absolute;top:10px;right:6px;width:5px;height:5px;border-radius:50%;background:#4285f4}
+.mailToast{position:absolute;left:12px;right:12px;bottom:16px;display:flex;align-items:center;gap:10px;background:#303531;color:#fff;padding:13px;border-radius:14px;box-shadow:0 8px 24px #0002;animation:emailArrives .55s .3s both}
+.mailToast strong{display:block;font-size:11px}.mailToast span{display:block;margin-top:4px;font-size:9px;color:#d5dfd0}
+@keyframes emailArrives{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@media(max-width:760px){.journeys{display:grid;grid-template-columns:minmax(0,1fr);gap:46px}.sharedControls{position:sticky;top:8px;z-index:30;padding:12px;border:1px solid #dce0d4;border-radius:18px;background:#f7f6eef5;backdrop-filter:blur(8px)}.sharedControls p{font-size:11px;min-height:34px;margin-top:3px}.sharedControls button{padding:8px 11px}.sharedControls>span{font-size:10px}.roleHeading .caption{min-height:44px}.roleJourney{scroll-margin-top:155px}}
