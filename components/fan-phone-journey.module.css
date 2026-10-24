@@ -1,10 +1,10 @@
 .section{padding:80px 24px;background:var(--paper);color:var(--ink);scroll-margin-top:28px}
-.wrap{max-width:1080px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:76px;align-items:center}
+.wrap{max-width:1120px;margin:auto}
 .copy{min-width:0}
 .copy .kicker{font-size:10px;letter-spacing:.15em;font-weight:750;color:var(--accent);margin-bottom:18px}
 .copy h2{font-size:clamp(36px,4vw,52px);line-height:1.04;letter-spacing:-.055em}
-.copy .lead{font-size:17px;line-height:1.6;color:#63705e;margin-top:22px;max-width:390px}
-.copy .caption{font-size:15px;line-height:1.55;margin:28px 0 18px;min-height:72px;max-width:390px}
+.copy .lead{font-size:17px;line-height:1.6;color:#63705e;margin-top:22px;max-width:560px}
+.roleHeading .caption{font-size:14px;line-height:1.55;margin-top:12px;min-height:66px;max-width:420px}
 .steps{display:flex;flex-wrap:wrap;gap:8px}
 .steps button{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #cbd0c3;border-radius:100px;background:transparent;color:var(--ink);font:inherit;font-size:12px;font-weight:650;cursor:pointer}
 .steps button>span{font-size:9px;opacity:.65}
@@ -68,6 +68,31 @@
 @keyframes tap{0%{opacity:0;transform:scale(1.7)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.7)}}
 @keyframes replyIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes blink{to{opacity:0}}
-@media(max-width:820px){.section{padding:56px 24px}.wrap{grid-template-columns:1fr;gap:32px;max-width:520px}.copy h2{font-size:38px}.copy .caption{min-height:48px;margin-top:22px}.copy .lead{font-size:16px;max-width:none}.stage{width:100%;max-width:440px;justify-self:center}}
+@media(max-width:760px){.section{padding:56px 24px}.wrap{max-width:520px}.copy h2{font-size:38px}.copy .lead{font-size:16px;max-width:none}.journeys{display:block;margin-top:24px}.roleJourney[data-hidden=true]{display:none}.roleTabs{display:flex}.stage{width:100%}.roleHeading .caption{min-height:66px}}
 @media(max-width:370px){.section{padding-inline:16px}.stage{padding-inline:10px}.phone{width:286px;height:640px}.body{padding:20px 14px}.cover{height:185px}.igIdentity{padding-top:18px}}
 @media(prefers-reduced-motion:reduce){.section *,.section *:before,.section *:after{animation:none!important;transition:none!important}}
+.journeys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:44px;align-items:start}
+.roleJourney{min-width:0}
+.roleHeading{padding:0 4px;margin-bottom:22px}
+.roleHeading h3{font-size:28px;line-height:1.1;margin-top:10px}
+.roleTag{font-size:9px;letter-spacing:.13em;font-weight:750;color:var(--accent)}
+.roleJourney[data-audience=creator] .roleTag{color:#59714d}
+.roleJourney[data-audience=creator] .stage{background:radial-gradient(ellipse at 25% 80%,#d9d7c4,transparent 65%),#ecebdf}
+.roleControls{padding:18px 4px 0;min-height:120px}
+.roleControls .steps{gap:7px}
+.roleControls .steps button{padding:8px 10px;font-size:11px}
+.roleControls .pause{margin-top:12px}
+.roleTabs{display:none;gap:6px;max-width:320px;margin-top:28px;padding:5px;border-radius:100px;background:#e8ebdf}
+.roleTabs button{flex:1;padding:12px;border:0;border-radius:100px;font:inherit;font-size:14px;font-weight:700;color:var(--ink);background:transparent;cursor:pointer}
+.roleTabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.email{display:flex;align-items:center;gap:9px;padding:2px 0 18px}
+.emailBrand{display:grid;place-items:center;width:33px;height:33px;border-radius:9px;background:var(--ink);color:#fff;font-weight:800;font-size:23px;position:relative}
+.emailBrand span{color:var(--accent);position:absolute;right:5px;bottom:1px}
+.email strong{font-size:12px}.email small{display:block;font-size:9px;margin-top:3px;color:#6c7565}
+.body .notificationText{font-size:11px;line-height:1.5;margin:16px 0}
+.fanAvatar{display:grid;place-items:center;background:#e8ecdf;color:#56694b;font-weight:750;border-radius:50%;width:35px;height:35px;flex:none}
+.replyDraft{margin:18px 0;padding:14px;background:white;border:1px solid #cbd3c1;border-radius:12px}
+.replyDraft>small{display:block;color:#6c7565;font-size:9px;font-weight:700;margin-bottom:8px}
+.replyDraft p{font-size:12px;line-height:1.55}
+.notification,.composer{background:#fcfbf8}
+@media(max-width:760px){.journeys{display:block;margin-top:24px}.roleJourney[data-hidden=true]{display:none}.roleTabs{display:flex}.roleControls{min-height:0}.roleHeading h3{font-size:26px}}
