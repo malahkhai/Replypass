@@ -49,9 +49,20 @@
 .country { display: flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; color: var(--showcase-muted); white-space: nowrap; }
 .socials { display: flex; gap: 6px; margin: 10px 2px 9px; }
 .socials > span { width: 26px; height: 26px; border: 1px solid var(--showcase-line); border-radius: 50%; display: grid; place-items: center; }
+.socials > span[data-platform="instagram"] { color: #fff; background: radial-gradient(circle at 30% 105%, #feda75 0%, #fa7e1e 30%, #d62976 55%, #962fbf 78%, #4f5bd5 100%); border-color: transparent; }
+.socials > span[data-platform="facebook"] { color: #fff; background: #0866ff; border-color: transparent; }
+.socials > span[data-platform="linkedin"] { color: #fff; background: #0a66c2; border-color: transparent; }
+.socials > span[data-platform="x"], .socials > span[data-platform="tiktok"] { color: #fff; background: #0f1419; border-color: transparent; }
+.socials > span[data-platform="tiktok"] svg { filter: drop-shadow(-.7px 0 #25f4ee) drop-shadow(.7px .5px #fe2c55); }
+.socials > span[data-platform="youtube"] { color: #ff0000; background: #fff; }
+.socials > span[data-platform="youtube"] svg { width: 20px; height: 20px; }
+.socials > span[data-platform="spotify"] { color: #1ed760; background: #fff; }
+.socials > span[data-platform="spotify"] svg { width: 22px; height: 22px; }
+.socials > span[data-platform="spotify"] path { stroke: #101610; }
 .section .bio { margin: 0 2px; font-size: 12px; line-height: 1.4; color: var(--showcase-muted); min-height: 2.8em; }
 .caption { margin: 12px 0 8px; padding-top: 10px; border-top: 1px solid var(--showcase-line); text-align: center; font-size: 10px; font-weight: 600; color: var(--showcase-muted); }
 .offers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.offers[data-vip="false"] { grid-template-columns: 1fr; }
 .offers > span { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 6px; border-radius: 11px; font-size: 11.5px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .message { background: var(--ink); color: #fff; }
 .vip { background: var(--showcase-soft); }
