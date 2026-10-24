@@ -1,5 +1,5 @@
 .section{padding:40px 0 0;background:var(--paper);color:var(--ink);scroll-margin-top:28px}
-.wrap{max-width:1120px;margin:auto}
+.wrap{width:100%;max-width:none;margin:0}
 .copy{min-width:0}
 .copy .kicker{font-size:10px;letter-spacing:.15em;font-weight:750;color:var(--accent);margin-bottom:18px}
 .copy h2{font-size:clamp(36px,4vw,52px);line-height:1.04;letter-spacing:-.055em}
@@ -140,3 +140,10 @@
 @media(max-width:1000px) and (min-width:761px){.roleJourney{padding:16px}.journeys{gap:16px}}
 @media(max-width:760px){.roleJourney{padding:16px;border-radius:22px}.journeys{gap:24px}.roleJourney .stage{padding-inline:0}.copy .embeddedTitle{font-size:26px}.copy .lead{font-size:14px}.roleControls{min-height:0}.roleJourney{scroll-margin-top:155px}}
 @media(max-width:370px){.roleJourney{padding:12px}}
+
+/* Continue the three steps directly, with one heading and one shared alignment. */
+.section{padding-top:24px}
+.sharedControls{max-width:none;margin-top:0}
+.sharedControls p{flex:1 1 300px;margin:0;min-height:0}
+.journeys{margin-top:20px}
+@media(max-width:760px){.wrap{max-width:none}.sharedControls p{flex-basis:100%;min-height:32px}}
