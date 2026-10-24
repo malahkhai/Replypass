@@ -164,12 +164,12 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
           <p className={s.howFine}>Before Stripe processing fees, refunds and other adjustments.</p>
         </article>
       </div>
+    {centered && <FanPhoneJourney creator={creatorStories.find(story => story.messagePriceCents !== null)!}/>}
     </section>
     <section className={`${s.section} ${s.creatorExamples}`} id="examples">
       <div className={s.exampleIntro}><p className={s.eyebrow}>SEE REPLYPASS IN ACTION</p><h2>One link.<br/>From bio to paid reply.</h2><p>See the page a fan opens, the price they see, and the conversation that follows. The same flow works for every kind of creator.</p></div>
       <CreatorJourneyCarousel labels={creatorStories.map((story) => story.name)}>{creatorStories.map((story, index) => <CreatorJourney key={story.name} story={story} index={index}/>)}</CreatorJourneyCarousel>
     </section>
-    {centered && <FanPhoneJourney creator={creatorStories.find(story => story.messagePriceCents !== null)!}/>}
     {centered ? <CompactLandingSections/> : <>
     <section className={`${s.section} ${s.offers}`} id="offers">
       <p className={s.eyebrow}>TWO WAYS TO EARN</p><h2>Give followers a reason to visit.</h2>

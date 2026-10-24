@@ -53,9 +53,9 @@ export function FanPhoneJourney({ creator }: { creator: Creator }) {
     if (mobile && timeline[index].actor !== current.actor) document.getElementById(`journey-panel-${timeline[index].actor}`)?.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" });
   }
   function replay() { setStep(0); setPaused(false); if (mobile) document.getElementById("journey-panel-fans")?.scrollIntoView({ behavior: reduced ? "instant" : "smooth", block: "start" }); }
-  return <section id="fan-journey" className={s.section} aria-labelledby="fan-journey-title" data-testid="fan-phone-journey" data-step={step} data-running={running}>
+  return <div role="group" id="fan-journey" className={s.section} aria-labelledby="fan-journey-title" data-testid="fan-phone-journey" data-step={step} data-running={running}>
     <div className={s.wrap}>
-      <header className={s.copy}><p className={s.kicker}>ONE QUESTION. FROM YOUR FAN TO YOU.</p><h2 id="fan-journey-title">Your fans ask.<br/>You reply. You earn.</h2><p className={s.lead}>Follow one conversation from your fan’s Instagram bio visit to your inbox, reply and earnings.</p></header>
+      <header className={s.copy}><p className={s.kicker}>ONE QUESTION. FROM YOUR FAN TO YOU.</p><h3 id="fan-journey-title" className={s.embeddedTitle}>Your fans ask. You reply. You earn.</h3><p className={s.lead}>Follow one conversation from your fan’s Instagram bio visit to your inbox, reply and earnings.</p></header>
       <div className={s.sharedControls} aria-label="Walkthrough playback">
         <span>0{step + 1} / 0{timeline.length}</span>
         <button type="button" aria-label="Previous step" disabled={step === 0} onClick={() => select(step - 1)}>←</button>
@@ -67,7 +67,7 @@ export function FanPhoneJourney({ creator }: { creator: Creator }) {
         {(["fans", "creator"] as const).map(role => <RoleJourney key={role} creator={creator} audience={role} scene={current[role]} step={step} running={running} select={select} panelRef={role === "creator" ? creatorPanel : undefined} onInView={value => setInView(previous => previous[role] === value ? previous : { ...previous, [role]: value })}/>)}
       </div>
     </div>
-  </section>;
+  </div>;
 }
 
 function RoleJourney({ creator, audience, scene, step, running, select, panelRef, onInView }: { creator: Creator; audience: Audience; scene: number; step: number; running: boolean; select: (index: number) => void; panelRef?: React.RefObject<HTMLDivElement | null>; onInView: (value: boolean) => void }) {

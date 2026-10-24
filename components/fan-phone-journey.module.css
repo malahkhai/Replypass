@@ -1,4 +1,4 @@
-.section{padding:80px 24px;background:var(--paper);color:var(--ink);scroll-margin-top:28px}
+.section{padding:40px 0 0;background:var(--paper);color:var(--ink);scroll-margin-top:28px}
 .wrap{max-width:1120px;margin:auto}
 .copy{min-width:0}
 .copy .kicker{font-size:10px;letter-spacing:.15em;font-weight:750;color:var(--accent);margin-bottom:18px}
@@ -68,8 +68,8 @@
 @keyframes tap{0%{opacity:0;transform:scale(1.7)}35%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.7)}}
 @keyframes replyIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes blink{to{opacity:0}}
-@media(max-width:760px){.section{padding:56px 24px}.wrap{max-width:520px}.copy h2{font-size:38px}.copy .lead{font-size:16px;max-width:none}.journeys{display:block;margin-top:24px}.roleJourney[data-hidden=true]{display:none}.roleTabs{display:flex}.stage{width:100%}.roleHeading .caption{min-height:66px}}
-@media(max-width:370px){.section{padding-inline:16px}.stage{padding-inline:10px}.phone{width:286px;height:640px}.body{padding:20px 14px}.cover{height:185px}.igIdentity{padding-top:18px}}
+@media(max-width:760px){.section{padding:32px 0 0}.wrap{max-width:520px}.copy h2{font-size:38px}.copy .lead{font-size:16px;max-width:none}.journeys{display:block;margin-top:24px}.roleJourney[data-hidden=true]{display:none}.roleTabs{display:flex}.stage{width:100%}.roleHeading .caption{min-height:66px}}
+@media(max-width:370px){.section{padding-inline:0}.stage{padding-inline:10px}.phone{width:286px;height:640px}.body{padding:20px 14px}.cover{height:185px}.igIdentity{padding-top:18px}}
 @media(prefers-reduced-motion:reduce){.section *,.section *:before,.section *:after{animation:none!important;transition:none!important}}
 .journeys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:44px;align-items:start}
 .roleJourney{min-width:0}
@@ -125,3 +125,18 @@
 .mailToast strong{display:block;font-size:11px}.mailToast span{display:block;margin-top:4px;font-size:9px;color:#d5dfd0}
 @keyframes emailArrives{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
 @media(max-width:760px){.journeys{display:grid;grid-template-columns:minmax(0,1fr);gap:46px}.sharedControls{position:sticky;top:8px;z-index:30;padding:12px;border:1px solid #dce0d4;border-radius:18px;background:#f7f6eef5;backdrop-filter:blur(8px)}.sharedControls p{font-size:11px;min-height:34px;margin-top:3px}.sharedControls button{padding:8px 11px}.sharedControls>span{font-size:10px}.roleHeading .caption{min-height:44px}.roleJourney{scroll-margin-top:155px}}
+
+/* The walkthrough belongs to the how-it-works section. Color identifies each role. */
+.copy .embeddedTitle{font-size:clamp(24px,2.5vw,32px);line-height:1.12;letter-spacing:-.045em}
+.copy .kicker{display:none}
+.copy .lead{font-size:15px;margin-top:14px}
+.journeys{gap:24px;margin-top:28px}
+.roleJourney{padding:24px;border-radius:26px;background:#e4ecdc}
+.roleJourney[data-audience=creator]{background:#f3ddd2}
+.roleJourney .stage,.roleJourney[data-audience=creator] .stage{background:transparent;padding:18px 0 16px}
+.roleJourney[data-audience=creator] .roleTag{color:#984b3d}
+.roleHeading{padding:0;margin-bottom:8px}
+.roleControls{padding:12px 0 0;min-height:72px}
+@media(max-width:1000px) and (min-width:761px){.roleJourney{padding:16px}.journeys{gap:16px}}
+@media(max-width:760px){.roleJourney{padding:16px;border-radius:22px}.journeys{gap:24px}.roleJourney .stage{padding-inline:0}.copy .embeddedTitle{font-size:26px}.copy .lead{font-size:14px}.roleControls{min-height:0}.roleJourney{scroll-margin-top:155px}}
+@media(max-width:370px){.roleJourney{padding:12px}}
