@@ -32,6 +32,8 @@ export function CreatorLinkStarter({ creatorAuthenticated, layout = "inline" }: 
           placeholder="yourname"
           maxLength={30}
           autoComplete="off"
+          autoCapitalize="none"
+          spellCheck={false}
           aria-describedby="creator-link-hint"
         />
   </>;

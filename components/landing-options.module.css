@@ -328,3 +328,13 @@
   .centered .lead{font-size:14px;max-width:440px;margin:24px auto 26px!important}
   .centered :global(.creator-link-starter){max-width:380px}
 }
+/* Keep long usernames inside their field and prevent iOS input-focus zoom. */
+.centered .heroCopy{min-width:0}
+.centered :global(.creator-link-starter){min-width:0;max-width:100%}
+.centered :global(.creator-link-starter){width:min(100%,410px)}
+.centered :global(.creator-link-starter-row){width:100%;max-width:100%;min-width:0}
+.centered :global(.creator-link-starter .creator-link-starter-field){min-width:0;max-width:100%;overflow:hidden;padding-inline:18px}
+.centered :global(.creator-link-starter-field)>span{flex:none;white-space:nowrap}
+.centered :global(.creator-link-starter-field input){font-size:16px;min-width:0;max-width:100%;width:120px;flex:0 1 120px;overflow:hidden}
+.centered :global(.creator-link-starter-field):focus-within{scroll-margin-inline:0}
+@media(max-width:760px){.centered :global(.creator-link-starter-field)>span{font-size:14px}.centered :global(.creator-link-starter-field input){font-size:16px}.centered :global(.creator-link-starter-row button){max-width:100%}}
