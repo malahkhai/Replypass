@@ -1,4 +1,4 @@
-// Profiles and portrait artwork from the supplied ReplyPass Creators design.
+// Example profile data. Free portrait sources are recorded in docs/creator-showcase-images.md.
 export const showcaseCreators = [
   {
     "name": "Diana Grey",
@@ -13,8 +13,8 @@ export const showcaseCreators = [
       "tiktok",
       "youtube"
     ],
-    "image": "/images/creator-showcase/diana.jpg",
-    "imagePosition": "center 14%"
+    "image": "/images/creator-showcase/dianagrey.webp",
+    "imagePosition": "center 20%"
   },
   {
     "name": "Amara Okafor",
@@ -23,13 +23,13 @@ export const showcaseCreators = [
     "country": "Nigeria",
     "bio": "Plain answers to the visa questions you're afraid to ask.",
     "replyPrice": 120,
-    "vipPrice": 40,
+    "vipPrice": null,
     "socials": [
       "linkedin",
       "x"
     ],
-    "image": "/images/creator-showcase/amaraok.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/amaraok.webp",
+    "imagePosition": "center 20%"
   },
   {
     "name": "Mateo Silva",
@@ -44,7 +44,7 @@ export const showcaseCreators = [
       "youtube",
       "tiktok"
     ],
-    "image": "/images/creator-showcase/mateosilva.svg",
+    "image": "/images/creator-showcase/mateosilva.webp",
     "imagePosition": "center 30%"
   },
   {
@@ -54,14 +54,14 @@ export const showcaseCreators = [
     "country": "Canada",
     "bio": "Everyday stories, filming days and little wins.",
     "replyPrice": 29,
-    "vipPrice": 11,
+    "vipPrice": null,
     "socials": [
       "instagram",
       "youtube",
       "facebook"
     ],
-    "image": "/images/creator-showcase/sophie.jpg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/sophielane.webp",
+    "imagePosition": "center 60%"
   },
   {
     "name": "Yuki Tanaka",
@@ -76,8 +76,8 @@ export const showcaseCreators = [
       "x",
       "spotify"
     ],
-    "image": "/images/creator-showcase/yukitanaka.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/yukitanaka.webp",
+    "imagePosition": "center 35%"
   },
   {
     "name": "Kwame Mensah",
@@ -92,7 +92,23 @@ export const showcaseCreators = [
       "instagram",
       "tiktok"
     ],
-    "image": "/images/creator-showcase/kwamem.svg",
+    "image": "/images/creator-showcase/kwamem.webp",
+    "imagePosition": "center 40%"
+  },
+  {
+    "name": "Camille Laurent",
+    "handle": "camille.l",
+    "category": "Fashion · Style",
+    "country": "France",
+    "bio": "Runway details, vintage finds and looks worth repeating.",
+    "replyPrice": 60,
+    "vipPrice": null,
+    "socials": [
+      "instagram",
+      "tiktok",
+      "x"
+    ],
+    "image": "/images/creator-showcase/camillelaurent.webp",
     "imagePosition": "center 30%"
   },
   {
@@ -108,8 +124,8 @@ export const showcaseCreators = [
       "tiktok",
       "youtube"
     ],
-    "image": "/images/creator-showcase/nia.jpg",
-    "imagePosition": "center 20%"
+    "image": "/images/creator-showcase/niasolis.webp",
+    "imagePosition": "center 35%"
   },
   {
     "name": "Hannah Becker",
@@ -118,14 +134,14 @@ export const showcaseCreators = [
     "country": "Germany",
     "bio": "Offer letters, hard talks and big career switches.",
     "replyPrice": 95,
-    "vipPrice": 30,
+    "vipPrice": null,
     "socials": [
       "linkedin",
       "instagram",
       "spotify"
     ],
-    "image": "/images/creator-showcase/hannahb.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/hannahb.webp",
+    "imagePosition": "center 35%"
   },
   {
     "name": "Sofia Rossi",
@@ -134,21 +150,21 @@ export const showcaseCreators = [
     "country": "Italy",
     "bio": "Home cooking, fixed. Send me the dish that never works.",
     "replyPrice": 64,
-    "vipPrice": 22,
+    "vipPrice": null,
     "socials": [
       "instagram",
       "facebook",
       "youtube"
     ],
-    "image": "/images/creator-showcase/sofiarossi.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/sofiarossi.webp",
+    "imagePosition": "center top"
   },
   {
     "name": "Priya Nair",
     "handle": "priyanair",
-    "category": "Yoga instructor",
+    "category": "Dancer",
     "country": "India",
-    "bio": "Gentle yoga for stiff desk bodies and busy minds.",
+    "bio": "Rehearsals, movement and finding your own style.",
     "replyPrice": 20,
     "vipPrice": 10,
     "socials": [
@@ -156,8 +172,8 @@ export const showcaseCreators = [
       "youtube",
       "facebook"
     ],
-    "image": "/images/creator-showcase/priyanair.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/priyanair.webp",
+    "imagePosition": "center 40%"
   },
   {
     "name": "Inês Duarte",
@@ -166,13 +182,13 @@ export const showcaseCreators = [
     "country": "Portugal",
     "bio": "Eight years on the road. Ask me before you book.",
     "replyPrice": 39,
-    "vipPrice": 13,
+    "vipPrice": null,
     "socials": [
       "instagram",
       "facebook",
       "linkedin"
     ],
-    "image": "/images/creator-showcase/inesduarte.svg",
+    "image": "/images/creator-showcase/inesduarte.webp",
     "imagePosition": "center 30%"
   },
   {
@@ -182,13 +198,13 @@ export const showcaseCreators = [
     "country": "Sweden",
     "bio": "Portrait light, posing and how to get booked.",
     "replyPrice": 56,
-    "vipPrice": 18,
+    "vipPrice": null,
     "socials": [
       "instagram",
       "facebook",
       "x"
     ],
-    "image": "/images/creator-showcase/jonasberg.svg",
-    "imagePosition": "center 30%"
+    "image": "/images/creator-showcase/jonasberg.webp",
+    "imagePosition": "center 45%"
   }
 ] as const;
