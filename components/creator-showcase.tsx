@@ -95,7 +95,7 @@ export function CreatorShowcase({ startHref }: { startHref: string }) {
           {[false, true].map(duplicate => <div className={s.set} key={String(duplicate)} aria-hidden={duplicate || undefined} inert={duplicate || undefined}>{showcaseCreators.map(creator => <CreatorPhone key={creator.handle} creator={creator}/>)}</div>)}
         </div>
       </div>
-      <footer className={s.footer}><span>Example creators. Names, portraits and prices are for illustration.</span>{!reducedMotion && <button type="button" className={s.toggle} aria-pressed={!playing} aria-label={playing ? "Pause creator showcase" : "Play creator showcase"} onClick={() => setPlaying(current => !current)}>{playing ? "Pause" : "Play"}</button>}</footer>
+      {!reducedMotion && <footer className={s.footer}><button type="button" className={s.toggle} aria-pressed={!playing} aria-label={playing ? "Pause creator showcase" : "Play creator showcase"} onClick={() => setPlaying(current => !current)}>{playing ? "Pause" : "Play"}</button></footer>}
     </div>
   </section>;
 }

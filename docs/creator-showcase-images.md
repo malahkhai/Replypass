@@ -2,7 +2,7 @@
 
 Free stock photos used by the `/new#creator-showcase` section. Checked on 24 October 2026. All selected photo pages identify the images as free to use under the [Pexels License](https://www.pexels.com/license/), which permits website/product-promotion use and modifications without mandatory attribution. No credit link is added to the website footer.
 
-Names, handles, offers, locations and prices in the showcase are example profile data; they do not identify the photographed people or represent their endorsement of ReplyPass. The section retains its existing example-profile note. Its introductory copy does not claim these people use ReplyPass.
+Names, handles, offers, locations and prices in the showcase are example profile data; they do not identify the photographed people or represent their endorsement of ReplyPass. Its introductory copy does not claim these people use ReplyPass.
 
 Images are self-hosted, resized to a maximum width of 600px and compressed as WebP. The Paris fashion photographs show fashion-event/street-style scenes; the profile copy makes no claim about a particular designer or runway credit.
 
