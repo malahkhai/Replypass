@@ -5,6 +5,7 @@ import { RotatingHeroTitle } from "@/components/rotating-hero-title";
 import { Icon } from "@/components/icon";
 import { CreatorJourneyCarousel } from "@/components/creator-journey-carousel";
 import { FanPhoneJourney } from "@/components/fan-phone-journey";
+import { CreatorShowcase } from "@/components/creator-showcase";
 import { CompactLandingSections } from "@/components/compact-landing-sections";
 import { LandingSectionEngagement } from "@/components/landing-section-engagement";
 import { AnimatedHeroShowcase } from "@/components/animated-hero-showcase";
@@ -142,6 +143,7 @@ export function LandingOption({ variant, creatorAuthenticated, featuredCreators 
       <div className={s.linkArt}><span>ONE LINK. EVERYWHERE YOU ARE.</span><strong>getreplypass.com/<em>yourname</em></strong><div>{["Instagram", "TikTok", "YouTube", "Linktree", "Link.me", "Your next post"].map(label=><span key={label}>{label}</span>)}</div></div>
       <div><p className={s.eyebrow}>FITS RIGHT INTO YOUR WORLD</p><h2>Your bio just<br/>got personal.</h2><p>Add your ReplyPass link to Instagram, TikTok, X, Linktree or Link.me. Followers can visit your page directly and choose how to connect.</p><Start href={startHref} className={s.button}>Create your free page</Start></div>
     </section>
+    {centered && <CreatorShowcase startHref={startHref}/>}
     <section className={`${s.section} ${s.how}`} id="how">
       <LandingSectionEngagement sectionId="how" />
       <p className={s.eyebrow}>FROM YOUR SOCIAL BIO TO A PAID REPLY</p><h2>See how ReplyPass works.</h2>
