@@ -338,3 +338,4 @@
 .centered :global(.creator-link-starter-field input){font-size:16px;min-width:0;max-width:100%;width:120px;flex:0 1 120px;overflow:hidden}
 .centered :global(.creator-link-starter-field):focus-within{scroll-margin-inline:0}
 @media(max-width:760px){.centered :global(.creator-link-starter-field)>span{font-size:14px}.centered :global(.creator-link-starter-field input){font-size:16px}.centered :global(.creator-link-starter-row button){max-width:100%}}
+@media(max-width:370px){.centered .how{padding-inline:16px}}
